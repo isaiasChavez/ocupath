@@ -26,10 +26,11 @@ export enum AS_A {
 
 export const URLS = {
   login: "api/sesion",
-  invite: "api/sesion",
-  reset: "api/sesion",
-  confirmpass: "api/sesion",
-  recoverpass: "api/sesion",
+  logout: "api/sesion/logout",
+  invite: "api/user/invite",
+  reset: "api/user/requestreset/", //:email
+  confirmpass: "api/user/confirm",
+  recoverpass: "api/user/confirm",
   //Administrador
   createAdm: "api/user/admin",
   updateAdm: "api/user/admin",
