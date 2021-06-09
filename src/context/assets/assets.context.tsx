@@ -1,14 +1,14 @@
+import { IsNotEmpty, IsString, IsUUID } from "class-validator";
 import { createContext } from "react";
 export class CreateAssetDTO {
-  constructor({ url }) {
+  constructor(url: string) {
     this.url = url;
   }
-  adminUuid: string;
   url: string;
 }
 
 export class DeleteAssetDto {
-  constructor({ uuid }) {
+  constructor(uuid: string) {
     this.uuid = uuid;
   }
   uuid: string;

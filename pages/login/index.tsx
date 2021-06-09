@@ -14,7 +14,9 @@ import Container from "@material-ui/core/Container";
 import { useContext, useEffect, useState } from "react";
 import { verifyEmail } from "../../src/config/utils";
 import { useRouter } from "next/router";
-import UserContext from "../../src/context/user/user.context";
+import UserContext, {
+  ReuestSesionDTO,
+} from "../../src/context/user/user.context";
 
 function Copyright() {
   return (
@@ -46,7 +48,6 @@ const Login: React.FC<LoginProps> = () => {
   const [errors, setErrors] = useState({
     email: "",
     password: "",
-    type: 2,
   });
   const { email, password } = loginState;
 
@@ -60,16 +61,22 @@ const Login: React.FC<LoginProps> = () => {
     e.preventDefault();
 
     if (validateFields()) {
-      console.log({ loginState });
-
-      logUser(loginState);
+      let dto = new ReuestSesionDTO(
+        loginState.email,
+        loginState.password,
+        loginState.type
+      );
+      logUser(dto);
     }
   };
 
   const validateFields = () => {
     let isValid = true;
     console.log({ password, email });
-    const newErrors = {};
+    const newErrors = {
+      email: "",
+      password: "",
+    };
     if (email.trim() === "") {
       newErrors.email = "Ingrese un valor";
       isValid = false;

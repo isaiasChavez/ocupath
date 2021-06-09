@@ -1,46 +1,96 @@
+import {
+  IsBoolean,
+  IsDateString,
+  IsEmail,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  IsUUID,
+  MaxLength,
+  MinLength,
+} from "class-validator";
 import { createContext } from "react";
+import { Config } from "../../config";
 import { Profile } from "./user.reducer";
+export class ReuestSesionDTO {
+  constructor(email: string, password: string, type: number) {
+    this.email = email;
+    this.password = password;
+    this.type = type;
+  }
+  @IsString()
+  @IsNotEmpty()
+  @IsEmail()
+  email: string;
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(100)
+  password: string;
+  @IsNumber()
+  @IsNotEmpty()
+  type: number;
+}
+
 export class InviteUserDTO {
-  constructor({ email, type }) {
+  constructor(email: string, type: number) {
     this.email = email;
     this.type = type;
   }
+  @IsString()
+  @IsNotEmpty()
+  @IsEmail()
   email: string;
+  @IsNumber()
+  @IsNotEmpty()
   type: number;
 }
 export class ResetPassword {
-  constructor({ email }) {
+  constructor(email: string) {
     this.email = email;
   }
+  @IsString()
+  @IsNotEmpty()
+  @IsEmail()
   email: string;
 }
 export class ConfirmUserPassword {
-  constructor({ email, password }) {
+  constructor(email: string, password: string) {
     this.email = email;
     this.password = password;
   }
+  @IsString()
+  @IsNotEmpty()
+  @IsEmail()
+  @MinLength(8)
   email: string;
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(100)
   password: string;
 }
 export class PasswordRecovery {
-  constructor({ email, password }) {
+  constructor(email: string) {
     this.email = email;
-    this.password = password;
   }
+
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(100)
+  @IsEmail()
   email: string;
-  password: string;
 }
 export class CreateAdminDTO {
-  constructor({
-    name,
-    lastname,
-    email,
-    password,
-    startedAt,
-    finishedAt,
-    business,
-    cost,
-  }) {
+  constructor(
+    name: string,
+    lastname: string,
+    email: string,
+    password: string,
+    startedAt: string,
+    finishedAt: string,
+    business: string,
+    cost: number
+  ) {
     this.name = name;
     this.lastname = lastname;
     this.email = email;
@@ -50,90 +100,183 @@ export class CreateAdminDTO {
     this.business = business;
     this.cost = cost;
   }
+  @IsNotEmpty()
+  @IsString()
+  @MaxLength(100)
   name: string;
+
+  @MaxLength(100)
+  @IsString()
+  @IsNotEmpty()
   lastname: string;
+
+  @IsNotEmpty()
+  @IsEmail()
+  @IsString()
+  @MaxLength(100)
   email: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(100)
   password: string;
+
+  @IsDateString()
+  @IsString()
+  @IsNotEmpty()
   startedAt: string;
+
+  @IsString()
+  @IsDateString()
+  @IsNotEmpty()
   finishedAt: string;
+
+  @IsNumber()
+  @IsNotEmpty()
   cost: number;
+
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(200)
   business: string;
 }
 
 export class CreateUserDTO {
-  constructor({ adminUuid, name, lastname, email, password }) {
-    this.adminUuid = adminUuid;
+  constructor(name: string, lastname: string, email: string, password: string) {
     this.name = name;
     this.lastname = lastname;
     this.email = email;
     this.password = password;
   }
-  adminUuid: number;
+  @IsNotEmpty()
+  @IsString()
+  @MaxLength(100)
   name: string;
+  @MaxLength(100)
+  @IsString()
+  @IsNotEmpty()
   lastname: string;
+  @IsNotEmpty()
+  @IsEmail()
+  @IsString()
+  @MaxLength(100)
   email: string;
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(100)
   password: string;
 }
 
 export class UpdateUserAdminDTO {
-  constructor({
-    adminUuid,
-    name,
-    lastname,
-    avatar,
-    startedAt,
-    finishedAt,
-    cost,
-    business,
-  }) {
+  constructor(
+    adminUuid: string,
+    name: string,
+    lastname: string,
+    avatar: string,
+    startedAt: string,
+    finishedAt: string,
+    cost: number,
+    business: string
+  ) {
     this.adminUuid = adminUuid;
     this.name = name;
     this.lastname = lastname;
-    this.avatar = avatar;
+    this.avatar = avatar ? avatar : Config.DEFAULT_AVATAR;
     this.startedAt = startedAt;
     this.finishedAt = finishedAt;
     this.cost = cost;
     this.business = business;
   }
+  @IsUUID()
+  @IsNotEmpty()
+  @IsString()
   adminUuid: string;
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
   name: string | null;
+
+  @IsOptional()
+  @MaxLength(100)
+  @IsString()
   lastname: string | null;
+
+  @IsOptional()
+  @MaxLength(200)
   avatar: string | null;
+
+  @IsOptional()
+  @IsDateString()
+  @IsString()
   startedAt: string | null;
+
+  @IsOptional()
+  @IsString()
+  @IsDateString()
   finishedAt: string | null;
+
+  @IsOptional()
+  @IsNumber()
   cost: number;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(200)
   business: string | null;
 }
 
 export class UpdateUserDTO {
-  constructor({ userUuid, name, lastname, avatar }) {
+  constructor(
+    userUuid: string,
+    name: string,
+    lastname: string,
+    avatar: string
+  ) {
     this.userUuid = userUuid;
     this.name = name;
     this.lastname = lastname;
     this.avatar = avatar;
   }
-  userUuid: number;
+  @IsUUID()
+  @IsNotEmpty()
+  @IsString()
+  userUuid: string;
+  @IsString()
+  @MaxLength(100)
   name: string;
+  @IsString()
+  @MaxLength(150)
   avatar: string;
+  @MaxLength(100)
+  @IsString()
+  @IsNotEmpty()
   lastname: string;
 }
 
 export class DeleteAdminUserDTO {
-  constructor({ adminUuid, status }) {
+  constructor(adminUuid: string, status: boolean) {
     this.adminUuid = adminUuid;
     this.status = status;
   }
-  adminUuid: number;
+  @IsUUID()
+  @IsNotEmpty()
+  @IsString()
+  adminUuid: string;
+
+  @IsOptional()
+  @IsBoolean()
   status: boolean;
 }
 
 export class DeleteUserDTO {
-  constructor({ userUuid }) {
+  constructor(userUuid: string) {
     this.userUuid = userUuid;
   }
-  userUuid: number;
+  @IsNotEmpty()
+  @IsString()
+  userUuid: string;
 }
-interface AppContextInterface {
+interface UserContextInterface {
   resetPass: Function;
   logUser: Function;
   confirmPass: Function;
@@ -151,6 +294,6 @@ interface AppContextInterface {
   type: number;
 }
 
-const UserContext = createContext<AppContextInterface | null>(null);
+const UserContext = createContext<UserContextInterface | null>(null);
 
 export default UserContext;

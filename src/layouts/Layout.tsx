@@ -10,7 +10,7 @@ const Layout: React.FC<LayoutProps> = (props) => {
         <title>Ocupath Project</title>
         <link />
       </Head>
-      <Navigation />
+      <Navigation isPanel={false} />
       <div>{props.children}</div>
     </>
   );

@@ -13,7 +13,7 @@ import { useContext } from "react";
 import moduleName from "module";
 import UserContext from "../context/user/user.context";
 export interface NavigationProps {
-  isPanel: boolean;
+  isPanel: boolean | null;
 }
 
 const Navigation: React.FC<NavigationProps> = ({ isPanel }) => {
@@ -47,42 +47,41 @@ const Navigation: React.FC<NavigationProps> = ({ isPanel }) => {
         </IconButton>
         <Typography variant="h6" className={classes.title}>
           <Button color="primary">
-            <Link href="/" onClick={preventDefault}>
+            <Link href="/">
               <span className={classes.link}>Ocupath</span>
             </Link>
           </Button>
         </Typography>
         <Typography variant="h6" className={classes.title}>
           <Button color="primary">
-            <Link href="/" onClick={preventDefault}>
+            <Link href="/">
               <span className={classes.link}>{profile.name}</span>
             </Link>
           </Button>
         </Typography>
         {!isPanel && (
           <Button color="primary">
-            <Link href="/login" onClick={preventDefault}>
-              UserStateType
-            </Link>
+            <Link href="/login">UserStateType</Link>
           </Button>
         )}
         {isPanel && (
           <Button color="primary">
-            <Link href="/panel/archives" onClick={preventDefault}>
+            <Link href="/panel/archives">
               <span className={classes.link}>Archivos</span>
             </Link>
           </Button>
         )}
         {isPanel && (
           <Button color="primary">
-            <Link href="/" onClick={preventDefault}>
+            <Link href="/">
               <span className={classes.link}>Perfil</span>
             </Link>
           </Button>
         )}
         {isPanel && (
           <Button color="primary">
-            <Link href="/" onClick={preventDefault}>
+            {/* <Link href="/" onClick={preventDefault}> */}
+            <Link href="/">
               <span className={classes.link}>Cerrar sesión</span>
             </Link>
           </Button>
