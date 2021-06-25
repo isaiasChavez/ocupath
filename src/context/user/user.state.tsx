@@ -27,7 +27,7 @@ const UserState = ({ children }) => {
   const resetPass = async (resetPassword: ResetPassword) => {
     try {
       await validateOrReject(resetPassword);
-      const { data } = await axios.post(URLS.reset);
+      const { data } = await axios.put(URLS.recoverpass, resetPassword);
       dispatch({
         type: LOG_A.RESET_PASS_SUCCESS,
         payload: data,
@@ -51,13 +51,14 @@ const UserState = ({ children }) => {
     }
   };
 
-  const passRecover = async (passwordRecovery: PasswordRecovery) => {
+  const passRecover = async (passwordRecovery: ResetPassword) => {
     try {
       await validateOrReject(passwordRecovery);
-      const response = await axios.post(
+      console.log({ passwordRecovery });
+      const response = await axios.get(
         `${URLS.reset}${passwordRecovery.email}`
       );
-      if (validateResponse(response)) {
+      if (validateResponse(response, LOG_A.RECOVER_PASS_SUCCESS)) {
         dispatch({
           type: LOG_A.RECOVER_PASS_SUCCESS,
           payload: response.data,
@@ -184,7 +185,7 @@ const UserState = ({ children }) => {
       await validateOrReject(loginDTO);
       console.log({ loginDTO });
       const res = await axios.post(URLS.login, loginDTO);
-      if (validateResponse(res)) {
+      if (validateResponse(res,LOG_A.LOGIN_SUCCESS)) {
         let { data } = res;
         tokenAuth(data.profile.token);
         dispatch({

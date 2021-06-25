@@ -14,6 +14,7 @@ import Container from "@material-ui/core/Container";
 import { useContext, useEffect, useState } from "react";
 import { verifyEmail } from "../../src/config/utils";
 import { useRouter } from "next/router";
+
 import UserContext, {
   ReuestSesionDTO,
 } from "../../src/context/user/user.context";
@@ -83,7 +84,6 @@ const Login: React.FC<LoginProps> = () => {
       console.log("Error");
     }
     if (password.trim() === "") {
-      isValid = false;
       newErrors.password = "Ingrese un valor";
     }
     if (!verifyEmail(email)) {
@@ -134,8 +134,8 @@ const Login: React.FC<LoginProps> = () => {
           <Avatar className={classes.avatar}>
             <LockOutlinedIcon />
           </Avatar>
-          <Typography component="h1" variant="h5">
-            Sign in
+          <Typography component="h3" variant="h5">
+            LOGIN
           </Typography>
           <form onSubmit={onSubmit} className={classes.form}>
             <TextField
@@ -147,26 +147,17 @@ const Login: React.FC<LoginProps> = () => {
               label="Email Address"
               name="email"
               autoComplete="email"
-              autoFocus
-              error={errors.email.length !== 0}
-              helperText={errors.email}
-            />
-            <TextField
-              onChange={onChange}
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
+              autoFocussecondaryListItems
               id="password"
               autoComplete="current-password"
               helperText={errors.password}
             />
-            {/* <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            /> */}
+            <Grid container>
+              <Grid item xs>
+                <Link href="login/forgot">Forgot password?</Link>
+              </Grid>
+            </Grid>
+          </form>
             <Button
               type="submit"
               fullWidth
@@ -174,21 +165,32 @@ const Login: React.FC<LoginProps> = () => {
               color="primary"
               className={classes.submit}
             >
-              <Link href="/panel">
-                <span className={classes.button}>Entrar</span>
+              <Link href="/superadmin">
+                <span className={classes.button}>Super ADMIN</span>
               </Link>
             </Button>
-            <Grid container>
-              <Grid item xs>
-                <Link href="login/forgot">Forgot password?</Link>
-              </Grid>
-              <Grid item>
-                <Link href="/register" variant="body2">
-                  {"Don't have an account? Sign Up"}
-                </Link>
-              </Grid>
-            </Grid>
-          </form>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+            >
+              <Link href="/panel/admin">
+                <span className={classes.button}>Admin</span>
+              </Link>
+            </Button>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+            >
+              <Link href="/panel/user">
+                <span className={classes.button}>User</span>
+              </Link>
+            </Button>
         </div>
         <Box mt={8}>
           <Copyright />

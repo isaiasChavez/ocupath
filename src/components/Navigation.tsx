@@ -33,7 +33,6 @@ const Navigation: React.FC<NavigationProps> = ({ isPanel }) => {
     },
   }));
   const classes = useStyles();
-  console.log({ profile });
   return (
     <AppBar position="static">
       <Toolbar>
@@ -48,7 +47,7 @@ const Navigation: React.FC<NavigationProps> = ({ isPanel }) => {
         <Typography variant="h6" className={classes.title}>
           <Button color="primary">
             <Link href="/">
-              <span className={classes.link}>Ocupath</span>
+              <span className={classes.link}>Ocupathaaaa</span>
             </Link>
           </Button>
         </Typography>

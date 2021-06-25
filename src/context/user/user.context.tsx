@@ -70,15 +70,18 @@ export class ConfirmUserPassword {
   password: string;
 }
 export class PasswordRecovery {
-  constructor(email: string) {
-    this.email = email;
+  constructor(password: string, token: string) {
+    this.token = token;
+    this.password = password;
   }
 
   @IsString()
   @IsNotEmpty()
   @MaxLength(100)
-  @IsEmail()
-  email: string;
+  password: string;
+  @IsString()
+  @IsNotEmpty()
+  token: string;
 }
 export class CreateAdminDTO {
   constructor(

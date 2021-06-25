@@ -5,31 +5,36 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
 import Link from "@material-ui/core/Link";
 import Typography from "@material-ui/core/Typography";
-import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
+import { makeStyles } from "@material-ui/core/styles";
+import { useRouter } from "next/router";
 import { useContext, useState } from "react";
-import { verifyEmail } from "../../src/config/utils";
+import { verifyPassword } from "../../src/config/utils";
 import UserContext, {
   PasswordRecovery,
-  ResetPassword,
 } from "../../src/context/user/user.context";
-export interface ForgotProps {}
+export interface RecoveryProps {}
 
-const Forgot: React.FC<ForgotProps> = () => {
-  const { passRecover } = useContext(UserContext);
+const Recovery: React.FC<RecoveryProps> = () => {
+  const { resetPass } = useContext(UserContext);
+  const router = useRouter();
+  const { id } = router.query;
+  const token: string = id + "";
+  console.log({ id });
   const [loginState, setloginState] = useState({
-    email: "",
+    password: "",
   });
   const [errors, setErrors] = useState({
-    email: "",
+    password: "",
   });
-  const { email } = loginState;
+  const { password } = loginState;
 
   const onSubmit = (e) => {
     e.preventDefault();
     if (validateFields()) {
-      let dto = new ResetPassword(loginState.email);
-      passRecover(dto);
+      alert("Si pasó");
+      let dto = new PasswordRecovery(loginState.password, token);
+      resetPass(dto);
     }
   };
   const onChange = (e) => {
@@ -41,16 +46,18 @@ const Forgot: React.FC<ForgotProps> = () => {
   const validateFields = () => {
     let isValid = true;
     const newErrors = {
-      email: "",
+      password: "",
     };
-    if (email.trim() === "") {
-      newErrors.email = "Ingrese un valor";
+    if (password.trim() === "") {
+      newErrors.password = "Ingrese un valor";
       isValid = false;
     }
-    if (!verifyEmail(email)) {
+    if (!verifyPassword(password)) {
       isValid = false;
-      newErrors.email = "Ingrese un correo válido";
+      newErrors.password =
+        "Su contraseña no es segura, trate de incluir al menos un caracter diferente, 8 letras un número y letras mayúsculas y minúsculas.";
     }
+
     if (!isValid) {
       setErrors(newErrors);
     }
@@ -79,7 +86,6 @@ const Forgot: React.FC<ForgotProps> = () => {
     },
   }));
   const classes = useStyles();
-
   return (
     <Layout>
       <Head>
@@ -89,7 +95,7 @@ const Forgot: React.FC<ForgotProps> = () => {
         <CssBaseline />
         <div className={classes.paper}>
           <Typography component="h1" variant="h5">
-            Recuperar contraseña
+            Ingrese su nueva contraseña
           </Typography>
           <form onSubmit={onSubmit} className={classes.form}>
             <TextField
@@ -97,13 +103,13 @@ const Forgot: React.FC<ForgotProps> = () => {
               required
               fullWidth
               onChange={onChange}
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
+              id="password"
+              label="password"
+              name="password"
+              autoComplete="password"
               autoFocus
-              error={errors.email.length !== 0}
-              helperText={errors.email}
+              error={errors.password.length !== 0}
+              helperText={errors.password}
             />
             <Button
               type="submit"
@@ -123,4 +129,4 @@ const Forgot: React.FC<ForgotProps> = () => {
   );
 };
 
-export default Forgot;
+export default Recovery;

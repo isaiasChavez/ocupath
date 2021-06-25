@@ -26,19 +26,17 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import { useState } from 'react';
 export interface AdminProps {}
 import { mainListItems, secondaryListItems } from '../../src/components/superadmin/listItems';
-import { COLORS } from '../../src/types';
+import {USERS, COLORS} from '../../src/types';
+
 import EditUser from '../../src/components/general/EditUser';
 import TableSuperAdmin from '../../src/components/superadmin/TableSuperAdmin';
-import TableAdmin from '../../src/components/admin/TableAdmin';
-import {USERS} from '../../src/types/index'
 const drawerWidth = 240;
 
 
 const PROFILE = 0
 const USER = 1
-const FILES = 2
 
-const AdminModAdmin= () => {
+const Admin: React.FC<AdminProps> = () => {
   const classes = useStyles();
   const [open, setOpen] = useState(true);
   const handleDrawerOpen = () => {
@@ -102,14 +100,6 @@ const AdminModAdmin= () => {
       </ListItemIcon>
       <ListItemText primary="Profile" />
     </ListItem>
-    <ListItem button selected={currentTab===FILES} onClick={()=>{
-        setCurrentTab(FILES)
-    }}>
-      <ListItemIcon>
-        <DashboardIcon />
-      </ListItemIcon>
-      <ListItemText primary="Files" />
-    </ListItem>
    
     <ListItem button selected={currentTab===USER} onClick={()=>{
         setCurrentTab(USER)
@@ -139,10 +129,8 @@ const AdminModAdmin= () => {
           <Grid  justify="center"alignItems="center" direction="row" spacing={2}   container >
             <Grid  item xs={12} md={6} lg={1}/>
             <Grid style={{height:'70%', marginLeft:'1rem'}} item xs={12} md={6} lg={10}>
-        {currentTab===PROFILE && <EditUser type={USERS.ADMIN}/>}
-        {currentTab===FILES && <TableAdmin/>}
-        {currentTab=== USER&& <TableSuperAdmin/>}
-        
+        {currentTab===PROFILE && <EditUser type={USERS.SUPER}/>}
+        {currentTab===USER && <TableSuperAdmin/>}
             </Grid>
           </Grid>
       </main>
@@ -242,4 +230,4 @@ const AdminModAdmin= () => {
   }
 }));
 
-export default AdminModAdmin;
+export default Admin;

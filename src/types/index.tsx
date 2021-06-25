@@ -26,11 +26,12 @@ export enum AS_A {
 
 export const URLS = {
   login: "api/sesion",
+  decifre: "api/sesion/des/", //:token
   logout: "api/sesion/logout",
-  invite: "api/user/invite",
-  reset: "api/user/requestreset/", //:email
+  invite: "api/sesion/invite",
+  reset: "api/sesion/requestreset/", //:email
   confirmpass: "api/user/confirm",
-  recoverpass: "api/user/confirm",
+  recoverpass: "api/sesion/recovery",
   //Administrador
   createAdm: "api/user/admin",
   updateAdm: "api/user/admin",
@@ -45,3 +46,28 @@ export const URLS = {
   deleteAsset: "/api/asset",
   assets: "api/asset/",
 };
+
+export const COMPANIES =0
+export const GUEST =1
+
+export enum INVITATIONS {
+  COMPANIES = "COMPANIES",
+  GUEST = "GUEST",
+}
+
+export enum FILES {
+  IMG = 0,
+  IMG_360 = 1,
+  VIDEO = 2,
+  VIDEO_360 = 3,
+}
+
+export enum USERS {
+  SUPER = 0,
+  ADMIN = 1,
+  GUEST = 2,
+}
+
+export const COLORS = {
+  gray:'#bbbb'
+}
