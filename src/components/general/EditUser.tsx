@@ -7,61 +7,56 @@ import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
 import Fab from '@material-ui/core/Fab';
 import FormEdit from './FormEdit';
+import { COLORS } from '../../types';
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
-    height:'100%',
-    padding:'2rem'
+    height: '100%',
+    padding: '2rem',
+    borderTop: '2rem solid',
+    borderTopColor: COLORS.GRAY_MEDIUM,
+    borderBottom: '2rem solid',
+    borderBottomColor: COLORS.GRAY_MEDIUM
   },
-  details: {
-    display: 'flex',
-    flexDirection: 'column',
-    
-  },
-  cover: {
+  buttonEdit: {
+    borderColor: 'black',
+    border: 'solid 1px',
+    textalign: 'center',
     width: '100%',
+    background: 'transparent',
+    borderRadius: '19pt',
+    paddingTop: '0.12rem',
+    cursor: 'pointer',
+    paddingBottom: '0.12rem',
+    '&:hover': {
+      background: '#eeee',
+    },
   },
-  controls: {
-    display: 'flex',
-    alignItems: 'center',
-    paddingLeft: theme.spacing(1),
-    paddingBottom: theme.spacing(1),
-  },
-  playIcon: {
-    height: 38,
-    width: 38,
-  },
-  large:{
-    width: theme.spacing(15),
-    height: theme.spacing(15),
-  },editButton:{
-   fontSize:10,
-   padding:'2rem'
+  large: {
+    width: theme.spacing(12),
+    height: theme.spacing(12),
+    marginBottom: '0.5rem',
+    marginTop: '3rem'
   }
 }));
 
- interface EditUserProps {
-  type:number
+interface EditUserProps {
+  type: number
 }
- 
-const EditUser: React.FC<EditUserProps> = ({type}) => {
+
+const EditUser: React.FC<EditUserProps> = ({ type }) => {
   const classes = useStyles();
 
   return (
-    <Card className={classes.root}>
-      <div className={classes.details}>
+    <Card className={ classes.root }>
         <CardContent >
-           <Avatar alt="Remy Sharp" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS7UvZWBp0opKJJIF-BXk71yOlZEuqEEenf3g&usqp=CAU" className={classes.large} />
-           <Fab size="small"  variant="extended" className={classes.editButton}>
-                   Edit Avatar
-
-      </Fab>
-          <Typography variant="subtitle1" color="textSecondary">
-          </Typography>
+          <Avatar alt="Remy Sharp" className={ classes.large } />
+          <button className={ classes.buttonEdit }>
+            Edit Avatar
+          </button>
         </CardContent>
-       
-      </div>
-     <FormEdit type={type} />
+
+      <FormEdit type={ type } />
     </Card>
   );
 }

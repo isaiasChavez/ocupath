@@ -12,6 +12,7 @@ import Link from "next/link";
 import { useContext } from "react";
 import moduleName from "module";
 import UserContext from "../context/user/user.context";
+import { COLORS } from "../types";
 export interface NavigationProps {
   isPanel: boolean | null;
 }
@@ -19,74 +20,29 @@ export interface NavigationProps {
 const Navigation: React.FC<NavigationProps> = ({ isPanel }) => {
   const { profile } = useContext(UserContext);
   const useStyles = makeStyles((theme) => ({
-    root: {
-      flexGrow: 1,
-    },
-    menuButton: {
-      marginRight: theme.spacing(2),
-    },
-    link: {
-      color: "white",
-    },
-    title: {
-      flexGrow: 1,
-    },
+     toolbar: {
+    paddingRight: 24, // keep right padding when drawer closed
+  },
+  titleSection: {
+    height: '8%',
+    color: 'black',
+    backgroundColor: 'red',
+  },
+  title: {
+    flexGrow: 1,
+  },
   }));
   const classes = useStyles();
   return (
-    <AppBar position="static">
-      <Toolbar>
-        <IconButton
-          edge="start"
-          className={classes.menuButton}
-          color="inherit"
-          aria-label="menu"
-        >
-          <MenuIcon />
-        </IconButton>
-        <Typography variant="h6" className={classes.title}>
-          <Button color="primary">
-            <Link href="/">
-              <span className={classes.link}>Ocupathaaaa</span>
-            </Link>
-          </Button>
-        </Typography>
-        <Typography variant="h6" className={classes.title}>
-          <Button color="primary">
-            <Link href="/">
-              <span className={classes.link}>{profile.name}</span>
-            </Link>
-          </Button>
-        </Typography>
-        {!isPanel && (
-          <Button color="primary">
-            <Link href="/login">UserStateType</Link>
-          </Button>
-        )}
-        {isPanel && (
-          <Button color="primary">
-            <Link href="/panel/archives">
-              <span className={classes.link}>Archivos</span>
-            </Link>
-          </Button>
-        )}
-        {isPanel && (
-          <Button color="primary">
-            <Link href="/">
-              <span className={classes.link}>Perfil</span>
-            </Link>
-          </Button>
-        )}
-        {isPanel && (
-          <Button color="primary">
-            {/* <Link href="/" onClick={preventDefault}> */}
-            <Link href="/">
-              <span className={classes.link}>Cerrar sesión</span>
-            </Link>
-          </Button>
-        )}
-      </Toolbar>
-    </AppBar>
+    <AppBar style={ {
+        backgroundColor: COLORS.gray,
+      }}>
+        <Toolbar className={ classes.toolbar }>
+          <Typography component="h1" variant="h6" color="inherit" noWrap className={ classes.title }>
+            OCUPATH
+          </Typography>
+        </Toolbar>
+      </AppBar>
   );
 };
 

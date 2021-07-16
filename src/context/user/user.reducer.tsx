@@ -1,12 +1,44 @@
 import { Config } from "../../config";
 import { US_A, LOG_A, AD_A } from "../../types";
+
+export type Suscription = {
+  cost: string,
+  createdAt: string,
+  finishedAt: string,
+  isActive: boolean,
+  invitations: number,
+  isDeleted: boolean,
+  startedAt: string,
+};
+
 export type Profile = {
   id: string;
   token: string;
   name: string;
   lastname: string;
   email: string;
-  childrens: [];
+  childrens: {
+    admins: [{
+      avatar: string,
+      email: string,
+      isActive: boolean,
+      lastname: string,
+      name: string,
+      suscriptions: Suscription[],
+      lastSuscription:Suscription
+    }],
+    users: [
+      {
+        avatar: string,
+        email: string,
+      isActive: boolean,
+      lastname: string,
+        name: string,
+       suscriptions: Suscription[],
+      lastSuscription:Suscription
+    }
+    ]
+  };
 };
 export type UserStateType = {
   profile: Profile;
@@ -40,7 +72,7 @@ const userReducer = (state: UserStateType, action: Actions): UserStateType => {
       return {
         ...state,
         profile: payload.profile,
-        type: payload.type,
+        type: payload.profile.type,
       };
     case LOG_A.CONFIRM_PASS_SUCCESS:
       console.log(LOG_A.CONFIRM_PASS_SUCCESS, { payload });
@@ -54,6 +86,9 @@ const userReducer = (state: UserStateType, action: Actions): UserStateType => {
       };
     case LOG_A.INVITE_USER_SUCCESS:
       console.log(LOG_A.INVITE_USER_SUCCESS, { payload });
+      if (payload.status === 0) {
+        alert("Se ha registrado correctamente")
+      }
       return {
         ...state,
       };

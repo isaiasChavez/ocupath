@@ -5,6 +5,7 @@ import {
   IsNotEmpty,
   IsNumber,
   IsOptional,
+  IsPositive,
   IsString,
   IsUUID,
   MaxLength,
@@ -14,10 +15,9 @@ import { createContext } from "react";
 import { Config } from "../../config";
 import { Profile } from "./user.reducer";
 export class ReuestSesionDTO {
-  constructor(email: string, password: string, type: number) {
+  constructor(email: string, password: string) {
     this.email = email;
     this.password = password;
-    this.type = type;
   }
   @IsString()
   @IsNotEmpty()
@@ -27,23 +27,59 @@ export class ReuestSesionDTO {
   @IsNotEmpty()
   @MaxLength(100)
   password: string;
-  @IsNumber()
-  @IsNotEmpty()
-  type: number;
 }
 
 export class InviteUserDTO {
-  constructor(email: string, type: number) {
+  constructor({ email, typeToInvite,company,name,invitations,cost,startedAt,finishedAt }) {
+    console.log({startedAt,finishedAt})
     this.email = email;
-    this.type = type;
+    this.typeToInvite = typeToInvite  ;
+    this.company = company
+    this.invitations = parseInt(invitations)
+    this.name = name
+    this.cost = parseFloat(cost)
+    this.startedAt = startedAt
+    this.finishedAt = finishedAt
   }
   @IsString()
   @IsNotEmpty()
   @IsEmail()
   email: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(250)
+  company: string;
+  @MaxLength(250)
+  @IsOptional()
+  @IsString()
+  name: string;
+  @IsOptional()
+  @IsNumber()
+  invitations: number;
+
+  @IsOptional()
+  @IsNumber()
+  @IsPositive()
+  cost: number;
+
+  @IsDateString()
+  @IsString()
+  @IsNotEmpty()
+  startedAt: string;
+
+  @IsString()
+  @IsDateString()
+  @IsNotEmpty()
+  finishedAt: string;
+
   @IsNumber()
   @IsNotEmpty()
-  type: number;
+  typeToInvite: number;
+
+
+
+
 }
 export class ResetPassword {
   constructor(email: string) {
@@ -89,19 +125,11 @@ export class CreateAdminDTO {
     lastname: string,
     email: string,
     password: string,
-    startedAt: string,
-    finishedAt: string,
-    business: string,
-    cost: number
   ) {
     this.name = name;
     this.lastname = lastname;
     this.email = email;
     this.password = password;
-    this.startedAt = startedAt;
-    this.finishedAt = finishedAt;
-    this.business = business;
-    this.cost = cost;
   }
   @IsNotEmpty()
   @IsString()
@@ -123,25 +151,6 @@ export class CreateAdminDTO {
   @IsNotEmpty()
   @MaxLength(100)
   password: string;
-
-  @IsDateString()
-  @IsString()
-  @IsNotEmpty()
-  startedAt: string;
-
-  @IsString()
-  @IsDateString()
-  @IsNotEmpty()
-  finishedAt: string;
-
-  @IsNumber()
-  @IsNotEmpty()
-  cost: number;
-
-  @IsString()
-  @IsNotEmpty()
-  @MaxLength(200)
-  business: string;
 }
 
 export class CreateUserDTO {

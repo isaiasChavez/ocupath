@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
     height:'100%',
-    padding:'2rem'
+    padding: '2rem',
   },
   details: {
     display: 'flex',

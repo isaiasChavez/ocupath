@@ -42,8 +42,41 @@ export const verifyPassword = (pass: string) => {
   return false;
 };
 
+export const getStatus = (id: number): Object => {
+  if (id === 0) {
+    return {
+      name: "ACTIVE",
+      color:"primary"
+    }
+  }
+  if (id === 1) {
+    return {
+      name: "INACTIVE",
+      color:"secondary"
+    }
+  }
+  if (id === 2) {
+    return {
+      name: "PAUSED",
+      color:'primary'
+    }
+  }
+  if (id === 3) {
+    return {
+      name: "EXPIRED",
+      color:'primary'
+    }
+  }
+  return {
+      name: "NO VALID",
+      color:'primary'
+    }
+};
+
+
 export const validateResponse = (res: AxiosResponse, type: string): boolean => {
   const NOT_FOUND = 1;
+  console.log({res})
   let isValid: boolean = false;
   const { data } = res;
   const { status } = data;

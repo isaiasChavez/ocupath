@@ -28,17 +28,17 @@ export const URLS = {
   login: "api/sesion",
   decifre: "api/sesion/des/", //:token
   logout: "api/sesion/logout",
-  invite: "api/sesion/invite",
+  invite: "api/user/invite",
   reset: "api/sesion/requestreset/", //:email
   confirmpass: "api/user/confirm",
   recoverpass: "api/sesion/recovery",
   //Administrador
-  createAdm: "api/user/admin",
+  createAdm: "api/sesion/admin",
   updateAdm: "api/user/admin",
   suspendAdm: "/api/user/suspend",
   deleteAdm: "api/user/deleteadmin",
   //Usuarios
-  create: "api/user",
+  create: "api/sesion/user",
   update: "api/user",
   delete: "api/user/deleteuser",
   //Assets
@@ -69,5 +69,6 @@ export enum USERS {
 }
 
 export const COLORS = {
-  gray:'#bbbb'
+  gray:'#A8A8A8',
+  GRAY_MEDIUM:'#C4C4C4',
 }

@@ -3,6 +3,7 @@ import axios, { tokenAuth } from "../../config/axios";
 import { useRouter } from "next/router";
 import UserContext, {
   ConfirmUserPassword,
+  CreateAdminDTO,
   CreateUserDTO,
   DeleteAdminUserDTO,
   DeleteUserDTO,
@@ -13,7 +14,7 @@ import UserContext, {
   UpdateUserDTO,
 } from "./user.context";
 
-import { AD_A, US_A, LOG_A, URLS } from "../../types/index";
+import { AD_A, US_A, LOG_A, URLS,USERS } from "../../types/index";
 import UserReducer, { UserStateType } from "./user.reducer";
 import { LoginDTO } from "../../types/types";
 import { validateResponse } from "../../config/utils";
@@ -71,8 +72,13 @@ const UserState = ({ children }) => {
 
   const inviteUser = async (inviteUserDTO: InviteUserDTO) => {
     try {
-      await validateOrReject(inviteUserDTO);
-      const { data } = await axios.post(URLS.invite);
+      const newInvite = new InviteUserDTO(inviteUserDTO)
+      await validateOrReject(newInvite);
+
+      console.log({inviteUserDTO})
+      const { data } = await axios.post(URLS.invite,inviteUserDTO);
+      
+
       dispatch({
         type: LOG_A.INVITE_USER_SUCCESS,
         payload: data,
@@ -82,11 +88,20 @@ const UserState = ({ children }) => {
     }
   };
 
-  const addUserAdm = async (createUserAdmDTO: UpdateUserAdminDTO) => {
+  const addUserAdm = async (createUserAdmDTO: CreateAdminDTO) => {
     try {
-      await validateOrReject(createUserAdmDTO);
 
+      await validateOrReject(createUserAdmDTO);
       const { data } = await axios.post(URLS.createAdm, createUserAdmDTO);
+      if (data.status ===0) {
+          alert("Registro exitoso")
+      }
+      if (data.status ===2) {
+          alert("El email ya existe")
+      }
+      return data.status
+
+
       dispatch({ type: AD_A.REGISTER_ADM_SUCCES, payload: data });
     } catch (error) {
       console.error("** Error validating addUserAdm ** ", { error });
@@ -105,6 +120,7 @@ const UserState = ({ children }) => {
       console.error("** Error validating deleteUserAdm ** ", { error });
     }
   };
+
   const updateUserAdm = async (updateUserAdminDTO: UpdateUserAdminDTO) => {
     try {
       await validateOrReject(updateUserAdminDTO);
@@ -135,6 +151,12 @@ const UserState = ({ children }) => {
     try {
       await validateOrReject(createUserDTO);
       const { data } = await axios.post(URLS.create, createUserDTO);
+      if (data.status ===0) {
+          alert("Registro exitoso")
+      }
+      if (data.status ===2) {
+          alert("El email ya existe")
+      } 
       dispatch({
         type: US_A.REGISTER_SUCCES,
         payload: data,
@@ -155,6 +177,7 @@ const UserState = ({ children }) => {
       console.error("** Error validating deleteUser ** ", { error });
     }
   };
+  
   const updateUser = async (updateUserDTO: UpdateUserDTO) => {
     try {
       await validateOrReject(updateUserDTO);
@@ -183,24 +206,36 @@ const UserState = ({ children }) => {
   const logUser = async (loginDTO: LoginDTO) => {
     try {
       await validateOrReject(loginDTO);
-      console.log({ loginDTO });
-      const res = await axios.post(URLS.login, loginDTO);
-      if (validateResponse(res,LOG_A.LOGIN_SUCCESS)) {
-        let { data } = res;
+      const {data} = await axios.post(URLS.login, loginDTO);
+      if (data.status === 0) {
         tokenAuth(data.profile.token);
         dispatch({
           type: LOG_A.LOGIN_SUCCESS,
           payload: {
-            ...data,
-            type: 2,
+            ...data
           },
         });
-        router.push("/panel");
+        if (data.profile.type === USERS.SUPER +1) {
+          router.push("/superadmin");
+        }
+        if (data.profile.type === USERS.ADMIN +1 ) {
+          router.push("/panel/admin");
+        }
+        if (data.profile.type === USERS.GUEST+1) {
+          router.push("/panel/user");
+        }
+        return null
+      } else {
+        return data
       }
     } catch (error) {
       alert("No se ha podido logguear");
     }
   };
+
+
+
+  
   return (
     <UserContext.Provider
       value={{

@@ -13,6 +13,8 @@ import UserContext, {
   PasswordRecovery,
   ResetPassword,
 } from "../../src/context/user/user.context";
+import HeaderCustom from "../../src/components/general/HeaderCustom";
+import { Box } from "@material-ui/core";
 export interface ForgotProps {}
 
 const Forgot: React.FC<ForgotProps> = () => {
@@ -57,15 +59,9 @@ const Forgot: React.FC<ForgotProps> = () => {
     return isValid;
   };
   const useStyles = makeStyles((theme) => ({
-    paper: {
-      marginTop: theme.spacing(8),
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-    },
-    avatar: {
-      margin: theme.spacing(1),
-      backgroundColor: theme.palette.secondary.main,
+   
+     inner: {
+      width: '34rem',
     },
     button: {
       color: "white",
@@ -76,22 +72,37 @@ const Forgot: React.FC<ForgotProps> = () => {
     },
     submit: {
       margin: theme.spacing(3, 0, 2),
+      minWidth: '10rem',
+      backgroundColor:'black'
     },
   }));
   const classes = useStyles();
 
   return (
-    <Layout>
+    <div style={ {
+      height: '100vh',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center'
+    } }>
       <Head>
         <title>Ocupath - Login </title>
       </Head>
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <div className={classes.paper}>
-          <Typography component="h1" variant="h5">
-            Recuperar contraseña
+            <HeaderCustom/>
+
+      <div className={classes.inner}>
+        <Typography component="h3" variant="h3" style={{textAlign: 'center'}} >
+          <Box fontWeight="fontWeightBold" m={1} >
+            RECOVER PASSWORD
+      </Box>
           </Typography>
           <form onSubmit={onSubmit} className={classes.form}>
+          <Typography component="h3" variant="h7" style={ { textAlign: 'center' } } >
+            <Box fontWeight="fontWeightLight" m={ 1 } >
+              
+            Enter the email in which you want to receive your password 
+          </Box>
+        </Typography>
             <TextField
               margin="normal"
               required
@@ -99,27 +110,36 @@ const Forgot: React.FC<ForgotProps> = () => {
               onChange={onChange}
               id="email"
               label="Email Address"
-              name="email"
+            name="email"
+            variant="outlined"
               autoComplete="email"
               autoFocus
               error={errors.email.length !== 0}
               helperText={errors.email}
             />
+            <div style={ {
+            display:'flex',
+            justifyContent: 'flex-end',
+            alignItems:'flex-end',
+            flexDirection:'column'
+          }}>
+
             <Button
               type="submit"
-              fullWidth
               variant="contained"
-              color="primary"
-              className={classes.submit}
-            >
-              <Link href="/panel">
-                <span className={classes.button}>Enviar</span>
+              color="default"
+              className={ classes.submit }
+              disableElevation
+              >
+              <Link href="/superadmin">
+                <span className={ classes.button }>Send</span>
               </Link>
             </Button>
+            
+                </div>
           </form>
-        </div>
-      </Container>
-    </Layout>
+              </div>
+    </div>
   );
 };
 

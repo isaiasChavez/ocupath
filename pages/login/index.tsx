@@ -18,27 +18,28 @@ import { useRouter } from "next/router";
 import UserContext, {
   ReuestSesionDTO,
 } from "../../src/context/user/user.context";
+import { COLORS } from "../../src/types";
+import HeaderCustom from "../../src/components/general/HeaderCustom";
 
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
-      {"Copyright © "}
+      { "Copyright © " }
       <Link color="inherit" href="https://material-ui.com/">
         Your Website
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
+      </Link>{ " " }
+      { new Date().getFullYear() }
+      { "." }
     </Typography>
   );
 }
 
-export interface LoginProps {}
+export interface LoginProps { }
 
 const Login: React.FC<LoginProps> = () => {
   const [loginState, setloginState] = useState({
     email: "",
     password: "",
-    type: 2,
   });
   const { logUser } = useContext(UserContext);
   useEffect(() => {
@@ -47,157 +48,206 @@ const Login: React.FC<LoginProps> = () => {
   const router = useRouter();
 
   const [errors, setErrors] = useState({
-    email: "",
-    password: "",
+    email: null,
+    password: null,
   });
   const { email, password } = loginState;
 
   const onChange = (e) => {
+    setErrors({
+      email: null,
+      password: null,
+    })
     setloginState({
       ...loginState,
       [e.target.name]: e.target.value,
     });
   };
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
-
     if (validateFields()) {
       let dto = new ReuestSesionDTO(
         loginState.email,
         loginState.password,
-        loginState.type
       );
-      logUser(dto);
+      const data = await logUser(dto);
+      if (data) {
+        validateResponse(data)
+      }
     }
+  };
+
+  
+  const validateResponse = (res) => {
+    const newErrors = {
+      email: null,
+      password: null,
+    }
+    if (res.status === 1) {
+      newErrors.email = "Email does't exist";
+    }
+    if (res.status ===2) {
+      newErrors.password = "Invalid password";
+    }
+    setErrors(newErrors);
   };
 
   const validateFields = () => {
     let isValid = true;
-    console.log({ password, email });
     const newErrors = {
-      email: "",
-      password: "",
+      email: null,
+      password: null,
     };
-    if (email.trim() === "") {
+    
+    if (!email|| email.trim() === "") {
       newErrors.email = "Ingrese un valor";
       isValid = false;
-      console.log("Error");
     }
-    if (password.trim() === "") {
+    if (!password) {
       newErrors.password = "Ingrese un valor";
     }
     if (!verifyEmail(email)) {
-      isValid = false;
       newErrors.email = "Ingrese un correo válido";
+      isValid = false;
     }
-    console.log({ isValid });
+    console.log({newErrors})
     if (!isValid) {
-      console.log("Cambiando", { isValid });
       setErrors(newErrors);
     }
     return isValid;
   };
 
-  const useStyles = makeStyles((theme) => ({
-    paper: {
-      marginTop: theme.spacing(8),
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-    },
-    avatar: {
-      margin: theme.spacing(1),
-      backgroundColor: theme.palette.secondary.main,
-    },
-    button: {
-      color: "white",
-    },
-    form: {
-      width: "100%", // Fix IE 11 issue.
-      marginTop: theme.spacing(1),
-    },
-    submit: {
-      margin: theme.spacing(3, 0, 2),
-    },
-  }));
+
 
   const classes = useStyles();
 
   return (
-    <Layout>
+    <div style={ {
+      height: '100vh',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center'
+    } }>
+      <HeaderCustom/>
       <Head>
         <title>Ocupath - Login </title>
       </Head>
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <div className={classes.paper}>
-          <Avatar className={classes.avatar}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h3" variant="h5">
+            
+        <div className={classes.inner}>
+        <Typography component="h3" variant="h3" style={{textAlign: 'center'}} >
+          <Box fontWeight="fontWeightBold" m={1}>
             LOGIN
+      </Box>
           </Typography>
-          <form onSubmit={onSubmit} className={classes.form}>
+          <form onSubmit={ onSubmit } >
+            <Typography component="h3" variant="h7" style={ { textAlign: 'center' } } >
+            <Box fontWeight="fontWeightLight" m={ 1 } >
+              
+Fill the information below to enter your profile          </Box>
+        </Typography>
             <TextField
               margin="normal"
               required
               fullWidth
-              onChange={onChange}
+              onChange={ onChange }
               id="email"
               label="Email Address"
+              error={errors.email!==null}
               name="email"
               autoComplete="email"
-              autoFocussecondaryListItems
-              id="password"
+              helperText={ errors.email }
+              
+             variant="outlined"
+              />
+             <TextField
+             variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              error={errors.password!==null}
+              onChange={ onChange }
+              label="Password"
+              name="password"
               autoComplete="current-password"
-              helperText={errors.password}
-            />
-            <Grid container>
-              <Grid item xs>
-                <Link href="login/forgot">Forgot password?</Link>
-              </Grid>
-            </Grid>
-          </form>
+              helperText={ errors.password }
+          />
+          <div style={ {
+            display:'flex',
+            justifyContent: 'flex-end',
+            alignItems:'flex-end',
+            flexDirection:'column'
+          }}>
+
             <Button
               type="submit"
-              fullWidth
               variant="contained"
-              color="primary"
-              className={classes.submit}
-            >
+              color="default"
+              className={ classes.submit }
+              disableElevation
+              >
               <Link href="/superadmin">
-                <span className={classes.button}>Super ADMIN</span>
+                <span className={ classes.button }>Login</span>
               </Link>
             </Button>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              color="primary"
-              className={classes.submit}
-            >
-              <Link href="/panel/admin">
-                <span className={classes.button}>Admin</span>
-              </Link>
-            </Button>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              color="primary"
-              className={classes.submit}
-            >
-              <Link href="/panel/user">
-                <span className={classes.button}>User</span>
-              </Link>
-            </Button>
-        </div>
-        <Box mt={8}>
-          <Copyright />
-        </Box>
-      </Container>
-    </Layout>
+            <Link
+              style={ {
+                marginTop:'1rem',
+                width: '100%',
+                textAlign:'center'
+                }}
+              href="login/forgot">Forgot password?</Link>
+                </div>
+
+          </form>
+              </div>
+
+    </div>
   );
 };
 
+export interface HeaderLandingProps {
+  
+}
+
+
+
+  const useStyles = makeStyles((theme) => ({
+    button: {
+      color: "white",
+    },
+    inner: {
+      width: '40rem',
+    },
+    submit: {
+      margin: theme.spacing(3, 0, 2),
+      minWidth: '9rem',
+      borderRadius:'3px',
+      backgroundColor:'black'
+    },
+    bodyHeader: {
+      position: 'absolute',
+      color:'white',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      top: 0,
+      left: 0,
+      right: 0,
+      height: '4.1rem',
+      backgroundColor:COLORS.GRAY_MEDIUM
+    },
+     headerRight: {
+      display: 'flex',
+      
+    },
+    headerItem: {
+      color:'white',
+      border: 0,
+      backgroundColor: 'transparent',
+      minWidth: '10rem',
+      justifyContent: 'center',
+      alignItems: 'center',
+      textalign: 'center'
+    }
+  }));
 export default Login;
