@@ -5,7 +5,8 @@ export type AssetsStateType = {};
 
 type Actions =
   | { type: "CREATE_SUCCESS"; payload: any }
-  | { type: "DELETE_SUCCESS"; payload: any };
+  | { type: "DELETE_SUCCESS"; payload: any }
+  | { type: "GET_ASSETS"; payload: any };
 
 const userReducer = (
   state: AssetsStateType,
@@ -22,6 +23,10 @@ const userReducer = (
       return {
         ...state,
       };
+    case AS_A.GET_ASSETS:
+        return {
+          ...state,
+        };
 
     default:
       return state;

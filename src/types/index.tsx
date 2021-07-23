@@ -22,6 +22,7 @@ export enum US_A {
 export enum AS_A {
   CREATE_SUCCESS = "CREATE_SUCCESS",
   DELETE_SUCCESS = "DELETE_SUCCESS",
+  GET_ASSETS = "GET_ASSETS",
 }
 
 export const URLS = {

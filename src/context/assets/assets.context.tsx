@@ -17,6 +17,7 @@ export class DeleteAssetDto {
 interface AssetsContextInterface {
   deleteAsset: Function;
   create: Function;
+  getAssetsUser:Function;
 }
 
 const AssetsContext = createContext<AssetsContextInterface | null>(null);

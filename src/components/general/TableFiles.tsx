@@ -1,14 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import { withStyles, Theme, createStyles, makeStyles } from '@material-ui/core/styles';
+import React,{ useContext, useEffect,useState } from 'react';
+import { withStyles,Theme,createStyles,makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
-import { FILES } from '../../types'
+import { FILES, URLS } from '../../types'
 import Grid from "@material-ui/core/Grid";
-import { Box, Button } from '@material-ui/core';
+import { Box,Button } from '@material-ui/core';
 import clienteAxios from '../../config/axios';
+import UserContext from '../../context/user/user.context';
+import AssetsContext from '../../context/assets/assets.context';
 interface StyledTabProps {
   label: string;
 }
@@ -20,18 +22,24 @@ const img_dos = 'https://images.unsplash.com/photo-1624548955817-e2d68f404137?ix
 const img_tres = 'https://images.unsplash.com/photo-1624541478061-2a3b39b3d725?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80'
 
 const TableFiles: React.FC<TableFilesProps> = () => {
-  const [currentTab, setCurrentTab] = useState(0);
-  const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
+  const [currentTab,setCurrentTab] = useState(0);
+  const handleChange = (event: React.ChangeEvent<{}>,newValue: number) => {
     setCurrentTab(newValue);
   };
   const classes = useStyles();
 
   useEffect(() => {
+    getAssetsUser()
     setCurrentImages(currentTab)
-  }, [currentTab])
+  },[currentTab])
 
-  const [currentData, setCurrentData] = useState([])
-  const [video360, setvideo360] = useState(null)
+  const [currentData,setCurrentData] = useState([])
+  const [video360,setvideo360] = useState(null)
+
+  const {getAssetsUser} = useContext(AssetsContext)
+  
+
+
   const setCurrentImages = (tab: number) => {
     // if (tab === FILES.IMG) {
     //   setCurrentData(tileData)
@@ -82,43 +90,31 @@ const Img: React.FC<ImgProps> = () => {
   ];
   const classes = useStyles();
 
-  const [files, setFiles] = useState([])
-
+  const [files,setFiles] = useState([])
   useEffect(() => {
     if (files.length !== 0) {
       setImage()
     }
-  }, [files])
-
-
+  },[files])
   const uploadImage = (data) => {
     setFiles(data)
   }
-
-
-
   const setImage = async () => {
     try {
-            const selectedFile = files[0];
-
+      const selectedFile = files[0];
       const formData = new FormData()
-
-      console.log({ files })
-      formData.append("upload",selectedFile )
-
-      const response = await clienteAxios.post('api/upload/4', formData)
-
-      console.log({ response })
+      formData.append("upload",selectedFile)
+      const response = await clienteAxios.post('api/upload/4',formData)
+      const DTO = {
+        "url":response.data,
+        "typeAsset":1
+      }
+      const responseUploadUser = await clienteAxios.post(URLS.createAsset,DTO)
     } catch (error) {
       console.log({ error })
       alert("Ha ocurrido un error al subir las imagenes")
     }
-
-
   }
-
-
-
   return (
     <>
       <GridList cellHeight={ 100 } className={ classes.gridList } cols={ 7 }>
@@ -149,6 +145,7 @@ export interface Video360Props {
 }
 
 const Video360: React.FC<Video360Props> = () => {
+  const classes = useStyles();
   const VIDEO_360_DATA = [
     {
       img: img_tres,
@@ -158,10 +155,35 @@ const Video360: React.FC<Video360Props> = () => {
     },
 
   ];
+  const [files,setFiles] = useState([])
+
+  useEffect(() => {
+    if (files.length !== 0) {
+      setVideo360()
+    }
+  },[files])
   const uploadVideo360 = (data) => {
-    console.log({ data })
+    setFiles(data)
   }
-  const classes = useStyles();
+  const setVideo360 = async () => {
+    try {
+      const selectedFile = files[0];
+      console.log({selectedFile})
+      const formData = new FormData()
+      formData.append("upload",selectedFile)
+      const response = await clienteAxios.post('api/upload/4',formData)
+      console.log({response})
+      const DTO = {
+        "url":response.data,
+        "typeAsset":4
+      }
+      const responseUploadUser = await clienteAxios.post(URLS.createAsset,DTO)
+    } catch (error) {
+      console.log({ error })
+      alert("Ha ocurrido un error al subir las imagenes")
+    }
+  }
+  
 
   return (
     <>
@@ -174,10 +196,10 @@ const Video360: React.FC<Video360Props> = () => {
       </GridList>
       <Paper>
         <Box display="flex" justifyContent="flex-end" alignItems="center" className={ classes.containerUpload }>
-          <input onChange={ (e) => uploadVideo360(e.target.files) } accept="image/*" id="video360_uploader" type="file" />
-          <label htmlFor="video360_uploader">
+          <input onChange={ (e) => uploadVideo360(e.target.files) } accept="video/*" id="upload" type="file" />
+          <label htmlFor="upload">
             <Button variant="contained" color="primary" className={ classes.uploadButton } component="span">
-              Upload 360
+              Upload video 360
             </Button>
           </label>
         </Box>
@@ -199,8 +221,33 @@ const Video: React.FC<VideoProps> = () => {
       cols: 2,
     }
   ];
+  const [files,setFiles] = useState([])
+
+  useEffect(() => {
+    if (files.length !== 0) {
+      setVideo()
+    }
+  },[files])
   const uploadVideo = (data) => {
-    console.log({ data })
+    setFiles(data)
+  }
+  const setVideo = async () => {
+    try {
+      const selectedFile = files[0];
+      console.log({selectedFile})
+      const formData = new FormData()
+      formData.append("upload",selectedFile)
+      const response = await clienteAxios.post('api/upload/4',formData)
+      console.log({response})
+      const DTO = {
+        "url":response.data,
+        "typeAsset":3
+      }
+      const responseUploadUser = await clienteAxios.post(URLS.createAsset,DTO)
+    } catch (error) {
+      console.log({ error })
+      alert("Ha ocurrido un error al subir las imagenes")
+    }
   }
   const classes = useStyles();
 
@@ -217,8 +264,8 @@ const Video: React.FC<VideoProps> = () => {
       </GridList>
       <Paper>
         <Box display="flex" justifyContent="flex-end" alignItems="center" className={ classes.containerUpload }>
-          <input onChange={ (e) => uploadVideo(e.target.files) } accept="image/*" id="video360_uploader" type="file" />
-          <label htmlFor="video360_uploader">
+          <input onChange={ (e) => uploadVideo(e.target.files) } accept="video/*" id="video_uploader" type="file" />
+          <label htmlFor="video_uploader">
             <Button variant="contained" color="primary" className={ classes.uploadButton } component="span">
               Upload video
             </Button>
@@ -235,19 +282,33 @@ export interface Img360Props {
 
 const Img360: React.FC<Img360Props> = () => {
 
+  const [files,setFiles] = useState([])
 
-  const tileData = [
-    {
-      img: 'https://fotografiamejorparavendermas.com/wp-content/uploads/2017/06/La-importancia-de-la-imagen.jpg',
-      title: 'Image',
-      author: 'author',
-      cols: 2,
-    },
-  ];
+  useEffect(() => {
+    if (files.length !== 0) {
+      setImage()
+    }
+  },[files])
   const classes = useStyles();
 
   const uploadImage = (data) => {
-    console.log({ data })
+    setFiles(data)
+  }
+  const setImage = async () => {
+    try {
+      const selectedFile = files[0];
+      const formData = new FormData()
+      formData.append("upload",selectedFile)
+      const response = await clienteAxios.post('api/upload/4',formData)
+      const DTO = {
+        "url":response.data,
+        "typeAsset":1
+      }
+      const responseUploadUser = await clienteAxios.post(URLS.createAsset,DTO)
+    } catch (error) {
+      console.log({ error })
+      alert("Ha ocurrido un error al subir las imagenes")
+    }
   }
 
   const IMG_360_DATA = [
