@@ -85,7 +85,7 @@ const Img: React.FC<ImgProps> = () => {
   const [files, setFiles] = useState([])
 
   useEffect(() => {
-    if (files.length!==0) {
+    if (files.length !== 0) {
       setImage()
     }
   }, [files])
@@ -93,28 +93,25 @@ const Img: React.FC<ImgProps> = () => {
 
   const uploadImage = (data) => {
     setFiles(data)
-    console.log({data})
   }
 
 
 
   const setImage = async () => {
     try {
-    const formData = new FormData()
-    
-    for (let index = 0; index < files.length; index++) {
-      formData.append("files",files[index])
-    }
-    
-    console.log({formData,files})
-      
-      
+            const selectedFile = files[0];
+
+      const formData = new FormData()
+
+      console.log({ files })
+      formData.append("upload",selectedFile )
+
       const response = await clienteAxios.post('api/upload/4', formData)
 
-      console.log({response})
+      console.log({ response })
     } catch (error) {
-      console.log({error})
-      alert("Ha ocurrido un error al subir las imagenes")  
+      console.log({ error })
+      alert("Ha ocurrido un error al subir las imagenes")
     }
 
 
@@ -133,8 +130,8 @@ const Img: React.FC<ImgProps> = () => {
       </GridList>
       <Paper>
         <Box display="flex" justifyContent="flex-end" alignItems="center" className={ classes.containerUpload }>
-          <input onChange={ (e) => uploadImage(e.target.files) } multiple accept="image/*" id="video360_uploader" type="file" />
-          <label htmlFor="video360_uploader">
+          <input onChange={ (e) => uploadImage(e.target.files) } multiple accept="image/*" id="upload" type="file" />
+          <label htmlFor="upload">
             <Button variant="contained" color="primary" className={ classes.uploadButton } component="span">
               Upload
             </Button>
