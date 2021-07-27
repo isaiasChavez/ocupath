@@ -18,17 +18,13 @@ import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import Modal from '@material-ui/core/Modal'
 
 export interface UserDetailModalProps {
-  handleOpen: MouseEventHandler
   handleClose: MouseEventHandler
   isOpen: boolean,
-  type:number
 }
 
 const UserDetailModal: React.FC<UserDetailModalProps> = ({
-  handleOpen,
   handleClose,
   isOpen,
-  type
 }) => {
   const classes = useStyles()
 

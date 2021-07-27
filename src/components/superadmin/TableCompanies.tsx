@@ -3,31 +3,12 @@ import React, { useContext, useEffect, useState } from 'react'
 import { getStatus } from '../../config/utils';
 import AskModal from '../general/AskModal';
 import UserDetailModal from './UserDetailModal';
-
+import {USERS} from '../../types'
 import moment from 'moment'
 import UserContext from '../../context/user/user.context';
-
-function createData(
-  name: string,
-  email: string,
-  invitations: number,
-  cost: number,
-  createdAt: string,
-  startedAt: string,
-  finishedAt: string,
-  status: number
-) {
-
-  const statusTemp = getStatus(status)
-
-  var now = moment();
-  var deadline = now.clone().hour(20).minute(0).second(0);
-  let timeRemaining = deadline.from(now);
-  console.log({ timeRemaining })
+import { User } from '../../context/user/user.reducer';
 
 
-  return { name, email, invitations, cost, startedAt, finishedAt, timeRemaining, status: statusTemp, createdAt }
-}
 
 export const StyledTableCell = withStyles((theme: Theme) =>
   createStyles({
@@ -59,6 +40,10 @@ export interface TableCompaniesProps {
 }
 
 const TableCompanies: React.FC<TableCompaniesProps> = () => {
+
+  const {childrens,selectUser,selectedUser,suspendUserAdm} = useContext(UserContext)
+  const [rowsPerPage, setRowsPerPage] = useState(5)
+  const [page, setPage] = React.useState(0)
   const [isOpenUserDetailModal, setIsOpenUserDetailModal] = useState<boolean>(
     false
   )
@@ -68,16 +53,10 @@ const TableCompanies: React.FC<TableCompaniesProps> = () => {
   const [isOpenSuspendUserModal, setIsOpenSuspendUserModal] = useState<boolean>(
     false
   )
-  const [rowsPerPage, setRowsPerPage] = useState(5)
-  const [page, setPage] = React.useState(0)
-
-    const {profile} = useContext(UserContext)
-
-    const rows = profile.childrens.admins
-  const handleOpenUserDetailModal = () => {
-    setIsOpenUserDetailModal(true)
+  const rows = childrens.admins
+  const handleToggleDetailModal = () => {
+    setIsOpenUserDetailModal(!isOpenUserDetailModal)
   }
-
   const toggleDeleteUserModal = () => {
     setIsOpenDeleteUserModal(!isOpenDeleteUserModal)
   }
@@ -85,11 +64,14 @@ const TableCompanies: React.FC<TableCompaniesProps> = () => {
     setIsOpenSuspendUserModal(!isOpenSuspendUserModal)
   }
 
+  const onSuspend = (dataUser:User)=>{
+    console.log({dataUser})
+    setIsOpenSuspendUserModal(true)
+    selectUser(dataUser,USERS.ADMIN)
+  }
+
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage)
-  }
-  const handleCloseUserDetailModal = () => {
-    setIsOpenUserDetailModal(false)
   }
   const handleChangeRowsPerPage = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -101,13 +83,12 @@ const TableCompanies: React.FC<TableCompaniesProps> = () => {
     <>
       <UserDetailModal
         isOpen={ isOpenUserDetailModal }
-        handleClose={ handleCloseUserDetailModal }
-        handleOpen={ handleOpenUserDetailModal }
+        handleClose={ handleToggleDetailModal }
       />
       <AskModal
         isOpen={ isOpenDeleteUserModal }
         handleClose={ toggleDeleteUserModal }
-        handleOpen={ toggleDeleteUserModal }
+        handleOk={toggleSuspendUserModal}
         okText='Sure'
         cancelText='Cancel'
         title='Delete User'
@@ -116,13 +97,12 @@ const TableCompanies: React.FC<TableCompaniesProps> = () => {
       <AskModal
         isOpen={ isOpenSuspendUserModal }
         handleClose={ toggleSuspendUserModal }
-        handleOpen={ toggleSuspendUserModal }
         okText='Sure'
         cancelText='Cancel'
         title='Suspend User'
-        subtitle='Are you sure you want to suspend this user?'
+        subtitle={`Are you sure you want to suspend ?`}
       />
-      <Table aria-label='customized table'>
+      <Table  aria-label='customized table'>
         <TableHead
         >
           <TableRow
@@ -146,9 +126,9 @@ const TableCompanies: React.FC<TableCompaniesProps> = () => {
             <StyledTableCell align='center'>Delete</StyledTableCell>
           </TableRow>
         </TableHead>
-        <TableBody>
+        <TableBody >
           { rows.map(row => (
-            <StyledTableRow key={ row.name }>
+            <StyledTableRow key={ row.email }>
               <StyledTableCell align='center' component='th' scope='row'>
                 { row.name }
               </StyledTableCell>
@@ -168,13 +148,13 @@ const TableCompanies: React.FC<TableCompaniesProps> = () => {
                 { moment(row.lastSuscription.finishedAt).from(moment())}
               </StyledTableCell>
               <StyledTableCell align='center'>
-                {/* <Chip
+                <Chip
                   size='small'
-                  label={ row.status.name }
-                  onClick={ handleOpenUserDetailModal }
+                  label={ "asdf" }
+                  onClick={ handleToggleDetailModal }
                   clickable
-                  color={ row.status.color }
-                /> */}
+                  // color={ row.status.color }
+                />
               </StyledTableCell>
               <StyledTableCell align='center'>
                 { moment().calendar(row.lastSuscription.createdAt)}
@@ -184,7 +164,7 @@ const TableCompanies: React.FC<TableCompaniesProps> = () => {
                 <Chip
                   size='small'
                   label='Edit'
-                  onClick={ handleOpenUserDetailModal }
+                  onClick={ handleToggleDetailModal }
                   clickable
                   color='primary'
                 />{ ' ' }
@@ -195,7 +175,7 @@ const TableCompanies: React.FC<TableCompaniesProps> = () => {
                   size='small'
                   label='Suspend'
                   clickable
-                  onClick={ toggleSuspendUserModal }
+                  onClick={ ()=> onSuspend(row) }
                   color='primary'
                 />{ ' ' }
               </StyledTableCell>

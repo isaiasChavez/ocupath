@@ -21,7 +21,7 @@ import ListItemText from '@material-ui/core/ListItemText'
 import DashboardIcon from '@material-ui/icons/Dashboard'
 import PeopleIcon from '@material-ui/icons/People'
 import { useState } from 'react'
-export interface AdminProps {}
+export interface AdminProps { }
 import {
   secondaryListItems
 } from '../../src/components/superadmin/listItems'
@@ -31,6 +31,7 @@ import TableAdmin from '../../src/components/admin/TableAdmin'
 
 import TableFiles from '../../src/components/general/TableFiles'
 import { USERS } from '../../src/types/index'
+import theme from '../../src/theme'
 const drawerWidth = 240
 
 const PROFILE = 0
@@ -39,150 +40,111 @@ const FILES = 2
 
 const AdminModAdmin = () => {
   const classes = useStyles()
-  const [open, setOpen] = useState(true)
+  const [open,setOpen] = useState(true)
   const handleDrawerOpen = () => {
     setOpen(true)
   }
   const handleDrawerClose = () => {
     setOpen(false)
   }
-  const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight)
+  const fixedHeightPaper = clsx(classes.paper,classes.fixedHeight)
 
-  const [currentTab, setCurrentTab] = useState<number>(0)
+  const [currentTab,setCurrentTab] = useState<number>(0)
 
   return (
-    <div className={classes.root}>
-      <CssBaseline />
-      <AppBar
-        position='absolute'
-        className={clsx(classes.appBar, open && classes.appBarShift)}
-      >
-        <Toolbar className={classes.toolbar}>
-          <IconButton
-            edge='start'
-            color='inherit'
-            aria-label='open drawer'
-            onClick={handleDrawerOpen}
-            className={clsx(
-              classes.menuButton,
-              open && classes.menuButtonHidden
-            )}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography
-            component='h1'
-            variant='h6'
-            color='inherit'
-            noWrap
-            className={classes.title}
-          >
-            OCUPATH
-          </Typography>
-          <IconButton color='inherit'>
-            <Badge badgeContent={4} color='secondary'>
-              <NotificationsIcon />
-            </Badge>
-          </IconButton>
-        </Toolbar>
-      </AppBar>
-      {/* Barra lateral */}
-      <Drawer
-        variant='permanent'
-        classes={{
-          paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose)
-        }}
-        open={open}
-      >
-        <div className={classes.toolbarIcon}>
-          <IconButton onClick={handleDrawerClose}>
-            <ChevronLeftIcon />
-          </IconButton>
-        </div>
-        <Divider />
-        <List>
-          <div>
-            <ListItem
-              button
-              selected={currentTab === PROFILE}
-              onClick={() => {
-                setCurrentTab(PROFILE)
-              }}
-            >
-              <ListItemIcon>
-                <DashboardIcon />
-              </ListItemIcon>
-              <ListItemText primary='Profile' />
-            </ListItem>
-            <ListItem
-              button
-              selected={currentTab === FILES}
-              onClick={() => {
-                setCurrentTab(FILES)
-              }}
-            >
-              <ListItemIcon>
-                <DashboardIcon />
-              </ListItemIcon>
-              <ListItemText primary='Files' />
-            </ListItem>
+    <div className={ classes.root }>
+      <div className={ classes.inner }>
+        <AppBar style={ {
+          backgroundColor: COLORS.gray,
+        } }>
+          <Toolbar className={ classes.toolbar }>
+            <Typography component="h1" variant="h6" color="inherit" noWrap className={ classes.title }>
+              OCUPATH
+            </Typography>
+          </Toolbar>
+        </AppBar>
+        {/* Barra lateral */ }
+        <Drawer
+          variant="permanent"
+          classes={ {
+            paper: classes.drawerPaper,
+          } }
+        >
+          <List >
+            <div>
+              <ListItem
+                button
+                selected={ currentTab === PROFILE }
+                onClick={ () => {
+                  setCurrentTab(PROFILE)
+                } }
+              >
+                <ListItemText className={ classes.link } primary='Profile' />
+              </ListItem>
+              <ListItem
+                button
+                selected={ currentTab === FILES }
+                onClick={ () => {
+                  setCurrentTab(FILES)
+                } }
+              >
+                <ListItemText className={ classes.link } primary='Files' />
+              </ListItem>
 
-            <ListItem
-              button
-              selected={currentTab === USER}
-              onClick={() => {
-                setCurrentTab(USER)
-              }}
-            >
-              <ListItemIcon>
-                <PeopleIcon />
-              </ListItemIcon>
-              <ListItemText primary='User' />
-            </ListItem>
-          </div>
-        </List>
-        <Divider />
-        <List>{secondaryListItems}</List>
-      </Drawer>
-      {/* Barra lateral */}
-      <main className={classes.content}>
-        {/*  <Grid style={{height:'85%'}} container >
-            <Grid item xs={12} md={8} lg={12}>
-              <Paper className={fixedHeightPaper}>
-              </Paper>
+              <ListItem
+                button
+                className={ classes.link }
+                selected={ currentTab === USER }
+                onClick={ () => {
+                  setCurrentTab(USER)
+                } }
+              >
+                <ListItemText primary='User' />
+              </ListItem>
+            </div>
+          </List>
+          <Divider />
+          <List>{ secondaryListItems }</List>
+        </Drawer>
+        {/* Barra lateral */ }
+        <main className={ classes.content }>
+          <Grid justify="center" alignItems="center" direction="row" container style={ { height: '85%' } } >
+            <Grid item xs={ 12 } md={ 11 } lg={ 11 } justify="center" style={ {
+              marginTop: theme.spacing(3),
+              height: '8%',
+            } }>
+              <Typography style={ {
+                fontWeight: 'bold',
+                color: 'white'
+              } } component="h1" variant="h4"   >
+                Profile
+              </Typography>
+
+            </Grid>
+            <Grid item xs={ 12 } md={ 11 } lg={ 11 } style={ { height: '100%' } } >
+              { currentTab === PROFILE && <EditUser type={ USERS.ADMIN } /> }
+              { currentTab === FILES && <TableFiles /> }
+              { currentTab === USER && <TableAdmin /> }
             </Grid>
           </Grid>
-          <Box pt={4}>
-            <Copyright />
-          </Box> */}
-        <Grid
-          justify='center'
-          alignItems='center'
-          direction='row'
-          spacing={0}
-          container
-        >
-          <Grid item xs={12} md={6} lg={1} />
-          <Grid
-            style={{ height: '85%', marginLeft: '1rem' }}
-            item
-            xs={12}
-            md={6}
-            lg={10}
-          >
-            {currentTab === PROFILE && <EditUser type={USERS.ADMIN} />}
-            {currentTab === FILES && <TableFiles />}
-            {currentTab === USER && <TableAdmin />}
-          </Grid>
-        </Grid>
-      </main>
+        </main>
+      </div>
+
     </div>
   )
 }
 
 const useStyles = makeStyles(theme => ({
   root: {
-    display: 'flex'
+    display: 'flex',
+    height: '100vh',
+    overflow: 'hidden',
+  },
+  inner: {
+    display: 'flex',
+    paddingTop: '4.1rem',
+    height: '100%',
+    width: '100%',
   },
   toolbar: {
     paddingRight: 24 // keep right padding when drawer closed
@@ -196,7 +158,7 @@ const useStyles = makeStyles(theme => ({
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
-    transition: theme.transitions.create(['width', 'margin'], {
+    transition: theme.transitions.create(['width','margin'],{
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen
     })
@@ -204,7 +166,7 @@ const useStyles = makeStyles(theme => ({
   appBarShift: {
     marginLeft: drawerWidth,
     width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(['width', 'margin'], {
+    transition: theme.transitions.create(['width','margin'],{
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen
     })
@@ -218,18 +180,20 @@ const useStyles = makeStyles(theme => ({
   title: {
     flexGrow: 1
   },
+  link: {
+    color: 'white',
+    fontWeight: 'bold'
+  },
   drawerPaper: {
-    position: 'absolute',
-    whiteSpace: 'nowrap',
+    position: 'static',
     width: drawerWidth,
-    transition: theme.transitions.create('width', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen
-    })
+    height: '100%',
+    justifyContent: 'space-between'
+    ,backgroundColor: COLORS.gray,
   },
   drawerPaperClose: {
     overflowX: 'hidden',
-    transition: theme.transitions.create('width', {
+    transition: theme.transitions.create('width',{
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen
     }),
@@ -243,13 +207,13 @@ const useStyles = makeStyles(theme => ({
   },
   appBarSpacer: theme.mixins.toolbar,
   content: {
-    height: '100vh',
+    height: '100%',
     display: 'flex',
+    flexDirection: 'column',
     overflow: 'auto',
     overflowX: 'hidden',
-
-    width: '100vw',
-    backgroundColor: COLORS.gray
+    width: '100%',
+    backgroundColor: COLORS.gray,
   },
   container: {
     paddingTop: theme.spacing(4),

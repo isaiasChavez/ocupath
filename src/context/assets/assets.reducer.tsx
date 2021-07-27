@@ -1,7 +1,10 @@
 import { Config } from "../../config";
 import { AS_A } from "../../types";
+import { AssetsResponse } from "./assets.context";
 
-export type AssetsStateType = {};
+export type AssetsStateType = {
+  assets:AssetsResponse
+};
 
 type Actions =
   | { type: "CREATE_SUCCESS"; payload: any }
@@ -26,6 +29,7 @@ const userReducer = (
     case AS_A.GET_ASSETS:
         return {
           ...state,
+          assets:payload,
         };
 
     default:

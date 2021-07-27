@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import {
   withStyles,
   Theme,
@@ -7,9 +7,10 @@ import {
 } from '@material-ui/core/styles'
 import {Paper,Button,TablePagination,Chip,Tabs,Tab,TableHead,TableRow,TableContainer,Table,TableBody,TableCell} from '@material-ui/core'
 import InviteModal from '../general/InviteModal'
-import { COMPANIES, GUEST } from '../../types'
+import { COLORS, COMPANIES, GUEST } from '../../types'
 import TableCompanies from './TableCompanies'
 import TableGuest from '../general/TableGuest'
+import UserContext from '../../context/user/user.context'
 
 
 interface StyledTabProps {
@@ -20,9 +21,15 @@ export interface TableSuperAdminProps {}
 
 const TableSuperAdmin: React.FC<TableSuperAdminProps> = () => {
   const [currentTab, setCurrentTab] = useState<number>(COMPANIES)
+  const {getUserChildrens} = useContext(UserContext)
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setCurrentTab(newValue)
   }
+  useEffect(() => {
+    getUserChildrens()
+  }, [])
+
+
   const [isOpenInviteModal, setIsOpenInviteModal] = useState<boolean>(false)
   const handleCloseInviteModal = () => {
     setIsOpenInviteModal(false)
@@ -95,34 +102,8 @@ const TableSuperAdmin: React.FC<TableSuperAdminProps> = () => {
 const AntTab = withStyles((theme: Theme) =>
   createStyles({
     root: {
-      
-      textTransform: 'none',
-      minWidth: 72,
-      fontWeight: theme.typography.fontWeightRegular,
-      marginRight: theme.spacing(4),
-      fontFamily: [
-        '-apple-system',
-        'BlinkMacSystemFont',
-        '"Segoe UI"',
-        'Roboto',
-        '"Helvetica Neue"',
-        'Arial',
-        'sans-serif',
-        '"Apple Color Emoji"',
-        '"Segoe UI Emoji"',
-        '"Segoe UI Symbol"'
-      ].join(','),
-      '&:hover': {
-        color: '#40a9ff',
-        opacity: 1
-      },
-      '&$selected': {
-        color: '#1890ff',
-        fontWeight: theme.typography.fontWeightMedium
-      },
-      '&:focus': {
-        color: '#40a9ff'
-      }
+      display: 'flex',
+    height: '100%',
     },
     selected: {}
   })
@@ -133,10 +114,6 @@ const useStyles = makeStyles((theme: Theme) => ({
   root: {
     display: 'flex',
     height: '100%',
-    padding: '2rem'
-  },
-  padding: {
-    padding: theme.spacing(3)
   },
   demo1: {
     backgroundColor: theme.palette.background.paper,
@@ -144,11 +121,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     maxWidth: '100%',
     minWidth: '100%',
     height: '100%',
-    minHeight: '70vh',
-    maxHeight: '70vh'
-  },
-  demo2: {
-    backgroundColor: '#2e1534'
   },
 }))
 

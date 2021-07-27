@@ -15,7 +15,7 @@ import UserContext, {
 } from "./user.context";
 
 import { AD_A, US_A, LOG_A, URLS,USERS } from "../../types/index";
-import UserReducer, { UserStateType } from "./user.reducer";
+import UserReducer, { Profile, User, UserStateType } from "./user.reducer";
 import { LoginDTO } from "../../types/types";
 import { validateResponse } from "../../config/utils";
 import { validateOrReject } from "class-validator";
@@ -87,8 +87,49 @@ const UserState = ({ children }) => {
       console.error("** Error validating inviteUser ** ", { error });
     }
   };
+  const getUserChildrens = async () => {
+    try {
+      const { data } = await axios.post(URLS.childrens);
+      console.log({data})
+      dispatch({
+        type: US_A.CHILDRENS,
+        payload: data,
+      });
+    } catch (error) {
+      console.error("** Error geting user childrens ** ", { error });
+    }
+  };
 
   const addUserAdm = async (createUserAdmDTO: CreateAdminDTO) => {
+    try {
+      await validateOrReject(createUserAdmDTO);
+      const { data } = await axios.post(URLS.createAdm, createUserAdmDTO);
+      if (data.status ===0) {
+          alert("Registro exitoso")
+      }
+      if (data.status ===2) {
+          alert("El email ya existe")
+      }
+      return data.status
+      dispatch({ type: AD_A.REGISTER_ADM_SUCCES, payload: data });
+    } catch (error) {
+      console.error("** Error validating addUserAdm ** ", { error });
+    }
+  };
+
+  const getUserDetail = async () => {
+    try {
+      
+      const { data } = await axios.get(URLS.userDetail);
+      if (data.status ===0) {
+        dispatch({ type: US_A.GET_USER_DETAIL, payload: data.profile });
+      }
+    } catch (error) {
+      console.error("** Error validating addUserAdm ** ", { error });
+    }
+  };
+
+  const getUserInfo = async (createUserAdmDTO: CreateAdminDTO) => {
     try {
 
       await validateOrReject(createUserAdmDTO);
@@ -105,6 +146,20 @@ const UserState = ({ children }) => {
       dispatch({ type: AD_A.REGISTER_ADM_SUCCES, payload: data });
     } catch (error) {
       console.error("** Error validating addUserAdm ** ", { error });
+    }
+  };
+
+  const selectUser = async (user:User,type:number) => {
+    console.log("selectUser")
+    try {
+      dispatch({
+        type: US_A.SELECT_USER,
+        payload: {
+        user,type
+        },
+      });
+    } catch (error) {
+      console.error("** Error  selecting User ** ", { error });
     }
   };
 
@@ -134,8 +189,10 @@ const UserState = ({ children }) => {
     }
   };
 
-  const suspendUserAdm = async (pauseUserAdminDTO: DeleteAdminUserDTO) => {
+  const suspendUserAdm = async () => {
     try {
+      const pauseUserAdminDTO= new DeleteAdminUserDTO(state.selectedUser)
+
       await validateOrReject(pauseUserAdminDTO);
       const { data } = await axios.put(URLS.suspendAdm, pauseUserAdminDTO);
       dispatch({
@@ -153,14 +210,15 @@ const UserState = ({ children }) => {
       const { data } = await axios.post(URLS.create, createUserDTO);
       if (data.status ===0) {
           alert("Registro exitoso")
+          dispatch({
+            type: US_A.REGISTER_SUCCES,
+            payload: data,
+          });
       }
       if (data.status ===2) {
           alert("El email ya existe")
       } 
-      dispatch({
-        type: US_A.REGISTER_SUCCES,
-        payload: data,
-      });
+        
     } catch (error) {
       console.error("** Error validating addUser ** ", { error });
     }
@@ -239,6 +297,7 @@ const UserState = ({ children }) => {
   return (
     <UserContext.Provider
       value={{
+        ...state,
         addUser,
         deleteUser,
         updateUser,
@@ -252,7 +311,9 @@ const UserState = ({ children }) => {
         passRecover,
         pauseUser,
         logUser,
-        ...state,
+        selectUser,
+        getUserChildrens,
+        getUserDetail
       }}
     >
       {children}
@@ -262,6 +323,12 @@ const UserState = ({ children }) => {
 
 const initialState = () => {
   let state: UserStateType = {
+    selectedUser:null,
+    typeSelectedUser:0,
+    childrens:{
+      users:[],
+      admins:[],
+    },
     profile: {
       id: "",
       token: "",

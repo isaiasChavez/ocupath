@@ -10,39 +10,51 @@ export type Suscription = {
   isDeleted: boolean,
   startedAt: string,
 };
-
+export type User ={
+  avatar: string,
+  email: string,
+  isActive: boolean,
+  lastname: string,
+  name: string,
+  suscriptions: Suscription[],
+  lastSuscription:Suscription
+}
+export type Childrens= {
+  admins: [{
+    avatar: string,
+    email: string,
+    isActive: boolean,
+    lastname: string,
+    name: string,
+    suscriptions: Suscription[],
+    lastSuscription:Suscription
+  }],
+  users: [
+    {
+      avatar: string,
+      email: string,
+    isActive: boolean,
+    lastname: string,
+      name: string,
+     suscriptions: Suscription[],
+    lastSuscription:Suscription
+  }
+  ]
+}
 export type Profile = {
   id: string;
   token: string;
   name: string;
   lastname: string;
   email: string;
-  childrens: {
-    admins: [{
-      avatar: string,
-      email: string,
-      isActive: boolean,
-      lastname: string,
-      name: string,
-      suscriptions: Suscription[],
-      lastSuscription:Suscription
-    }],
-    users: [
-      {
-        avatar: string,
-        email: string,
-      isActive: boolean,
-      lastname: string,
-        name: string,
-       suscriptions: Suscription[],
-      lastSuscription:Suscription
-    }
-    ]
-  };
+  childrens: Childrens,
 };
 export type UserStateType = {
+  selectedUser:User,
+  typeSelectedUser:number,
   profile: Profile;
   type: number;
+  childrens:Childrens
 };
 
 type Actions =
@@ -51,8 +63,12 @@ type Actions =
   | { type: "RECOVER_PASS_SUCCESS"; payload: any }
   | { type: "INVITE_USER_SUCCESS"; payload: any }
   | { type: "LOGIN_SUCCESS"; payload: any }
+  | { type: "CHILDRENS"; payload: any }
+  | { type: "GET_USER_DETAIL"; payload: any }
+  
   | { type: "LOGIN_ERROR"; payload: any }
   | { type: "CLOSE_SESION"; payload: any }
+  | { type: "SELECT_USER"; payload: any }
   | { type: "REGISTER_ADM_SUCCES"; payload: any }
   | { type: "DELETE_ADM_SUCCESS"; payload: any }
   | { type: "UPDATE_ADM_SUCCESS"; payload: any }
@@ -61,6 +77,7 @@ type Actions =
   | { type: "UPDATE_SUCCESS"; payload: any }
   | { type: "PAUSE_SUCCESS"; payload: any }
   | { type: "REGISTER_SUCCES"; payload: any };
+
 
 const userReducer = (state: UserStateType, action: Actions): UserStateType => {
   const { payload } = action;
@@ -73,7 +90,10 @@ const userReducer = (state: UserStateType, action: Actions): UserStateType => {
         ...state,
         profile: payload.profile,
         type: payload.profile.type,
+        childrens: payload.profile.childrens,
       };
+
+    
     case LOG_A.CONFIRM_PASS_SUCCESS:
       console.log(LOG_A.CONFIRM_PASS_SUCCESS, { payload });
       return {
@@ -101,6 +121,32 @@ const userReducer = (state: UserStateType, action: Actions): UserStateType => {
       console.log(LOG_A.CLOSE_SESION, { payload });
       return {
         ...state,
+      };
+      case US_A.GET_USER_DETAIL:
+        let newState = {
+          ...state,
+          profile:{
+            ...state.profile,
+            ...payload
+          },
+          type: payload.type,
+        };
+        console.log({newState})
+      return newState
+      case US_A.CHILDRENS:
+        console.log(US_A.CHILDRENS, { payload });
+        return {
+          ...state,
+          profile: payload.profile,
+          type: payload.profile.type,
+          childrens: payload.profile.childrens,
+        };
+      case US_A.SELECT_USER:
+        console.log(US_A.SELECT_USER, { payload });
+      return {
+        ...state,
+        selectedUser:payload.user,
+        typeSelectedUser:payload.type
       };
     case US_A.REGISTER_SUCCES:
       console.log(US_A.REGISTER_SUCCES, { payload });

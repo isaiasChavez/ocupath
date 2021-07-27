@@ -5,12 +5,12 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
-import { FILES, URLS } from '../../types'
+import { COLORS, FILES, URLS } from '../../types'
 import Grid from "@material-ui/core/Grid";
-import { Box,Button } from '@material-ui/core';
+import { Box,Button, Card } from '@material-ui/core';
 import clienteAxios from '../../config/axios';
 import UserContext from '../../context/user/user.context';
-import AssetsContext from '../../context/assets/assets.context';
+import AssetsContext, { Asset } from '../../context/assets/assets.context';
 interface StyledTabProps {
   label: string;
 }
@@ -27,15 +27,10 @@ const TableFiles: React.FC<TableFilesProps> = () => {
     setCurrentTab(newValue);
   };
   const classes = useStyles();
-
   useEffect(() => {
     getAssetsUser()
     setCurrentImages(currentTab)
   },[currentTab])
-
-  const [currentData,setCurrentData] = useState([])
-  const [video360,setvideo360] = useState(null)
-
   const {getAssetsUser} = useContext(AssetsContext)
   
 
@@ -80,14 +75,10 @@ export default TableFiles;
 
 
 const Img: React.FC<ImgProps> = () => {
-  const tileData = [
-    {
-      img: 'https://fotografiamejorparavendermas.com/wp-content/uploads/2017/06/La-importancia-de-la-imagen.jpg',
-      title: 'Image',
-      author: 'author',
-      cols: 2,
-    },
-  ];
+  const {assets} = useContext(AssetsContext)
+
+  console.log("Img:",{assets})
+  
   const classes = useStyles();
 
   const [files,setFiles] = useState([])
@@ -118,9 +109,9 @@ const Img: React.FC<ImgProps> = () => {
   return (
     <>
       <GridList cellHeight={ 100 } className={ classes.gridList } cols={ 7 }>
-        { tileData.map((tile) => (
-          <GridListTile key={ tile.img } cols={ 1 } style={ { height: 180 } }>
-            <img src={ tile.img } alt={ tile.title } />
+        { assets.images.map((asset:Asset,i) => (
+          <GridListTile key={ i } cols={ 1 } style={ { height: 180 } }>
+            <img src={ asset.url } alt={ "Imagen normal" } />
           </GridListTile>
         )) }
       </GridList>
@@ -146,15 +137,17 @@ export interface Video360Props {
 
 const Video360: React.FC<Video360Props> = () => {
   const classes = useStyles();
-  const VIDEO_360_DATA = [
+  const {assets} = useContext(AssetsContext)
+
+  const VIDEO_360_DATA = 
     {
       img: img_tres,
       title: 'Image',
       author: 'author',
       cols: 2,
-    },
+    }
 
-  ];
+  
   const [files,setFiles] = useState([])
 
   useEffect(() => {
@@ -188,9 +181,9 @@ const Video360: React.FC<Video360Props> = () => {
   return (
     <>
       <GridList cellHeight={ 100 } className={ classes.gridList } cols={ 7 }>
-        { VIDEO_360_DATA.map((tile) => (
-          <GridListTile key={ tile.img } cols={ 1 } style={ { height: 180 } }>
-            <img src={ tile.img } alt={ tile.title } />
+        { assets.videos360.map((asset,i) => (
+          <GridListTile key={ i } cols={ 1 } style={ { height: 180 } }>
+            <img src={ VIDEO_360_DATA.img }  />
           </GridListTile>
         )) }
       </GridList>
@@ -221,6 +214,8 @@ const Video: React.FC<VideoProps> = () => {
       cols: 2,
     }
   ];
+  const {assets} = useContext(AssetsContext)
+
   const [files,setFiles] = useState([])
 
   useEffect(() => {
@@ -283,6 +278,7 @@ export interface Img360Props {
 const Img360: React.FC<Img360Props> = () => {
 
   const [files,setFiles] = useState([])
+  const {assets} = useContext(AssetsContext)
 
   useEffect(() => {
     if (files.length !== 0) {
@@ -321,15 +317,17 @@ const Img360: React.FC<Img360Props> = () => {
   ];
 
   return (
-    <>
-      <GridList cellHeight={ 100 } className={ classes.gridList } cols={ 7 }>
-        { IMG_360_DATA.map((tile) => (
+    <Card className={ classes.root }>
 
-          <GridListTile key={ tile.img } cols={ 1 } style={ { height: 180 } }>
-            <img src={ tile.img } alt={ tile.title } />
+
+      <GridList cellHeight={ 100 } className={ classes.gridList } cols={ 7 }>
+        { assets.images360.map((asset:Asset) => (
+          
+          <GridListTile key={ asset.url } cols={ 1 } style={ { height: 180 } }>
+            <img src={ asset.url } alt="Imagen 360" />
           </GridListTile>
         ))
-        }
+      }
       </GridList>
       <Paper>
         <Box display="flex" justifyContent="flex-end" alignItems="center" className={ classes.containerUpload }>
@@ -341,7 +339,7 @@ const Img360: React.FC<Img360Props> = () => {
           </label>
         </Box>
       </Paper>
-    </>
+      </Card>
   );
 }
 
@@ -361,6 +359,9 @@ const useStyles = makeStyles((theme: Theme) => ({
   root: {
     display: 'flex',
     height: '100%',
+    borderBottom: '2rem solid',
+    borderTopColor: COLORS.GRAY_MEDIUM,
+    borderBottomColor: COLORS.GRAY_MEDIUM
   },
   paper: {
     height: '100%'
@@ -371,19 +372,9 @@ const useStyles = makeStyles((theme: Theme) => ({
   uploadButton: {
     marginLeft: '1rem'
   },
-  padding: {
-    padding: theme.spacing(3),
-  },
-  demo1: {
-    backgroundColor: theme.palette.background.paper,
-    width: '100%',
-  },
-  demo2: {
-    backgroundColor: '#2e1534',
-  },
   gridList: {
     width: '100%',
-    height: '92%',
+    height: '90%',
   },
 }));
 

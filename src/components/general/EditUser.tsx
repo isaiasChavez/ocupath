@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
@@ -8,6 +8,28 @@ import Avatar from '@material-ui/core/Avatar';
 import Fab from '@material-ui/core/Fab';
 import FormEdit from './FormEdit';
 import { COLORS } from '../../types';
+import UserContext from '../../context/user/user.context';
+
+
+const EditUser: React.FC<EditUserProps> = ({ type }) => {
+  const {getUserDetail} = useContext(UserContext)
+  const classes = useStyles();
+  useEffect(() => {
+    getUserDetail()
+  }, [])
+
+  return (
+    <Card className={ classes.root }>
+        <CardContent >
+          <Avatar alt="Remy Sharp" className={ classes.large } />
+          <button className={ classes.buttonEdit }>
+            Edit Avatar
+          </button>
+        </CardContent>
+      <FormEdit type={ type } />
+    </Card>
+  );
+}
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
@@ -42,22 +64,5 @@ const useStyles = makeStyles((theme) => ({
 
 interface EditUserProps {
   type: number
-}
-
-const EditUser: React.FC<EditUserProps> = ({ type }) => {
-  const classes = useStyles();
-
-  return (
-    <Card className={ classes.root }>
-        <CardContent >
-          <Avatar alt="Remy Sharp" className={ classes.large } />
-          <button className={ classes.buttonEdit }>
-            Edit Avatar
-          </button>
-        </CardContent>
-
-      <FormEdit type={ type } />
-    </Card>
-  );
 }
 export default EditUser

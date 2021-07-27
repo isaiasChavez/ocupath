@@ -19,8 +19,8 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export interface AskModalProps {
- handleOpen:MouseEventHandler,
  handleClose:MouseEventHandler,
+ handleOk:MouseEventHandler,
  isOpen:boolean,
  title:string,
  subtitle:string,
@@ -28,10 +28,11 @@ export interface AskModalProps {
  cancelText:string
 }
  
-const AskModal: React.FC<AskModalProps> = ({handleOpen,handleClose,isOpen,title,subtitle,okText,cancelText}) => {
+const AskModal: React.FC<AskModalProps> = ({handleClose,handleOk,isOpen,title,subtitle,okText,cancelText}) => {
   const classes = useStyles();
 
   // getModalStyle is not a pure function, we roll the style only on the first render
+
 
   
   const body = (
@@ -50,10 +51,10 @@ const AskModal: React.FC<AskModalProps> = ({handleOpen,handleClose,isOpen,title,
      
         <Grid container spacing={2} justify="flex-end" alignContent="flex-end"  >
          <Grid item>
-              <Button size="medium" variant="contained">{cancelText}</Button>
+              <Button size="medium" onClick={handleClose} variant="contained">{cancelText}</Button>
          </Grid>
           <Grid item>
-              <Button size="medium" color="primary" variant="contained">{okText}</Button>
+              <Button size="medium" color="primary" onClick={handleOk} variant="contained">{okText}</Button>
          </Grid>
         </Grid>
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import {
   withStyles,
   Theme,
@@ -22,6 +22,8 @@ import UserDetailModal from '../superadmin/UserDetailModal'
 import AskModal from '../general/AskModal'
 
 import { COMPANIES, GUEST,USERS } from '../../types'
+import UserContext from '../../context/user/user.context'
+import moment from 'moment'
 
 const AntTabs = withStyles({
   root: {
@@ -146,22 +148,21 @@ function createData (
 ) {
   return { name, calories, fat, carbs, protein }
 }
-const rows = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9)
-]
+
 export interface TableAdminProps {}
 
 const TableAdmin: React.FC<TableAdminProps> = () => {
   const classes = useStyles()
   const [currentTab, setCurrentTab] = useState<number>(COMPANIES)
-
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setCurrentTab(newValue)
   }
+  const {profile,childrens,getUserChildrens} = useContext(UserContext)
+  useEffect(() => {
+    getUserChildrens()
+  }, [])
+
+  const rows = childrens.users
   const [rowsPerPage, setRowsPerPage] = useState(5)
   const [page, setPage] = React.useState(0)
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -195,7 +196,7 @@ const TableAdmin: React.FC<TableAdminProps> = () => {
     setIsOpenUserDetailModal(false)
   }
 
-  const handleOpenUserDetailModal = () => {
+  const handleOpenUserDetailModal = ({dataUser}) => {
     setIsOpenUserDetailModal(true)
   }
 
@@ -217,13 +218,11 @@ const TableAdmin: React.FC<TableAdminProps> = () => {
       <UserDetailModal
         isOpen={isOpenUserDetailModal}
         handleClose={handleCloseUserDetailModal}
-        handleOpen={handleOpenUserDetailModal}
-        type={USERS.GUEST}
       />
       <AskModal
         isOpen={isOpenDeleteUserModal}
         handleClose={toggleDeleteUserModal}
-        handleOpen={toggleDeleteUserModal}
+        
         okText='Sure'
         cancelText='Cancel'
         title='Delete User'
@@ -232,7 +231,6 @@ const TableAdmin: React.FC<TableAdminProps> = () => {
       <AskModal
         isOpen={isOpenSuspendUserModal}
         handleClose={toggleSuspendUserModal}
-        handleOpen={toggleSuspendUserModal}
         okText='Sure'
         cancelText='Cancel'
         title='Suspend User'
@@ -276,20 +274,19 @@ const TableAdmin: React.FC<TableAdminProps> = () => {
                     {row.name}
                   </StyledTableCell>
                   <StyledTableCell align='center'>
-                    {row.protein}
-                  </StyledTableCell>
-                  <StyledTableCell align='center'>
-                    {row.protein}
-                  </StyledTableCell>
-                  <StyledTableCell align='right'>
-                      {' '}
+                { row.email }
+              </StyledTableCell>
+              <StyledTableCell align='center'>
+                          { moment(row.lastSuscription.finishedAt).from(moment())}
+                    </StyledTableCell>
+              <StyledTableCell align='right'>
                       <Chip
                         size='small'
                         label='Edit'
-                        onClick={handleOpenUserDetailModal}
                         clickable
+                        onClick={()=>handleOpenUserDetailModal(row)}
                         color='primary'
-                      />{' '}
+                      />
                     </StyledTableCell>
                     <StyledTableCell align='right'>
                       {' '}
@@ -299,7 +296,7 @@ const TableAdmin: React.FC<TableAdminProps> = () => {
                         clickable
                         onClick={toggleSuspendUserModal}
                         color='primary'
-                      />{' '}
+                      />
                     </StyledTableCell>
                     <StyledTableCell align='right'>
                       {' '}

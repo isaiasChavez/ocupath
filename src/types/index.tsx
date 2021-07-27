@@ -14,10 +14,13 @@ export enum AD_A {
   SUSPEND_ADM_SUCCESS = "SUSPEND_ADM_SUCCESS",
 }
 export enum US_A {
+  GET_USER_DETAIL="GET_USER_DETAIL",
   REGISTER_SUCCES = "REGISTER_SUCCES",
   DELETE_SUCCESS = "DELETE_SUCCESS",
   UPDATE_SUCCESS = "UPDATE_SUCCESS",
   PAUSE_SUCCESS = "PAUSE_SUCCESS",
+  SELECT_USER = "SELECT_USER",
+  CHILDRENS = "CHILDRENS",
 }
 export enum AS_A {
   CREATE_SUCCESS = "CREATE_SUCCESS",
@@ -30,10 +33,12 @@ export const URLS = {
   decifre: "api/sesion/des/", //:token
   logout: "api/sesion/logout",
   invite: "api/user/invite",
+  childrens: "api/user/childrens",
   reset: "api/sesion/requestreset/", //:email
   confirmpass: "api/user/confirm",
   recoverpass: "api/sesion/recovery",
   //Administrador
+  userDetail: "api/user/detail",
   createAdm: "api/sesion/admin",
   updateAdm: "api/user/admin",
   suspendAdm: "/api/user/suspend",

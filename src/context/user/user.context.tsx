@@ -13,7 +13,7 @@ import {
 } from "class-validator";
 import { createContext } from "react";
 import { Config } from "../../config";
-import { Profile } from "./user.reducer";
+import { Childrens, Profile, User } from "./user.reducer";
 export class ReuestSesionDTO {
   constructor(email: string, password: string) {
     this.email = email;
@@ -302,7 +302,12 @@ interface UserContextInterface {
   addUser: Function;
   deleteUser: Function;
   updateUser: Function;
+  selectUser: Function;
+  getUserDetail: Function;
+  getUserChildrens:Function;
   profile: Profile;
+  childrens:Childrens,
+  selectedUser:User;
   type: number;
 }
 

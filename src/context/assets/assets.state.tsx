@@ -18,7 +18,7 @@ const UserState = ({ children }) => {
       console.log({data})
       dispatch({
         type: AS_A.GET_ASSETS,
-        payload: data,
+        payload: data.assets,
       });
 
     } catch (error) {
@@ -64,7 +64,17 @@ const UserState = ({ children }) => {
 };
 
 const initialState = () => {
-  let state: AssetsStateType = {};
+  let state: AssetsStateType = {
+      assets:{
+        images: [{
+          typeAsset: { id: 0,name: '' },
+          url: ''
+        }],
+        images360: [{}],
+        videos: [],
+        videos360: []  
+      },
+  };  
   return state;
 };
 
