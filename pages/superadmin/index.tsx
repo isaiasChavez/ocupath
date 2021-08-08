@@ -1,11 +1,7 @@
-import clsx from 'clsx';
 import { ListItemText,ListItemIcon,ListItem,Drawer,Grid,Divider,Typography,List,Toolbar,AppBar,makeStyles,Link } from '@material-ui/core';
-import DashboardIcon from '@material-ui/icons/Dashboard';
-import PeopleIcon from '@material-ui/icons/People';
 import { useState } from 'react';
 export interface AdminProps { }
-import { secondaryListItems } from '../../src/components/superadmin/listItems';
-import { USERS,COLORS } from '../../src/types';
+import { USERS,COLORS } from '../../src/types/index';
 import EditUser from '../../src/components/general/EditUser';
 import TableSuperAdmin from '../../src/components/superadmin/TableSuperAdmin';
 import theme from '../../src/theme';

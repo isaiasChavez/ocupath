@@ -17,7 +17,7 @@ import Container from "@material-ui/core/Container";
 import Layout from "../../src/layouts/Layout";
 import { useRouter } from "next/router";
 import clienteAxios from "../../src/config/axios";
-import { URLS } from "../../src/types";
+import { URLS } from "../../src/types/index";
 import { AxiosResponse } from "axios";
 import UserContext from "../../src/context/user/user.context";
 

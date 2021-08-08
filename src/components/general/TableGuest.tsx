@@ -4,30 +4,11 @@ import React, { useContext, useState } from 'react'
 import { getStatus } from '../../config/utils';
 import UserContext from '../../context/user/user.context';
 import { StyledTableCell, StyledTableRow } from '../superadmin/TableCompanies';
+import {USERS} from '../../types/'
+import { User } from '../../context/user/user.reducer';
+import UserDetailModal from '../superadmin/UserDetailModal';
+import AskModal from './AskModal';
 
-
-
-function createData (
-  name: string,
-  email: string,
-  invitations: number,
- cost: number,
-  createdAt:string,
- startedAt: string,
- finishedAt: string,
- status:number
-) {
-
-  const statusTemp = getStatus(status)
-  
-  var now = moment();
- var deadline = now.clone().hour(20).minute(0).second(0);
-   let timeRemaining =  deadline.from(now);
-   console.log({timeRemaining})
-
-
-  return { name,email,invitations,cost,startedAt,finishedAt,timeRemaining,status:statusTemp,createdAt }
-}
 
 export interface TableGuestProps {
  
@@ -37,16 +18,20 @@ const TableGuest: React.FC<TableGuestProps> = () => {
   const [isOpenUserDetailModal, setIsOpenUserDetailModal] = useState<boolean>(
     false
     )
+    const [isOpenSuspendUserModal, setIsOpenSuspendUserModal] = useState<boolean>(
+      false
+    )
+    const [isOpenDeleteUserModal, setIsOpenDeleteUserModal] = useState<boolean>(
+      false
+    )
     const [rowsPerPage, setRowsPerPage] = useState(5)
     const [page, setPage] = React.useState(0)
     
-    const {profile} = useContext(UserContext)
-    const rows = profile.childrens.users
+    const {childrens,selectUser,getAdminChildDetail,selectedUser,deleteUser,suspendUser} = useContext(UserContext)
+    const rows = childrens.users
 
 
-  const handleOpenUserDetailModal = () => {
-    setIsOpenUserDetailModal(true)
-  }
+
  
  const handleChangeRowsPerPage = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -57,8 +42,74 @@ const TableGuest: React.FC<TableGuestProps> = () => {
  const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage)
   }
- 
+  const toggleDeleteUserModal = () => {
+    setIsOpenDeleteUserModal(!isOpenDeleteUserModal)
+  }
+  const toggleSuspendUserModal = () => {
+    setIsOpenSuspendUserModal(!isOpenSuspendUserModal)
+  }
+  const handleToggleDetailModal = () => {
+    setIsOpenUserDetailModal(!isOpenUserDetailModal)
+  }
+
+  const onSuspend = (dataUser:User)=>{
+    console.log({dataUser})
+    setIsOpenSuspendUserModal(true)
+    selectUser(dataUser,USERS.ADMIN)
+  }
+  const onDelete = (dataUser:User)=>{
+    toggleDeleteUserModal()
+    selectUser(dataUser,USERS.ADMIN)
+  }
+  const onEdit = (dataUser:User)=>{
+  console.log("EDIT")
+    handleToggleDetailModal()
+    selectUser(dataUser,USERS.ADMIN)
+    getAdminChildDetail()
+  }
+  const getDataStatus = (status):{color:string,name:string}=>{
+    console.log("==>",{status})
+    if (status === 1) {
+        return {
+          color:"primary",
+          name:"ACTIVE"
+        }
+    }
+    if (status === 2) {
+      return {
+        color:"secondary",
+        name:"INACTIVE"
+      }
+  }
+    return {
+      color:"#fff",
+      name:"ACTIVE"
+    }
+  }
  return (
+   <>
+   <UserDetailModal
+        isOpen={ isOpenUserDetailModal }
+        handleClose={ handleToggleDetailModal }
+      />
+      <AskModal
+        isOpen={ isOpenDeleteUserModal }
+        handleClose={ toggleDeleteUserModal }
+        handleOk={()=>deleteUser()}
+        okText='Sure'
+        cancelText='Cancel'
+        title='Delete User'
+        subtitle={`Are you sure you want to delete ${selectedUser?selectedUser.name:'this user'} `}
+      />
+      <AskModal
+        isOpen={ isOpenSuspendUserModal }
+        handleOk={()=>suspendUser()}
+        handleClose={ toggleSuspendUserModal }
+        okText='Sure'
+        cancelText='Cancel'
+        title='Suspend User'
+        subtitle={`Are you sure you want to  ${selectedUser.isActive?'suspend':'activate'} ${selectedUser?'to '+selectedUser.name+'?':'this user?'}`}
+      />
   <Table  aria-label='customized table'>
               <TableHead>
                 <TableRow>
@@ -97,24 +148,47 @@ const TableGuest: React.FC<TableGuestProps> = () => {
                           { moment(row.lastSuscription.finishedAt).from(moment())}
                     </StyledTableCell>
                     <StyledTableCell align='center'>
-                     {/* <Chip
-                        size='small'
-                        label={row.status.name}
-                        onClick={handleOpenUserDetailModal}
-                        clickable
-                        color={row.status.color}
-                      /> */}
+                    <Chip
+                  size='small'
+                  label={ getDataStatus(row.status).name }
+                  clickable
+                  color={ getDataStatus(row.status).color }
+                  />
                     </StyledTableCell>
                     <StyledTableCell align='center'>
                                      { moment().calendar(row.lastSuscription.createdAt)}
 
                     </StyledTableCell>
-                    <StyledTableCell align='center'>
-                    </StyledTableCell>
-                    <StyledTableCell align='center'>
-                    </StyledTableCell>
-                    <StyledTableCell align='center'>
-                    </StyledTableCell>
+                    <StyledTableCell align='right'>
+                { ' ' }
+                <Chip
+                  size='small'
+                  label='Edit'
+                  onClick={()=>onEdit(row)}
+                  clickable
+                  color='primary'
+                  />{ ' ' }
+              </StyledTableCell>
+              <StyledTableCell align='right'>
+                { ' ' }
+                <Chip
+                  size='small'
+                  label={`${row.isActive?'suspend':'activate'}`}
+                  clickable
+                  onClick={ ()=> onSuspend(row) }
+                  color='primary'
+                  />{ ' ' }
+              </StyledTableCell>
+              <StyledTableCell align='right'>
+                { ' ' }
+                <Chip
+                  size='small'
+                  label='Delete'
+                  onClick={ ()=> onDelete(row) }
+                  clickable
+                  color='secondary'
+                  />{ ' ' }
+              </StyledTableCell>
                   </StyledTableRow>
                 ))}
               </TableBody>
@@ -125,8 +199,9 @@ const TableGuest: React.FC<TableGuestProps> = () => {
                 page={page}
                 onChangePage={handleChangePage}
                 onChangeRowsPerPage={handleChangeRowsPerPage}
-              />
+                />
             </Table>
+                </>
 
  );
 }

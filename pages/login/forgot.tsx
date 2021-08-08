@@ -97,7 +97,7 @@ const Forgot: React.FC<ForgotProps> = () => {
       </Box>
           </Typography>
           <form onSubmit={onSubmit} className={classes.form}>
-          <Typography component="h3" variant="h7" style={ { textAlign: 'center' } } >
+          <Typography component="h3"  style={ { textAlign: 'center' } } >
             <Box fontWeight="fontWeightLight" m={ 1 } >
               
             Enter the email in which you want to receive your password 

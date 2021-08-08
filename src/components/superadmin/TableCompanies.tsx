@@ -9,39 +9,13 @@ import UserContext from '../../context/user/user.context';
 import { User } from '../../context/user/user.reducer';
 
 
-
-export const StyledTableCell = withStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      height:'1rem',
-      
-    },
-    head: {
-      backgroundColor: theme.palette.common.black,
-      color: theme.palette.common.white
-    },
-    body: {
-      fontSize: 14
-    }
-  })
-)(TableCell)
-export const StyledTableRow = withStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      '&:nth-of-type(odd)': {
-        backgroundColor: theme.palette.action.hover
-      }
-    }
-  })
-)(TableRow)
-
 export interface TableCompaniesProps {
 
 }
 
 const TableCompanies: React.FC<TableCompaniesProps> = () => {
 
-  const {childrens,selectUser,selectedUser,suspendUserAdm} = useContext(UserContext)
+  const {childrens,selectUser,selectedUser,suspendUserAdm,deleteUserAdm,getAdminChildDetail} = useContext(UserContext)
   const [rowsPerPage, setRowsPerPage] = useState(5)
   const [page, setPage] = React.useState(0)
   const [isOpenUserDetailModal, setIsOpenUserDetailModal] = useState<boolean>(
@@ -69,6 +43,17 @@ const TableCompanies: React.FC<TableCompaniesProps> = () => {
     setIsOpenSuspendUserModal(true)
     selectUser(dataUser,USERS.ADMIN)
   }
+  const onDelete = (dataUser:User)=>{
+    toggleDeleteUserModal()
+    selectUser(dataUser,USERS.ADMIN)
+  }
+  const onEdit = (dataUser:User)=>{
+  console.log("EDIT")
+    handleToggleDetailModal()
+    selectUser(dataUser,USERS.ADMIN)
+    getAdminChildDetail()
+  }
+  
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage)
@@ -79,6 +64,27 @@ const TableCompanies: React.FC<TableCompaniesProps> = () => {
     setRowsPerPage(parseInt(event.target.value, 10))
     setPage(0)
   }
+
+  const getDataStatus = (status):{color:string,name:string}=>{
+    console.log("==>",{status})
+    if (status === 1) {
+        return {
+          color:"primary",
+          name:"ACTIVE"
+        }
+    }
+    if (status === 2) {
+      return {
+        color:"secondary",
+        name:"INACTIVE"
+      }
+  }
+    return {
+      color:"#fff",
+      name:"ACTIVE"
+    }
+  }
+
   return (
     <>
       <UserDetailModal
@@ -88,19 +94,20 @@ const TableCompanies: React.FC<TableCompaniesProps> = () => {
       <AskModal
         isOpen={ isOpenDeleteUserModal }
         handleClose={ toggleDeleteUserModal }
-        handleOk={toggleSuspendUserModal}
+        handleOk={()=>deleteUserAdm()}
         okText='Sure'
         cancelText='Cancel'
         title='Delete User'
-        subtitle='Are you sure you want to delete this user?'
+        subtitle={`Are you sure you want to delete ${selectedUser?selectedUser.name:'this user'} `}
       />
       <AskModal
         isOpen={ isOpenSuspendUserModal }
+        handleOk={()=>suspendUserAdm()}
         handleClose={ toggleSuspendUserModal }
         okText='Sure'
         cancelText='Cancel'
         title='Suspend User'
-        subtitle={`Are you sure you want to suspend ?`}
+        subtitle={`Are you sure you want to  ${selectedUser.isActive?'suspend':'activate'} ${selectedUser?'to '+selectedUser.name+'?':'this user?'}`}
       />
       <Table  aria-label='customized table'>
         <TableHead
@@ -127,44 +134,43 @@ const TableCompanies: React.FC<TableCompaniesProps> = () => {
           </TableRow>
         </TableHead>
         <TableBody >
-          { rows.map(row => (
-            <StyledTableRow key={ row.email }>
-              <StyledTableCell align='center' component='th' scope='row'>
-                { row.name }
+          { rows.map(user => (
+            <StyledTableRow key={ user.email }>
+              <StyledTableCell align='center' component='th' scope='user'>
+                { user.name }
               </StyledTableCell>
               <StyledTableCell align='center'>
-                { row.email }
+                { user.email }
               </StyledTableCell>
               <StyledTableCell align='center'>
-                { row.lastSuscription.invitations }
+                { user.lastSuscription.invitations }
               </StyledTableCell>
               <StyledTableCell align='center'>
-                { row.lastSuscription.cost}
+                { user.lastSuscription.cost}
               </StyledTableCell>
               <StyledTableCell align='center'>
-                { moment().calendar(row.lastSuscription.startedAt) }|{ moment().calendar(row.lastSuscription.finishedAt) }
+                { moment().calendar(user.lastSuscription.startedAt) }|{ moment().calendar(user.lastSuscription.finishedAt) }
               </StyledTableCell>
               <StyledTableCell align='center'>
-                { moment(row.lastSuscription.finishedAt).from(moment())}
+                { moment(user.lastSuscription.finishedAt).from(moment())}
               </StyledTableCell>
               <StyledTableCell align='center'>
                 <Chip
                   size='small'
-                  label={ "asdf" }
-                  onClick={ handleToggleDetailModal }
+                  label={ getDataStatus(user.status).name }
                   clickable
-                  // color={ row.status.color }
+                 color={ getDataStatus(user.status).color }
                 />
               </StyledTableCell>
               <StyledTableCell align='center'>
-                { moment().calendar(row.lastSuscription.createdAt)}
+                { moment().calendar(user.lastSuscription.createdAt)}
               </StyledTableCell>
               <StyledTableCell align='right'>
                 { ' ' }
                 <Chip
                   size='small'
                   label='Edit'
-                  onClick={ handleToggleDetailModal }
+                  onClick={()=>onEdit(user)}
                   clickable
                   color='primary'
                 />{ ' ' }
@@ -173,9 +179,9 @@ const TableCompanies: React.FC<TableCompaniesProps> = () => {
                 { ' ' }
                 <Chip
                   size='small'
-                  label='Suspend'
+                  label={`${user.isActive?'suspend':'activate'}`}
                   clickable
-                  onClick={ ()=> onSuspend(row) }
+                  onClick={ ()=> onSuspend(user) }
                   color='primary'
                 />{ ' ' }
               </StyledTableCell>
@@ -184,7 +190,7 @@ const TableCompanies: React.FC<TableCompaniesProps> = () => {
                 <Chip
                   size='small'
                   label='Delete'
-                  onClick={ toggleDeleteUserModal }
+                  onClick={ ()=> onDelete(user) }
                   clickable
                   color='secondary'
                 />{ ' ' }
@@ -205,6 +211,31 @@ const TableCompanies: React.FC<TableCompaniesProps> = () => {
     </>
   );
 }
+
+export const StyledTableCell = withStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      height:'1rem',
+      
+    },
+    head: {
+      backgroundColor: theme.palette.common.black,
+      color: theme.palette.common.white
+    },
+    body: {
+      fontSize: 14
+    }
+  })
+)(TableCell)
+export const StyledTableRow = withStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      '&:nth-of-type(odd)': {
+        backgroundColor: theme.palette.action.hover
+      }
+    }
+  })
+)(TableRow)
 
 
 

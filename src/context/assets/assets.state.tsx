@@ -1,6 +1,7 @@
 import { useReducer } from "react";
 import axios from "../../config/axios";
 import AssetsContext, {
+  Asset,
   CreateAssetDTO,
   DeleteAssetDto,
 } from "./assets.context";
@@ -26,17 +27,18 @@ const UserState = ({ children }) => {
     }
   };
 
-  const create = async (createAssetDTO: CreateAssetDTO) => {
+  const successCreate = async (asset:Asset) => {
     try {
-      const { data } = await axios.post(URLS.createAsset, createAssetDTO);
       dispatch({
         type: AS_A.CREATE_SUCCESS,
-        payload: data,
+        payload: asset,
       });
     } catch (error) {
       console.error({ error });
     }
   };
+ 
+  
   const deleteAsset = async (deleteAssetDto: DeleteAssetDto) => {
     try {
       const { data } = await axios.post(URLS.deleteAsset, deleteAssetDto);
@@ -52,7 +54,7 @@ const UserState = ({ children }) => {
   return (
     <AssetsContext.Provider
       value={{
-        create,
+        successCreate,
         deleteAsset,
         getAssetsUser,
         ...state,
@@ -68,11 +70,30 @@ const initialState = () => {
       assets:{
         images: [{
           typeAsset: { id: 0,name: '' },
+          thumbnail:"",
           url: ''
         }],
-        images360: [{}],
-        videos: [],
-        videos360: []  
+        images360: [{
+          thumbnail:'',
+          typeAsset:{ 
+            id:0,name:''
+          },
+          url:''
+        }],
+        videos: [{
+          thumbnail:'',
+          typeAsset:{ 
+            id:0,name:''
+          },
+          url:''
+        }],
+        videos360: [{
+          thumbnail:'',
+          typeAsset:{ 
+            id:0,name:''
+          },
+          url:''
+        }]  
       },
   };  
   return state;

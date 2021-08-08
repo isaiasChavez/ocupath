@@ -24,5 +24,7 @@ export type NewUserErrors = {
   finishedAt: string|null;
 };
 
+export const USER_ACTIVE = true
+export const USER_INACTIVE = false
 
 

@@ -29,6 +29,17 @@ export class ReuestSesionDTO {
   password: string;
 }
 
+export class ChangeName {
+  constructor(name:string) {
+    this.name=name
+  }
+  @IsNotEmpty()
+  @IsString()
+  name: string;
+}
+
+
+
 export class InviteUserDTO {
   constructor({ email, typeToInvite,company,name,invitations,cost,startedAt,finishedAt }) {
     console.log({startedAt,finishedAt})
@@ -115,6 +126,7 @@ export class PasswordRecovery {
   @IsNotEmpty()
   @MaxLength(100)
   password: string;
+  @MinLength(150)
   @IsString()
   @IsNotEmpty()
   token: string;
@@ -238,55 +250,77 @@ export class UpdateUserAdminDTO {
 }
 
 export class UpdateUserDTO {
-  constructor(
-    userUuid: string,
-    name: string,
-    lastname: string,
-    avatar: string
-  ) {
-    this.userUuid = userUuid;
-    this.name = name;
-    this.lastname = lastname;
-    this.avatar = avatar;
+  constructor({
+    name,
+    avatar,
+    thumbnail
+  }) {
+    this.name=name
+    this.avatar=avatar
+    this.thumbnail=thumbnail
+  }
+  @IsOptional()  
+  @IsString()
+  name: string;
+  
+  @IsOptional()  
+  @IsString()
+  @MaxLength(150)
+  avatar: string;
+  
+  @IsOptional()  
+  @IsString()
+  @MaxLength(150)
+  thumbnail: string;
+
+ 
+}
+
+export class GetUserDetailDTO {
+  constructor(userUuidToGet) {
+    this.userUuidToGet = userUuidToGet;
   }
   @IsUUID()
   @IsNotEmpty()
   @IsString()
-  userUuid: string;
-  @IsString()
-  @MaxLength(100)
-  name: string;
-  @IsString()
-  @MaxLength(150)
-  avatar: string;
-  @MaxLength(100)
-  @IsString()
-  @IsNotEmpty()
-  lastname: string;
+  userUuidToGet: number;
 }
-
-export class DeleteAdminUserDTO {
+export class GetAdminDetailDTO {
+  constructor(adminUuidToGet) {
+    this.adminUuidToGet = adminUuidToGet;
+  }
+  @IsUUID()
+  @IsNotEmpty()
+  @IsString()
+  adminUuidToGet: number;
+}
+export class DeleteOrSuspendAdminUserDTO {
   constructor(adminUuid: string, status: boolean) {
-    this.adminUuid = adminUuid;
+    this.adminUuidToStop = adminUuid;
     this.status = status;
   }
   @IsUUID()
   @IsNotEmpty()
   @IsString()
-  adminUuid: string;
+  adminUuidToStop: string;
 
   @IsOptional()
   @IsBoolean()
   status: boolean;
 }
 
-export class DeleteUserDTO {
-  constructor(userUuid: string) {
-    this.userUuid = userUuid;
+export class DeleteOrSuspendUserDTO {
+  constructor(userUuid: string,status:boolean) {
+    this.userUuidToChange = userUuid;
+    this.status = status
   }
   @IsNotEmpty()
   @IsString()
-  userUuid: string;
+  userUuidToChange: string;
+  @IsOptional()
+  @IsBoolean()
+  status: boolean;
+
 }
 interface UserContextInterface {
   resetPass: Function;
@@ -298,17 +332,22 @@ interface UserContextInterface {
   deleteUserAdm: Function;
   updateUserAdm: Function;
   suspendUserAdm: Function;
-  pauseUser: Function;
+  suspendUser: Function;
   addUser: Function;
   deleteUser: Function;
   updateUser: Function;
   selectUser: Function;
   getUserDetail: Function;
   getUserChildrens:Function;
+  getAdminChildDetail: Function;
+  getUserChildDetail: Function;
+  validateToken: Function;
+  updateName: Function;
   profile: Profile;
   childrens:Childrens,
   selectedUser:User;
   type: number;
+  loading:boolean
 }
 
 const UserContext = createContext<UserContextInterface | null>(null);

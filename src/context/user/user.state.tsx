@@ -1,14 +1,16 @@
-import { useReducer } from "react";
+import { useReducer, useState } from "react";
 import axios, { tokenAuth } from "../../config/axios";
 import { useRouter } from "next/router";
 import UserContext, {
+  ChangeName,
   ConfirmUserPassword,
   CreateAdminDTO,
   CreateUserDTO,
-  DeleteAdminUserDTO,
-  DeleteUserDTO,
+  DeleteOrSuspendAdminUserDTO,
+  DeleteOrSuspendUserDTO,
+  GetAdminDetailDTO,
+  GetUserDetailDTO,
   InviteUserDTO,
-  PasswordRecovery,
   ResetPassword,
   UpdateUserAdminDTO,
   UpdateUserDTO,
@@ -23,12 +25,13 @@ import { validateOrReject } from "class-validator";
 const UserState = ({ children }) => {
   const router = useRouter();
 
+  const [loading, setLoading] = useState<boolean>(true)
   const [state, dispatch] = useReducer(UserReducer, initialState());
-
   const resetPass = async (resetPassword: ResetPassword) => {
     try {
       await validateOrReject(resetPassword);
       const { data } = await axios.put(URLS.recoverpass, resetPassword);
+      console.log({data})
       dispatch({
         type: LOG_A.RESET_PASS_SUCCESS,
         payload: data,
@@ -36,6 +39,23 @@ const UserState = ({ children }) => {
     } catch (error) {
       console.error("** Error validating passRecover ** ", { error });
       console.error({ error });
+    }
+  };
+  const validateToken = async (token: string) => {
+    try {
+      setLoading(true)
+      console.log("Validating")
+      const url =  `${URLS.validateToken}${token}`
+      const { data } = await axios.post( `${url}`, );
+      setLoading(false)
+      console.log({data})
+      return data.status
+    } catch (error) {
+      setLoading(false)
+
+      console.error({ error });
+      alert("Error en el servidor")
+      return 1
     }
   };
 
@@ -119,7 +139,6 @@ const UserState = ({ children }) => {
 
   const getUserDetail = async () => {
     try {
-      
       const { data } = await axios.get(URLS.userDetail);
       if (data.status ===0) {
         dispatch({ type: US_A.GET_USER_DETAIL, payload: data.profile });
@@ -129,21 +148,38 @@ const UserState = ({ children }) => {
     }
   };
 
-  const getUserInfo = async (createUserAdmDTO: CreateAdminDTO) => {
+  const getUserChildDetail = async () => {
     try {
-
-      await validateOrReject(createUserAdmDTO);
-      const { data } = await axios.post(URLS.createAdm, createUserAdmDTO);
+      const dto = new GetUserDetailDTO(state.selectedUser.uuid)
+      await validateOrReject(dto);
+      const { data } = await axios.post(URLS.createAdm, dto);
+      console.log({data})
       if (data.status ===0) {
-          alert("Registro exitoso")
+          dispatch({ type: AD_A.ADMIN_CHILD_DETAIL, payload: data });
       }
       if (data.status ===2) {
           alert("El email ya existe")
       }
-      return data.status
+    } catch (error) {
+      console.error("** Error validating getUserChildDetail ** ", { error });
+    }
+  };
+  const getAdminChildDetail = async () => {
+    try {
+      console.log("====",state.selectedUser,'====')
+      const dto = new GetAdminDetailDTO(state.selectedUser.uuid)
+      await validateOrReject(dto);
+      const { data } = await axios.post(URLS.adminChildDetail, dto);
+      dispatch({ type: AD_A.ADMIN_CHILD_DETAIL, payload: data });
+      // if (data.status ===0) {
+      //     alert("Registro exitoso")
+      // }
+      // if (data.status ===2) {
+      //     alert("El email ya existe")
+      // }
+      // return data.status
 
 
-      dispatch({ type: AD_A.REGISTER_ADM_SUCCES, payload: data });
     } catch (error) {
       console.error("** Error validating addUserAdm ** ", { error });
     }
@@ -163,16 +199,69 @@ const UserState = ({ children }) => {
     }
   };
 
-  const deleteUserAdm = async (deleteAdminUserDTO: DeleteAdminUserDTO) => {
+  const updateName =async (name:string): Promise<{status:number}> => {
     try {
+      const changeNameDTO = new ChangeName(name)
+      await validateOrReject(changeNameDTO);
+      const { data } = await axios.post(URLS.updateName, changeNameDTO);
+      if (data.status ===0) {
+        dispatch({
+          type: US_A.UPDATE_SUCCESS,
+          payload: name,
+        });
+        return {status:data.status}
+      }
+      return null
+    } catch (error) {
+      console.error("** Error validating deleteUserAdm ** ", { error });
+    }
+  }
+  const updateAvatar =async (name:string): Promise<{status:number}> => {
+    try {
+      const changeNameDTO = new ChangeName(name)
+      await validateOrReject(changeNameDTO);
+      const { data } = await axios.post(URLS.updateName, changeNameDTO);
+      if (data.status ===0) {
+        dispatch({
+          type: US_A.UPDATE_SUCCESS,
+          payload: name,
+        });
+        return {status:data.status}
+      }
+      return null
+    } catch (error) {
+      console.error("** Error validating deleteUserAdm ** ", { error });
+    }
+  }
+
+
+  const deleteUserAdm = async () => {
+    try {
+
+      const deleteAdminUserDTO = new DeleteOrSuspendAdminUserDTO(state.selectedUser.uuid,!state.selectedUser.isActive)
       await validateOrReject(deleteAdminUserDTO);
       const { data } = await axios.put(URLS.deleteAdm, deleteAdminUserDTO);
+      console.log({data})
+      // dispatch({
+      //   type: US_A.DELETE_SUCCESS,
+      //   payload: data,
+      // });
+    } catch (error) {
+      console.error("** Error validating deleteUserAdm ** ", { error });
+    }
+  };
+  const deleteUser = async () => {
+    try {
+      const deleteUserDTO = new DeleteOrSuspendUserDTO(state.selectedUser.uuid,!state.selectedUser.isActive)
+      await validateOrReject(deleteUserDTO);
+console.log({deleteUserDTO})
+      const { data } = await axios.put(URLS.delete, deleteUserDTO);
       dispatch({
         type: US_A.DELETE_SUCCESS,
         payload: data,
       });
     } catch (error) {
-      console.error("** Error validating deleteUserAdm ** ", { error });
+      console.error("** Error validating deleteUser ** ", { error });
     }
   };
 
@@ -191,8 +280,7 @@ const UserState = ({ children }) => {
 
   const suspendUserAdm = async () => {
     try {
-      const pauseUserAdminDTO= new DeleteAdminUserDTO(state.selectedUser)
-
+      const pauseUserAdminDTO = new DeleteOrSuspendAdminUserDTO(state.selectedUser.uuid,!state.selectedUser.isActive)
       await validateOrReject(pauseUserAdminDTO);
       const { data } = await axios.put(URLS.suspendAdm, pauseUserAdminDTO);
       dispatch({
@@ -201,6 +289,22 @@ const UserState = ({ children }) => {
       });
     } catch (error) {
       console.error("** Error validating suspendUserAdm ** ", { error });
+    }
+  };
+
+  const suspendUser = async () => {
+    try {
+      const suspendUserDTO = new DeleteOrSuspendUserDTO(state.selectedUser.uuid,!state.selectedUser.isActive)
+      await validateOrReject(suspendUserDTO);
+      console.log({suspendUserDTO})
+      const { data } = await axios.put(URLS.suspendUser, suspendUserDTO);
+      console.log({data})
+      dispatch({
+        type: US_A.PAUSE_SUCCESS,
+        payload: data,
+      });
+    } catch (error) {
+      console.error("** Error validating suspendUser ** ", { error });
     }
   };
 
@@ -223,48 +327,31 @@ const UserState = ({ children }) => {
       console.error("** Error validating addUser ** ", { error });
     }
   };
-  const deleteUser = async (deleteUserDTO: DeleteUserDTO) => {
-    try {
-      await validateOrReject(deleteUserDTO);
-      const { data } = await axios.put(URLS.delete, deleteUserDTO);
-      dispatch({
-        type: US_A.DELETE_SUCCESS,
-        payload: data,
-      });
-    } catch (error) {
-      console.error("** Error validating deleteUser ** ", { error });
-    }
-  };
+  
   
   const updateUser = async (updateUserDTO: UpdateUserDTO) => {
     try {
+
       await validateOrReject(updateUserDTO);
       const { data } = await axios.put(URLS.update, updateUserDTO);
-      dispatch({
-        type: US_A.UPDATE_SUCCESS,
-        payload: data,
-      });
+      console.log({data},US_A.UPDATE_SUCCESS)
+      if (data.status ===0) {
+        dispatch({
+          type: US_A.UPDATE_SUCCESS,
+          payload: data,
+        });
+      }
     } catch (error) {
       console.error("** Error validating updateUser ** ", { error });
     }
   };
-  const pauseUser = async (pauseUserDTO: DeleteUserDTO) => {
-    try {
-      await validateOrReject(pauseUserDTO);
-      const { data } = await axios.put(URLS.update, pauseUserDTO);
-      dispatch({
-        type: US_A.PAUSE_SUCCESS,
-        payload: data,
-      });
-    } catch (error) {
-      console.error("** Error validating pauseUser ** ", { error });
-    }
-  };
+ 
 
   const logUser = async (loginDTO: LoginDTO) => {
     try {
       await validateOrReject(loginDTO);
       const {data} = await axios.post(URLS.login, loginDTO);
+      console.log({data})
       if (data.status === 0) {
         tokenAuth(data.profile.token);
         dispatch({
@@ -298,7 +385,9 @@ const UserState = ({ children }) => {
     <UserContext.Provider
       value={{
         ...state,
+        loading,
         addUser,
+        validateToken,
         deleteUser,
         updateUser,
         addUserAdm,
@@ -309,11 +398,14 @@ const UserState = ({ children }) => {
         deleteUserAdm,
         inviteUser,
         passRecover,
-        pauseUser,
+        suspendUser,
+        updateName,
         logUser,
         selectUser,
         getUserChildrens,
-        getUserDetail
+        getUserDetail,
+        getAdminChildDetail,
+        getUserChildDetail,
       }}
     >
       {children}
@@ -323,7 +415,25 @@ const UserState = ({ children }) => {
 
 const initialState = () => {
   let state: UserStateType = {
-    selectedUser:null,
+    selectedUser:{
+      name:'',
+      avatar:'',
+      email:'',
+      isActive:false,
+      lastSuscription:{
+        cost:"",
+        createdAt:"",
+        finishedAt:"",
+        invitations:0,
+        isActive:false,
+        isDeleted:false,
+        startedAt:""
+      },
+      status:0,
+      lastname:'',
+      suscriptions:[],
+      uuid:''
+    },
     typeSelectedUser:0,
     childrens:{
       users:[],
@@ -334,8 +444,9 @@ const initialState = () => {
       token: "",
       name: "",
       lastname: "",
+      thumbnail:"",
       email: "",
-      childrens: [],
+      type:0
     },
     type: 0,
   };

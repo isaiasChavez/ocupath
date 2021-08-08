@@ -61,7 +61,7 @@ const EditSuperAdmin: React.FC<EditSuperAdminProps> = () => {
         </CardContent>
        
       </div>
-     <FormEdit/>
+     <FormEdit type={0}/>
     </Card>
   );
 }

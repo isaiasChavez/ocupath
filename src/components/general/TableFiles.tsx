@@ -5,7 +5,7 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
-import { COLORS, FILES, URLS } from '../../types'
+import { COLORS, FILES, URLS,FILES_TYPES } from '../../types'
 import Grid from "@material-ui/core/Grid";
 import { Box,Button, Card } from '@material-ui/core';
 import clienteAxios from '../../config/axios';
@@ -75,10 +75,7 @@ export default TableFiles;
 
 
 const Img: React.FC<ImgProps> = () => {
-  const {assets} = useContext(AssetsContext)
-
-  console.log("Img:",{assets})
-  
+  const {assets,successCreate} = useContext(AssetsContext)  
   const classes = useStyles();
 
   const [files,setFiles] = useState([])
@@ -95,12 +92,16 @@ const Img: React.FC<ImgProps> = () => {
       const selectedFile = files[0];
       const formData = new FormData()
       formData.append("upload",selectedFile)
-      const response = await clienteAxios.post('api/upload/4',formData)
+      const response = await clienteAxios.post(URLS.urlUploadImage,formData)
       const DTO = {
         "url":response.data,
-        "typeAsset":1
+        "typeAsset":FILES_TYPES.IMG
       }
       const responseUploadUser = await clienteAxios.post(URLS.createAsset,DTO)
+      console.log({responseUploadUser})
+      if (responseUploadUser.data.status ===0) {
+        successCreate(responseUploadUser.data.asset)
+      }
     } catch (error) {
       console.log({ error })
       alert("Ha ocurrido un error al subir las imagenes")
@@ -137,7 +138,7 @@ export interface Video360Props {
 
 const Video360: React.FC<Video360Props> = () => {
   const classes = useStyles();
-  const {assets} = useContext(AssetsContext)
+  const {assets,successCreate} = useContext(AssetsContext)
 
   const VIDEO_360_DATA = 
     {
@@ -164,13 +165,17 @@ const Video360: React.FC<Video360Props> = () => {
       console.log({selectedFile})
       const formData = new FormData()
       formData.append("upload",selectedFile)
-      const response = await clienteAxios.post('api/upload/4',formData)
+      const response = await clienteAxios.post(URLS.urlUploadVideo360,formData)
       console.log({response})
       const DTO = {
         "url":response.data,
-        "typeAsset":4
+        "typeAsset":FILES_TYPES.VIDEO_360
       }
-      const responseUploadUser = await clienteAxios.post(URLS.createAsset,DTO)
+      const {data} = await clienteAxios.post(URLS.createAsset,DTO)
+      console.log({data})
+      if (data.status ===0) {
+        successCreate(data.asset)
+      }
     } catch (error) {
       console.log({ error })
       alert("Ha ocurrido un error al subir las imagenes")
@@ -181,9 +186,9 @@ const Video360: React.FC<Video360Props> = () => {
   return (
     <>
       <GridList cellHeight={ 100 } className={ classes.gridList } cols={ 7 }>
-        { assets.videos360.map((asset,i) => (
+        { assets.videos360.map((asset:Asset,i) => (
           <GridListTile key={ i } cols={ 1 } style={ { height: 180 } }>
-            <img src={ VIDEO_360_DATA.img }  />
+            <img src={ asset.thumbnail }  />
           </GridListTile>
         )) }
       </GridList>
@@ -206,65 +211,95 @@ export interface VideoProps {
 }
 
 const Video: React.FC<VideoProps> = () => {
-  const VIDEO_DATA = [
-    {
-      img: img_dos,
-      title: 'Image',
-      author: 'author',
-      cols: 2,
-    }
-  ];
-  const {assets} = useContext(AssetsContext)
-
+  const {assets,successCreate} = useContext(AssetsContext)
   const [files,setFiles] = useState([])
+  const [urlVideo, setUrlVideo] = useState<string>("")
+  const [urlThumbNail, setUrlThumbNail] = useState<string>("")
 
   useEffect(() => {
     if (files.length !== 0) {
       setVideo()
     }
   },[files])
-  const uploadVideo = (data) => {
-    setFiles(data)
+  const uploadVideo = (filesUploaded) => {
+    const url = URL.createObjectURL(filesUploaded[0])
+    setUrlVideo(url)
+    setFiles(filesUploaded)
+
+  } 
+
+  const onLoadMetadata= ()=>{
+    const _VIDEO = document.querySelector("#video-element") as HTMLVideoElement
+    const _CANVAS = document.querySelector("#canvas-element") as HTMLCanvasElement
+    _CANVAS.width = _VIDEO.videoWidth;
+    _CANVAS.height = _VIDEO.videoHeight;
   }
+  const onTimeUpdate = () => {
+    const _VIDEO = document.querySelector("#video-element") as HTMLVideoElement
+    const _CANVAS = document.querySelector("#canvas-element") as HTMLCanvasElement
+    const _CANVAS_CTX = _CANVAS.getContext("2d")  
+    _CANVAS_CTX.drawImage(_VIDEO, 0, 0, _VIDEO.videoWidth, _VIDEO.videoHeight);
+    _VIDEO.currentTime = 3
+    setUrlThumbNail(_CANVAS.toDataURL())
+  }
+
   const setVideo = async () => {
     try {
       const selectedFile = files[0];
-      console.log({selectedFile})
       const formData = new FormData()
       formData.append("upload",selectedFile)
-      const response = await clienteAxios.post('api/upload/4',formData)
-      console.log({response})
+      const response = await clienteAxios.post(URLS.urlUploadVideo,formData)
       const DTO = {
         "url":response.data,
-        "typeAsset":3
+        "typeAsset":FILES_TYPES.VIDEO
       }
-      const responseUploadUser = await clienteAxios.post(URLS.createAsset,DTO)
+      const {data} = await clienteAxios.post(URLS.createAsset,DTO)
+      console.log({data})
+      if (data.status ===0) {
+        successCreate(data.asset)
+      }
+
     } catch (error) {
       console.log({ error })
       alert("Ha ocurrido un error al subir las imagenes")
     }
   }
   const classes = useStyles();
-
-
   return (
     <>
-
       <GridList cellHeight={ 100 } className={ classes.gridList } cols={ 7 }>
-        { VIDEO_DATA.map((tile) => (
-          <GridListTile key={ tile.img } cols={ 1 } style={ { height: 180 } }>
-            <img src={ tile.img } alt={ tile.title } />
+        { assets.videos.map((video,i) => (
+          <GridListTile key={ i } cols={ 1 } style={ { height: 180 } }>
+            <img src={ video.thumbnail } alt={ `Video ${i}` } />
           </GridListTile>
         )) }
       </GridList>
       <Paper>
-        <Box display="flex" justifyContent="flex-end" alignItems="center" className={ classes.containerUpload }>
+        <Box display="flex" flexDirection="column" justifyContent="flex-end" alignItems="center" className={ classes.containerUpload }>
           <input onChange={ (e) => uploadVideo(e.target.files) } accept="video/*" id="video_uploader" type="file" />
           <label htmlFor="video_uploader">
             <Button variant="contained" color="primary" className={ classes.uploadButton } component="span">
               Upload video
             </Button>
           </label>
+          {/* <video style={{ 
+            
+            height:'200px',width:'200px',
+      backgroundColor:'red',
+      display: 'hidden',
+      visibility: 'hidden'
+    }}  onTimeUpdate={onTimeUpdate} onLoadedMetadata={onLoadMetadata} id="video-element" src={urlVideo} controls>
+        <source src={urlVideo} type="video/mp4"/>
+    </video>
+    <canvas 
+    style={{ 
+      backgroundColor:'red',
+      display: 'hidden',
+      visibility: 'hidden'
+    }}  id="canvas-element"></canvas>
+    <div id="thumbnail-container">
+         Seek to <select id="set-video-seconds"></select> seconds <a id="download-link" href="#">Download Thumbnail</a>
+    </div> */}
         </Box>
       </Paper>
     </>
@@ -278,7 +313,7 @@ export interface Img360Props {
 const Img360: React.FC<Img360Props> = () => {
 
   const [files,setFiles] = useState([])
-  const {assets} = useContext(AssetsContext)
+  const {assets,successCreate} = useContext(AssetsContext)
 
   useEffect(() => {
     if (files.length !== 0) {
@@ -295,26 +330,20 @@ const Img360: React.FC<Img360Props> = () => {
       const selectedFile = files[0];
       const formData = new FormData()
       formData.append("upload",selectedFile)
-      const response = await clienteAxios.post('api/upload/4',formData)
+      const response = await clienteAxios.post(URLS.urlUploadImage360,formData)
       const DTO = {
         "url":response.data,
-        "typeAsset":1
+        "typeAsset":FILES_TYPES.IMG_360
       }
-      const responseUploadUser = await clienteAxios.post(URLS.createAsset,DTO)
+      const {data} = await clienteAxios.post(URLS.createAsset,DTO)
+      if (data.status ===0) {
+        successCreate(data.asset)
+      }
     } catch (error) {
       console.log({ error })
       alert("Ha ocurrido un error al subir las imagenes")
     }
   }
-
-  const IMG_360_DATA = [
-    {
-      img: img_uno,
-      title: 'Image',
-      author: 'author',
-      cols: 2,
-    },
-  ];
 
   return (
     <Card className={ classes.root }>

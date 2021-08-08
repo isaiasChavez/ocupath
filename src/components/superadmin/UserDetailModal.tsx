@@ -1,4 +1,4 @@
-import React, { MouseEventHandler, useState } from 'react'
+import React, { MouseEventHandler, useContext, useState } from 'react'
 import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
 import List from '@material-ui/core/List'
@@ -16,6 +16,7 @@ import {
 
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import Modal from '@material-ui/core/Modal'
+import UserContext from '../../context/user/user.context'
 
 export interface UserDetailModalProps {
   handleClose: MouseEventHandler
@@ -26,8 +27,9 @@ const UserDetailModal: React.FC<UserDetailModalProps> = ({
   handleClose,
   isOpen,
 }) => {
-  const classes = useStyles()
 
+  const {selectedUser} = useContext(UserContext)
+  const classes = useStyles()
   // getModalStyle is not a pure function, we roll the style only on the first render
   const [startDate, setStartDate] = useState(new Date())
   const [finishDate, setFinishDate] = useState(new Date())
@@ -46,7 +48,8 @@ const UserDetailModal: React.FC<UserDetailModalProps> = ({
           <Grid container spacing={3}>
             <Grid item xs={12} sm={6}>
               <TextField
-                required
+                disabled
+                defaultValue={selectedUser.name}
                 id='firstName'
                 name='firstName'
                 label='First name'
@@ -56,7 +59,9 @@ const UserDetailModal: React.FC<UserDetailModalProps> = ({
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
-                required
+                
+                defaultValue={selectedUser.lastname}
+                disabled
                 id='lastName'
                 name='lastName'
                 label='Last name'
@@ -65,10 +70,16 @@ const UserDetailModal: React.FC<UserDetailModalProps> = ({
               />
             </Grid>
             <Grid item xs={12}>
-              <TextField required id='company' name='company' label='Company' />
+              <TextField
+              defaultValue={selectedUser.name}
+              disabled
+              required id='company' name='company' label='Company' />
             </Grid>
             <Grid item xs={12}>
-              <TextField id='email' name='email' label='Email' />
+              <TextField 
+              disabled
+              defaultValue={selectedUser.email}
+              id='email' name='email' label='Email' />
             </Grid>
           </Grid>
           <Grid container spacing={2}>
@@ -79,7 +90,9 @@ const UserDetailModal: React.FC<UserDetailModalProps> = ({
               <Grid container spacing={3}>
                 <Grid item xs={12}>
                   <TextField
+                  defaultValue={selectedUser.lastSuscription.invitations}
                     required
+                    disabled
                     id='invitations'
                     name='invitations'
                     label='No. of invitations:'
@@ -88,7 +101,8 @@ const UserDetailModal: React.FC<UserDetailModalProps> = ({
                 <Grid item xs={12} sm={3} direction='row'>
                   <MuiPickersUtilsProvider utils={MomentUtils}>
                     <DatePicker
-                      value={finishDate}
+                    disabled
+                      value={selectedUser.lastSuscription.startedAt}
                       onChange={handleDateChange}
                     />
                   </MuiPickersUtilsProvider>
@@ -96,13 +110,17 @@ const UserDetailModal: React.FC<UserDetailModalProps> = ({
                 <Grid item xs={12} sm={3}>
                   <MuiPickersUtilsProvider utils={MomentUtils}>
                     <DatePicker
-                      value={finishDate}
+                    disabled
+                      value={selectedUser.lastSuscription.finishedAt}
+                      contentEditable={false}
                       onChange={handleDateChange}
                     />
                   </MuiPickersUtilsProvider>
                 </Grid>
                 <Grid item xs={8}>
                   <TextField
+                  disabled
+                  defaultValue={selectedUser.lastSuscription.cost}
                     id='totalCost'
                     name='totalCost'
                     label='Total Cost'

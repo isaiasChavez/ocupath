@@ -1,16 +1,6 @@
-import Layout from "../../src/layouts/Layout";
 import Head from "next/head";
-import Avatar from "@material-ui/core/Avatar";
-import Button from "@material-ui/core/Button";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import TextField from "@material-ui/core/TextField";
-import Link from "@material-ui/core/Link";
-import Grid from "@material-ui/core/Grid";
-import Box from "@material-ui/core/Box";
-import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
-import Typography from "@material-ui/core/Typography";
+import {Link,Box,Typography,TextField,Button} from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import Container from "@material-ui/core/Container";
 import { useContext, useEffect, useState } from "react";
 import { verifyEmail } from "../../src/config/utils";
 import { useRouter } from "next/router";
@@ -18,21 +8,10 @@ import { useRouter } from "next/router";
 import UserContext, {
   ReuestSesionDTO,
 } from "../../src/context/user/user.context";
-import { COLORS } from "../../src/types";
+import { COLORS } from "../../src/types/index";
 import HeaderCustom from "../../src/components/general/HeaderCustom";
 
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      { "Copyright © " }
-      <Link color="inherit" href="https://material-ui.com/">
-        Your Website
-      </Link>{ " " }
-      { new Date().getFullYear() }
-      { "." }
-    </Typography>
-  );
-}
+
 
 export interface LoginProps { }
 
@@ -140,7 +119,7 @@ const Login: React.FC<LoginProps> = () => {
       </Box>
           </Typography>
           <form onSubmit={ onSubmit } >
-            <Typography component="h3" variant="h7" style={ { textAlign: 'center' } } >
+            <Typography component="h3"  style={ { textAlign: 'center' } } >
             <Box fontWeight="fontWeightLight" m={ 1 } >
               
 Fill the information below to enter your profile          </Box>

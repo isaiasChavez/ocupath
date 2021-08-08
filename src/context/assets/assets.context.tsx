@@ -1,6 +1,8 @@
 import { IsNotEmpty,IsString,IsUUID } from "class-validator";
 import { createContext } from "react";
-export class CreateAssetDTO {
+
+
+  export class CreateAssetDTO {
   constructor (url: string) {
     this.url = url;
   }
@@ -14,29 +16,14 @@ export class DeleteAssetDto {
   uuid: string;
 }
 export type AssetsResponse = {
-  images: [{
-    typeAsset: { id: number,name: string }
-    url: string,
-    thumbnail:string
-  }],
-  images360: [{
-    typeAsset: { id: number,name: string }
-    url: string,
-    thumbnail:string
-  }],
-  videos: [{
-    typeAsset: { id: number,name: string }
-    url: string,
-    thumbnail:string
-  }],
-  videos360: [{
-    typeAsset: { id: number,name: string }
-    url: string,
-    thumbnail:string
-  }]
+  images: Asset[],
+  images360: Asset[],
+  videos: Asset[],
+  videos360: Asset[]
 }
 
 export type Asset =  {
+  thumbnail: string;
   typeAsset:{ 
     id: number,
     name: string
@@ -47,7 +34,7 @@ export type Asset =  {
 
 interface AssetsContextInterface {
   deleteAsset: Function;
-  create: Function;
+  successCreate: Function;
   getAssetsUser: Function;
   assets:AssetsResponse
 }

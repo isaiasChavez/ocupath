@@ -1,11 +1,8 @@
-
 import React,{ useContext, useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import { Box,Button,makeStyles } from '@material-ui/core';
-import UserDetailModal from '../superadmin/UserDetailModal';
-import InviteModal from './InviteModal';
 import { COLORS,USERS } from '../../types/index'
 import UserContext from '../../context/user/user.context';
 
@@ -29,43 +26,52 @@ interface FormEditProps {
   type: number
 }
 const FormEdit: React.FC<FormEditProps> = ({ type }) => {
-  const {profile} = useContext(UserContext)
+  const {profile,updateName} = useContext(UserContext)
   const classes = useStyles();
   const [isBlocked,setIsBlocked] = useState(true)
- 
+  const [error, setError] = useState("")
+  const [hasError, setHasError] = useState(false)
+  const [name, setName] = useState(profile.name)
+
   const handleUnlock = () => {
     setIsBlocked(!isBlocked)
+    setError("")
+    setHasError(false)
+    setName(profile.name)
+
   }
-  const [dataUser, setDataUser] = useState({
-    name:'',
-    lastName:'',
-    password:'',
-  })
-  const [errors, setErrors] = useState({
-    email: null,
-    password: null,
-  });
-  
   const onChange = (e) => {
-    setDataUser({
-      ...dataUser,
-      [e.target.name]: e.target.value,
-    })
+    setHasError(false)
+    setError("")
+    setName(e.target.value)
   };
 
-  const validateResponse = (res) => {
-    const newErrors = {
-      email: null,
-      password: null,
+  const validateName = () => {
+    let isValid = true
+    if (!name|| name.trim().length===0 ||name.trim().length >=100 ) {
+      setHasError(true)
+      setError("Ingrese un nombre válido")
+      isValid= false
+    }else if (name.trim().includes(" ") ) {
+      setHasError(true)
+      setError("No puedes incluir espacios")
+      isValid= false
     }
-    if (res.status === 1) {
-      newErrors.email = "Email does't exist";
+    else if (name.trim().length<5 ) {
+      setHasError(true)
+      setError("Deben ser al menos 5 caracteres.")
+      isValid= false
     }
-    if (res.status ===2) {
-      newErrors.password = "Invalid password";
-    }
-    setErrors(newErrors);
+    return isValid
   };
+
+  const onSubmit=async ()=>{
+    if (validateName()) {
+      const res = await updateName(name.trim())
+      console.log({res})
+      handleUnlock()
+    }
+  }
 
 
   const Header = () => {
@@ -89,28 +95,19 @@ const FormEdit: React.FC<FormEditProps> = ({ type }) => {
     <div className={ classes.root }>
       <Header />
       <h3 className={ classes.information }>Information <Button onClick={ handleUnlock } variant="contained" color="primary">
-        editar
+        {isBlocked?'Editar':'Cancelar' }
       </Button> </h3>
       <Grid container spacing={ 3 } direction="column"
       >
         <Grid item xs={ 12 } md={ 12 }>
-          <TextField defaultValue={profile.name} required id="cardName" disabled={ isBlocked } label="Name" fullWidth autoComplete="cc-name" />
+          <TextField error={hasError} helperText={error}   datatype="text" onChange={onChange}  value={name} required id="cardName" disabled={ isBlocked } label="Name" fullWidth  />
         </Grid>
         <Grid item xs={ 12 } md={ 12 }>
-          <TextField defaultValue={profile.email} disabled={ isBlocked } required label="Email" fullWidth />
+          <TextField defaultValue={profile.email} disabled={ true } required label="Email" fullWidth />
         </Grid>
-        <Grid item xs={ 12 } md={ 12 }>
-          <TextField
-            required
-            disabled={ isBlocked }
-            fullWidth
-            type="password"
-
-            defaultValue="passwoddrd"
-          />
-        </Grid>
+       
         { !isBlocked && <Grid item xs={ 12 } md={ 12 }>
-          <Button variant="contained" color="primary">
+          <Button onClick={onSubmit}  variant="contained" color="primary">
             salvar
           </Button>
         </Grid> }

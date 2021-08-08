@@ -8,19 +8,21 @@ import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
 import { makeStyles } from "@material-ui/core/styles";
 import { useRouter } from "next/router";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { verifyPassword } from "../../src/config/utils";
 import UserContext, {
   PasswordRecovery,
 } from "../../src/context/user/user.context";
+import { CircularProgress } from "@material-ui/core";
 export interface RecoveryProps {}
 
+// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbiI6eyJlbWFpbCI6ImFkbWluQGlubWVyc3lzLmNvbSIsInR5cGUiOnsiaWQiOjIsIm5hbWUiOiJBRE1JTiJ9LCJhZG1pbiI6eyJpZCI6OCwibmFtZSI6ImFzZGZzZGYiLCJsYXN0bmFtZSI6IkNow6F2ZXoiLCJhdmF0YXIiOiJodHRwczovL2QxYTM3MG5lbWl6YmpxLmNsb3VkZnJvbnQubmV0LzI0YzJmMzk4LTIyY2MtNDY5Mi05ZGI0LTIxYjkyMDc1ZDRmYy5nbGIiLCJ0aHVtYm5haWwiOiJodHRwczovL3JlbmRlcmFwaS5zMy5hbWF6b25hd3MuY29tL0xPWnNia0oyNi5wbmciLCJlbWFpbCI6ImFkbWluQGlubWVyc3lzLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEyJFNoRVQ2NURpMXJZdnlyNm5mcTBaOS5FM3VpLlJMSkQxNlpESm84d1MwR2VaLzRJL09tdUpTIiwiYnVzaW5lc3MiOm51bGwsInV1aWQiOiI2MTY3Yjk5ZS1kZTkxLTRiNzAtODgxYy04YTVhOTBiZjE1YzEiLCJpc0RlbGV0ZWQiOmZhbHNlLCJpc0FjdGl2ZSI6dHJ1ZSwiY3JlYXRlZEF0IjoiMjAyMS0wNi0wM1QwMzowOToyNy4zMDVaIiwidXBkYXRlZEF0IjoiMjAyMS0wOC0wNVQyMToxMTo1Ny43NThaIiwidHlwZSI6eyJpZCI6MiwibmFtZSI6IkFETUlOIn19LCJzdXBlckFkbWluIjpudWxsLCJ1c2VyIjpudWxsLCJpZCI6IjkyNDkxNWJiLWE2ZWUtNGRlOS1iODg5LTAzZmVmNDRhMzNlOCJ9LCJpYXQiOjE2MjgyMTcyNjQsImV4cCI6MTYzNTQxNzI2NH0.13mM21HB2w46B52OwfLBK8sxF7LeI7_tQwHnX1PfWoI
+
 const Recovery: React.FC<RecoveryProps> = () => {
-  const { resetPass } = useContext(UserContext);
+  const { resetPass ,validateToken,loading} = useContext(UserContext);
   const router = useRouter();
-  const { id } = router.query;
-  const token: string = id + "";
-  console.log({ id });
+  const [canViewThis, setCanViewThis] = useState(false)
+  const token:string = router.query.id as string
   const [loginState, setloginState] = useState({
     password: "",
   });
@@ -29,14 +31,30 @@ const Recovery: React.FC<RecoveryProps> = () => {
   });
   const { password } = loginState;
 
-  const onSubmit = (e) => {
+  useEffect(() => {
+    const validate=async()=>{
+      if (token) {
+        const status = await validateToken(token)
+        if (status!==0) {
+          setCanViewThis(false)
+        }else{
+          setCanViewThis(true)
+        }
+        console.log({status})
+      }
+      console.log({status})
+    }
+    validate()
+  }, [token])
+
+  const onSubmit = async (e) => {
     e.preventDefault();
     if (validateFields()) {
-      alert("Si pasó");
-      let dto = new PasswordRecovery(loginState.password, token);
+      let dto = new PasswordRecovery(loginState.password, token);      
       resetPass(dto);
     }
   };
+
   const onChange = (e) => {
     setloginState({
       ...loginState,
@@ -52,11 +70,11 @@ const Recovery: React.FC<RecoveryProps> = () => {
       newErrors.password = "Ingrese un valor";
       isValid = false;
     }
-    if (!verifyPassword(password)) {
-      isValid = false;
-      newErrors.password =
-        "Su contraseña no es segura, trate de incluir al menos un caracter diferente, 8 letras un número y letras mayúsculas y minúsculas.";
-    }
+    // if (!verifyPassword(password)) {
+    //   isValid = false;
+    //   newErrors.password =
+    //     "Su contraseña no es segura, trate de incluir al menos un caracter diferente, 8 letras un número y letras mayúsculas y minúsculas.";
+    // }
 
     if (!isValid) {
       setErrors(newErrors);
@@ -86,6 +104,15 @@ const Recovery: React.FC<RecoveryProps> = () => {
     },
   }));
   const classes = useStyles();
+
+
+  if (loading) {
+    return <CircularProgress color="secondary" />
+  }
+  if (!loading&&!canViewThis) {
+      return <div>No puedes ver esto</div>
+  }
+
   return (
     <Layout>
       <Head>

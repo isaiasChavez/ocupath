@@ -12,8 +12,11 @@ export enum AD_A {
   DELETE_ADM_SUCCESS = "DELETE_ADM_SUCCESS",
   UPDATE_ADM_SUCCESS = "UPDATE_ADM_SUCCESS",
   SUSPEND_ADM_SUCCESS = "SUSPEND_ADM_SUCCESS",
+  ADMIN_CHILD_DETAIL = "ADMIN_CHILD_DETAIL",
 }
 export enum US_A {
+  CHILD_DETAIL="CHILD_DETAIL",
+  UPDATE_NAME="UPDATE_NAME",
   GET_USER_DETAIL="GET_USER_DETAIL",
   REGISTER_SUCCES = "REGISTER_SUCCES",
   DELETE_SUCCESS = "DELETE_SUCCESS",
@@ -37,12 +40,17 @@ export const URLS = {
   reset: "api/sesion/requestreset/", //:email
   confirmpass: "api/user/confirm",
   recoverpass: "api/sesion/recovery",
+  validateToken: "api/sesion/validate/",
   //Administrador
   userDetail: "api/user/detail",
+  userChildDetail: "api/user/userinfo",
+  adminChildDetail: "api/user/admininfo",
   createAdm: "api/sesion/admin",
   updateAdm: "api/user/admin",
-  suspendAdm: "/api/user/suspend",
+  suspendAdm: "/api/user/suspendadmin",
+  suspendUser:'/api/user/suspenduser',
   deleteAdm: "api/user/deleteadmin",
+  updateName: "api/user/name",
   //Usuarios
   create: "api/sesion/user",
   update: "api/user",
@@ -51,6 +59,10 @@ export const URLS = {
   createAsset: "api/asset",
   deleteAsset: "/api/asset",
   assets: "api/asset/",
+  urlUploadImage:'api/upload/1',
+  urlUploadImage360:'api/upload/2',
+  urlUploadVideo:'api/upload/3',
+  urlUploadVideo360:'api/upload/4',
 };
 
 export const COMPANIES =0
@@ -66,6 +78,12 @@ export enum FILES {
   IMG_360 = 1,
   VIDEO = 2,
   VIDEO_360 = 3,
+}
+export enum FILES_TYPES {
+  IMG = 1,
+  IMG_360 = 2,
+  VIDEO = 3,
+  VIDEO_360 = 4,
 }
 
 export enum USERS {
