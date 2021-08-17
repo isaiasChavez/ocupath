@@ -1,4 +1,5 @@
 import Head from "next/head";
+import withAuth from "../../src/auth/WithAuth";
 import Layout from "../../src/layouts/Layout";
 
 export interface HomeProps {}
@@ -15,4 +16,4 @@ const Home: React.FC<HomeProps> = () => {
   );
 };
 
-export default Home;
+export default withAuth(Home);

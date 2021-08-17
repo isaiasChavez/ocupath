@@ -6,6 +6,7 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import theme from "../src/theme";
 import UserState from "../src/context/user/user.state";
 import AssetsState from "../src/context/assets/assets.state";
+import SesionState from "../src/context/sesion/sesion.state";
 export default function MyApp(props) {
   const { Component, pageProps } = props;
 
@@ -19,6 +20,8 @@ export default function MyApp(props) {
 
   return (
     <React.Fragment>
+      <SesionState>
+
       <UserState>
         <AssetsState>
           <Head>
@@ -26,7 +29,7 @@ export default function MyApp(props) {
             <meta
               name="viewport"
               content="minimum-scale=1, initial-scale=1, width=device-width"
-            />
+              />
           </Head>
           <ThemeProvider theme={theme}>
             {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
@@ -35,6 +38,7 @@ export default function MyApp(props) {
           </ThemeProvider>
         </AssetsState>
       </UserState>
+              </SesionState>
     </React.Fragment>
   );
 }

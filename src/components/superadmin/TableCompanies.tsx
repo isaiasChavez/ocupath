@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { getStatus } from '../../config/utils';
 import AskModal from '../general/AskModal';
 import UserDetailModal from './UserDetailModal';
-import {USERS} from '../../types'
+import {USERS,USERS_TYPES} from '../../types'
 import moment from 'moment'
 import UserContext from '../../context/user/user.context';
 import { User } from '../../context/user/user.reducer';
@@ -48,7 +48,6 @@ const TableCompanies: React.FC<TableCompaniesProps> = () => {
     selectUser(dataUser,USERS.ADMIN)
   }
   const onEdit = (dataUser:User)=>{
-  console.log("EDIT")
     handleToggleDetailModal()
     selectUser(dataUser,USERS.ADMIN)
     getAdminChildDetail()
@@ -65,7 +64,13 @@ const TableCompanies: React.FC<TableCompaniesProps> = () => {
     setPage(0)
   }
 
-  const getDataStatus = (status):{color:string,name:string}=>{
+
+  useEffect(() => {
+    console.log("====>",childrens)
+  }, [childrens])
+
+  const getDataStatus = (status):{color:'default'|'primary'|'secondary',name:string}=>{
+
     console.log("==>",{status})
     if (status === 1) {
         return {
@@ -79,9 +84,15 @@ const TableCompanies: React.FC<TableCompaniesProps> = () => {
         name:"INACTIVE"
       }
   }
+  if (status === 3) {
     return {
-      color:"#fff",
-      name:"ACTIVE"
+      color:"secondary",
+      name:"EXPIRED"
+    }
+}
+    return {
+      color:"default",
+      name:"EXPIRED"
     }
   }
 
@@ -90,6 +101,7 @@ const TableCompanies: React.FC<TableCompaniesProps> = () => {
       <UserDetailModal
         isOpen={ isOpenUserDetailModal }
         handleClose={ handleToggleDetailModal }
+        type={USERS_TYPES.ADMIN}
       />
       <AskModal
         isOpen={ isOpenDeleteUserModal }

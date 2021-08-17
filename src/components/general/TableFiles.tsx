@@ -29,26 +29,8 @@ const TableFiles: React.FC<TableFilesProps> = () => {
   const classes = useStyles();
   useEffect(() => {
     getAssetsUser()
-    setCurrentImages(currentTab)
   },[currentTab])
   const {getAssetsUser} = useContext(AssetsContext)
-  
-
-
-  const setCurrentImages = (tab: number) => {
-    // if (tab === FILES.IMG) {
-    //   setCurrentData(tileData)
-    // }
-    // if (tab === FILES.IMG_360) {
-    //   setCurrentData(IMG_360_DATA)
-    // }
-    // if (tab === FILES.VIDEO) {
-    //   setCurrentData(tileData)
-    // }
-    // if (tab === FILES.VIDEO_360) {
-    //   setCurrentData(IMG_360_DATA)
-    // }
-  }
   return (
     <Grid container className={ classes.root } >
       <Grid item xs={ 12 }>
@@ -130,6 +112,70 @@ const Img: React.FC<ImgProps> = () => {
   );
 }
 
+export interface Img360Props {
+
+}
+
+const Img360: React.FC<Img360Props> = () => {
+
+  const [files,setFiles] = useState([])
+  const {assets,successCreate} = useContext(AssetsContext)
+
+  useEffect(() => {
+    if (files.length !== 0) {
+      setImage()
+    }
+  },[files])
+  const classes = useStyles();
+
+  const uploadImage = (data) => {
+    setFiles(data)
+  }
+  const setImage = async () => {
+    try {
+      const selectedFile = files[0];
+      const formData = new FormData()
+      formData.append("upload",selectedFile)
+      const response = await clienteAxios.post(URLS.urlUploadImage360,formData)
+      const DTO = {
+        "url":response.data,
+        "typeAsset":FILES_TYPES.IMG_360
+      }
+      const {data} = await clienteAxios.post(URLS.createAsset,DTO)
+      if (data.status ===0) {
+        successCreate(data.asset)
+      }
+    } catch (error) {
+      console.log({ error })
+      alert("Ha ocurrido un error al subir las imagenes")
+    }
+  }
+
+  return (
+<>
+
+      <GridList cellHeight={ 100 } className={ classes.gridList } cols={ 7 }>
+        { assets.images360.map((asset:Asset) => (
+          
+          <GridListTile key={ asset.url } cols={ 1 } style={ { height: 180 } }>
+            <img src={ asset.url } alt="Imagen 360" />
+          </GridListTile>
+        ))
+      }
+      </GridList>
+      <Paper>
+        <Box display="flex" justifyContent="flex-end" alignItems="center" className={ classes.containerUpload }>
+          <input onChange={ (e) => uploadImage(e.target.files) } accept="image/*" id="image360_uploader" type="file" />
+          <label htmlFor="image360_uploader">
+            <Button variant="contained" color="primary" className={ classes.uploadButton } component="span">
+              Upload img 360
+            </Button>
+          </label>
+        </Box>
+      </Paper>
+      </>
+  );
+}
 
 
 export interface Video360Props {
@@ -138,17 +184,7 @@ export interface Video360Props {
 
 const Video360: React.FC<Video360Props> = () => {
   const classes = useStyles();
-  const {assets,successCreate} = useContext(AssetsContext)
-
-  const VIDEO_360_DATA = 
-    {
-      img: img_tres,
-      title: 'Image',
-      author: 'author',
-      cols: 2,
-    }
-
-  
+  const {assets,successCreate} = useContext(AssetsContext)  
   const [files,setFiles] = useState([])
 
   useEffect(() => {
@@ -306,84 +342,10 @@ const Video: React.FC<VideoProps> = () => {
   );
 }
 
-export interface Img360Props {
-
-}
-
-const Img360: React.FC<Img360Props> = () => {
-
-  const [files,setFiles] = useState([])
-  const {assets,successCreate} = useContext(AssetsContext)
-
-  useEffect(() => {
-    if (files.length !== 0) {
-      setImage()
-    }
-  },[files])
-  const classes = useStyles();
-
-  const uploadImage = (data) => {
-    setFiles(data)
-  }
-  const setImage = async () => {
-    try {
-      const selectedFile = files[0];
-      const formData = new FormData()
-      formData.append("upload",selectedFile)
-      const response = await clienteAxios.post(URLS.urlUploadImage360,formData)
-      const DTO = {
-        "url":response.data,
-        "typeAsset":FILES_TYPES.IMG_360
-      }
-      const {data} = await clienteAxios.post(URLS.createAsset,DTO)
-      if (data.status ===0) {
-        successCreate(data.asset)
-      }
-    } catch (error) {
-      console.log({ error })
-      alert("Ha ocurrido un error al subir las imagenes")
-    }
-  }
-
-  return (
-    <Card className={ classes.root }>
-
-
-      <GridList cellHeight={ 100 } className={ classes.gridList } cols={ 7 }>
-        { assets.images360.map((asset:Asset) => (
-          
-          <GridListTile key={ asset.url } cols={ 1 } style={ { height: 180 } }>
-            <img src={ asset.url } alt="Imagen 360" />
-          </GridListTile>
-        ))
-      }
-      </GridList>
-      <Paper>
-        <Box display="flex" justifyContent="flex-end" alignItems="center" className={ classes.containerUpload }>
-          <input onChange={ (e) => uploadImage(e.target.files) } accept="image/*" id="video360_uploader" type="file" />
-          <label htmlFor="video360_uploader">
-            <Button variant="contained" color="primary" className={ classes.uploadButton } component="span">
-              Upload img 360
-            </Button>
-          </label>
-        </Box>
-      </Paper>
-      </Card>
-  );
-}
-
-
 
 export interface ImgProps {
 
 }
-
-
-
-
-
-
-
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
     display: 'flex',

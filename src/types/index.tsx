@@ -13,6 +13,7 @@ export enum AD_A {
   UPDATE_ADM_SUCCESS = "UPDATE_ADM_SUCCESS",
   SUSPEND_ADM_SUCCESS = "SUSPEND_ADM_SUCCESS",
   ADMIN_CHILD_DETAIL = "ADMIN_CHILD_DETAIL",
+  USER_CHILD_DETAIL = "USER_CHILD_DETAIL",
 }
 export enum US_A {
   CHILD_DETAIL="CHILD_DETAIL",
@@ -23,6 +24,7 @@ export enum US_A {
   UPDATE_SUCCESS = "UPDATE_SUCCESS",
   PAUSE_SUCCESS = "PAUSE_SUCCESS",
   SELECT_USER = "SELECT_USER",
+  UPDATE_PERIOD_SUCCESS="UPDATE_PERIOD_SUCCESS",
   CHILDRENS = "CHILDRENS",
 }
 export enum AS_A {
@@ -31,10 +33,13 @@ export enum AS_A {
   GET_ASSETS = "GET_ASSETS",
 }
 
+
+
+
 export const URLS = {
   login: "api/sesion",
   decifre: "api/sesion/des/", //:token
-  logout: "api/sesion/logout",
+  logout: "api/user/logout",
   invite: "api/user/invite",
   childrens: "api/user/childrens",
   reset: "api/sesion/requestreset/", //:email
@@ -54,6 +59,7 @@ export const URLS = {
   //Usuarios
   create: "api/sesion/user",
   update: "api/user",
+  addPeriod: "api/user/addperiod",
   delete: "api/user/deleteuser",
   //Assets
   createAsset: "api/asset",
@@ -91,6 +97,12 @@ export enum USERS {
   ADMIN = 1,
   GUEST = 2,
 }
+export enum USERS_TYPES {
+  SUPER_ADMIN = 1,
+  ADMIN = 2,
+  GUEST = 3,
+}
+
 
 export const COLORS = {
   gray:'#A8A8A8',

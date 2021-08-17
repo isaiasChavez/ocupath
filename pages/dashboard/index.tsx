@@ -1,5 +1,7 @@
 import Head from "next/head";
 import Layout from "../../src/layouts/Layout";
+import withAuth from "../../src/auth/WithAuth";
+
 
 export interface DashboardProps {}
 
@@ -14,4 +16,4 @@ const Dashboard: React.FC<DashboardProps> = () => {
   );
 };
 
-export default Dashboard;
+export default withAuth(Dashboard);

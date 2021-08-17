@@ -5,7 +5,7 @@ import {
   createStyles,
   makeStyles
 } from '@material-ui/core/styles'
-import {Paper,Button,TablePagination,Chip,Tabs,Tab,TableHead,TableRow,TableContainer,Table,TableBody,TableCell} from '@material-ui/core'
+import {Paper,Button,TablePagination,Chip,Tabs,Tab,TableHead,TableRow,TableContainer,Table,TableBody,TableCell, CircularProgress} from '@material-ui/core'
 import InviteModal from '../general/InviteModal'
 import { COLORS, COMPANIES, GUEST } from '../../types'
 import TableCompanies from './TableCompanies'
@@ -21,7 +21,7 @@ export interface TableSuperAdminProps {}
 
 const TableSuperAdmin: React.FC<TableSuperAdminProps> = () => {
   const [currentTab, setCurrentTab] = useState<number>(COMPANIES)
-  const {getUserChildrens} = useContext(UserContext)
+  const {getUserChildrens,loading} = useContext(UserContext)
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setCurrentTab(newValue)
   }
@@ -93,7 +93,9 @@ const TableSuperAdmin: React.FC<TableSuperAdminProps> = () => {
           {currentTab === GUEST && (
             <TableGuest/>
           )} 
-        </TableContainer>
+        </TableContainer>:
+       
+        
       </div>
     </div>
   )
@@ -116,6 +118,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     height: '100%',
   },
   demo1: {
+    position: 'relative',
     backgroundColor: theme.palette.background.paper,
     width: '100%',
     maxWidth: '100%',

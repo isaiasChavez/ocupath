@@ -1,3 +1,4 @@
+import withAuth from "../../src/auth/WithAuth";
 import Navigation from "../../src/components/Navigation";
 import Layout from "../../src/layouts/Layout";
 
@@ -11,5 +12,5 @@ const Panel: React.FC<PanelProps> = () => {
     </>
   );
 };
+export default withAuth(Panel);
 
-export default Panel;

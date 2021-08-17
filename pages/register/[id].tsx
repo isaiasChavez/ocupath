@@ -20,6 +20,8 @@ import clienteAxios from "../../src/config/axios";
 import { URLS } from "../../src/types/index";
 import { AxiosResponse } from "axios";
 import UserContext from "../../src/context/user/user.context";
+import withAuth from "../../src/auth/WithAuth";
+import { decifreToken } from "../../src/config/utils";
 
 export interface RegisterProps {}
 
@@ -34,9 +36,15 @@ const Register: React.FC<RegisterProps> = () => {
 
   const classes = useStyles();
   useEffect(() => {
+
     if (id) {
       console.log({id})
-      getDataRegister();
+      const status = decifreToken(id as string)
+      if (status.status) {
+        console.log(status.jwtDecoded.token)
+        getDataRegister(status.jwtDecoded.token);
+      }
+
     }
     return () => {};
   }, [id]);
@@ -104,10 +112,11 @@ const Register: React.FC<RegisterProps> = () => {
   }
 
 
-  const getDataRegister = async () => {
+  const getDataRegister = async (token:string) => {
     try {
+
       const response: AxiosResponse = await clienteAxios.get(
-        `${URLS.decifre}${id}`
+        `${URLS.decifre}${token}`
       );
       let { data } = response
       setIsLoading(false)

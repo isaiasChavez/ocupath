@@ -8,61 +8,26 @@ import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 import { useState } from 'react'
 export interface AdminProps { }
-import {
-  secondaryListItems
-} from '../../src/components/superadmin/listItems'
 import { COLORS } from '../../src/types/index'
 import EditUser from '../../src/components/general/EditUser'
 import TableFiles from '../../src/components/general/TableFiles'
 import { USERS } from '../../src/types/index'
 import theme from '../../src/theme'
 import AppBarCms from '../../src/components/general/AppBarCms'
+import withAuth from '../../src/auth/WithAuth'
+import SideBar from '../../src/components/general/SideBar'
 const drawerWidth = 240
-
 const PROFILE = 0
-const USER = 1
 const FILES = 2
-
-const AdminMod = () => {
+const UserMod = () => {
   const classes = useStyles()
   const [currentTab,setCurrentTab] = useState<number>(0)
-
   return (
     <div className={ classes.root }>
       <div className={ classes.inner }>
         <AppBarCms/>
         {/* Barra lateral */ }
-        <Drawer
-          variant="permanent"
-          classes={ {
-            paper: classes.drawerPaper,
-          } }
-        >
-          <List >
-            <div>
-              <ListItem
-                button
-                selected={ currentTab === PROFILE }
-                onClick={ () => {
-                  setCurrentTab(PROFILE)
-                } }
-              >
-                <ListItemText className={ classes.link } primary='Profile' />
-              </ListItem>
-              <ListItem
-                button
-                selected={ currentTab === FILES }
-                onClick={ () => {
-                  setCurrentTab(FILES)
-                } }
-              >
-                <ListItemText className={ classes.link } primary='Files' />
-              </ListItem>
-            </div>
-          </List>
-          <Divider />
-          <List>{ secondaryListItems }</List>
-        </Drawer>
+        <SideBar setCurrentTab={setCurrentTab} currentTab={currentTab} />
         {/* Barra lateral */ }
         <main className={ classes.content }>
           <Grid justify="center" alignItems="center" direction="row" container style={ { height: '85%' } } >
@@ -125,5 +90,5 @@ const useStyles = makeStyles(theme => ({
   },
 
 }))
+export default withAuth(UserMod);
 
-export default AdminMod

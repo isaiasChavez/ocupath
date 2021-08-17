@@ -1,12 +1,10 @@
-import React,{ useContext, useState } from 'react';
+import React,{ useContext, useEffect, useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import { Box,Button,makeStyles } from '@material-ui/core';
 import { COLORS,USERS } from '../../types/index'
 import UserContext from '../../context/user/user.context';
-
-
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
@@ -37,14 +35,16 @@ const FormEdit: React.FC<FormEditProps> = ({ type }) => {
     setIsBlocked(!isBlocked)
     setError("")
     setHasError(false)
-    setName(profile.name)
-
   }
   const onChange = (e) => {
     setHasError(false)
     setError("")
     setName(e.target.value)
   };
+  useEffect(() => {
+      setName(profile.name)
+  }, [])
+
 
   const validateName = () => {
     let isValid = true
@@ -68,7 +68,11 @@ const FormEdit: React.FC<FormEditProps> = ({ type }) => {
   const onSubmit=async ()=>{
     if (validateName()) {
       const res = await updateName(name.trim())
-      console.log({res})
+      if (res.status ===0) {
+        setName(res.name)
+      }else{
+        setName(profile.name)
+      }
       handleUnlock()
     }
   }
@@ -100,14 +104,13 @@ const FormEdit: React.FC<FormEditProps> = ({ type }) => {
       <Grid container spacing={ 3 } direction="column"
       >
         <Grid item xs={ 12 } md={ 12 }>
-          <TextField error={hasError} helperText={error}   datatype="text" onChange={onChange}  value={name} required id="cardName" disabled={ isBlocked } label="Name" fullWidth  />
+          <TextField error={hasError} helperText={error}   datatype="text" onChange={onChange} placeholder={profile.name}  value={name} required id="cardName" disabled={ isBlocked } label="Name" fullWidth  />
         </Grid>
         <Grid item xs={ 12 } md={ 12 }>
-          <TextField defaultValue={profile.email} disabled={ true } required label="Email" fullWidth />
+          <TextField value={profile.email} disabled={ true } required label="Email" fullWidth />
         </Grid>
-       
         { !isBlocked && <Grid item xs={ 12 } md={ 12 }>
-          <Button onClick={onSubmit}  variant="contained" color="primary">
+          <Button  onClick={onSubmit}  variant="contained" color="primary">
             salvar
           </Button>
         </Grid> }

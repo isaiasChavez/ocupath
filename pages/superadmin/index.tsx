@@ -1,10 +1,12 @@
 import { ListItemText,ListItemIcon,ListItem,Drawer,Grid,Divider,Typography,List,Toolbar,AppBar,makeStyles,Link } from '@material-ui/core';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 export interface AdminProps { }
 import { USERS,COLORS } from '../../src/types/index';
 import EditUser from '../../src/components/general/EditUser';
 import TableSuperAdmin from '../../src/components/superadmin/TableSuperAdmin';
 import theme from '../../src/theme';
+import withAuth from '../../src/auth/WithAuth';
+import SesionContext from '../../src/context/sesion/sesion.context';
 const drawerWidth = 240;
 
 
@@ -14,6 +16,9 @@ const USER = 1
 const Admin: React.FC<AdminProps> = () => {
   const classes = useStyles();
   const [currentTab,setCurrentTab] = useState<number>(0)
+
+  const {logout} = useContext(SesionContext)
+
 
   return (
     <div className={ classes.root }>
@@ -55,9 +60,9 @@ const Admin: React.FC<AdminProps> = () => {
           </List>
           <List>
             <ListItem button >
-              <Link href="/">
+              <button onClick={ ()=> logout()}>
                 <ListItemText primary="Logout" />
-              </Link>
+              </button>
             </ListItem>
           </List>
         </Drawer>
@@ -135,4 +140,5 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-export default Admin;
+export default withAuth(Admin);
+

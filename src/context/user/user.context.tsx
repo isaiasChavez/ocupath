@@ -277,22 +277,22 @@ export class UpdateUserDTO {
 }
 
 export class GetUserDetailDTO {
-  constructor(userUuidToGet) {
+  constructor(userUuidToGet: string) {
     this.userUuidToGet = userUuidToGet;
   }
   @IsUUID()
   @IsNotEmpty()
   @IsString()
-  userUuidToGet: number;
+  userUuidToGet: string;
 }
 export class GetAdminDetailDTO {
-  constructor(adminUuidToGet) {
+  constructor(adminUuidToGet:string) {
     this.adminUuidToGet = adminUuidToGet;
   }
   @IsUUID()
   @IsNotEmpty()
   @IsString()
-  adminUuidToGet: number;
+  adminUuidToGet: string;
 }
 export class DeleteOrSuspendAdminUserDTO {
   constructor(adminUuid: string, status: boolean) {
@@ -336,6 +336,7 @@ interface UserContextInterface {
   addUser: Function;
   deleteUser: Function;
   updateUser: Function;
+  addNewPeriod: Function;
   selectUser: Function;
   getUserDetail: Function;
   getUserChildrens:Function;
@@ -349,6 +350,56 @@ interface UserContextInterface {
   type: number;
   loading:boolean
 }
+export class AddNewSuscriptionSuscriptionDTO  {
+  constructor({
+    invitations,
+    cost,
+    startedAt,
+    finishedAt,
+    typeToUpdate,
+    adminUuidToUpdate,
+    guestUuidToUpdate
+  }) {
+    this.invitations = parseInt(invitations);
+    this.cost = parseFloat(cost);
+    this.startedAt = startedAt;
+    this.finishedAt = finishedAt;
+    this.typeToUpdate = typeToUpdate;
+    this.guestUuidToUpdate = guestUuidToUpdate
+    this.adminUuidToUpdate = adminUuidToUpdate
+  }
+  @IsOptional()
+  @IsNumber()
+  invitations: number;
+  @IsOptional()
+  @IsNumber()
+  @IsPositive()
+  cost: number;
+  @IsDateString()
+  @IsString()
+  @IsNotEmpty()
+  startedAt: string| Date;
+  @IsString()
+  @IsDateString()
+  @IsNotEmpty()
+  finishedAt: string | Date;
+  @IsNumber()
+  @IsNotEmpty()
+  typeToUpdate: number;
+
+  @IsUUID()
+  @IsNotEmpty()
+  @IsOptional()
+  adminUuidToUpdate: string;
+
+  @IsUUID()
+  @IsNotEmpty()
+  @IsOptional()
+  guestUuidToUpdate: string;
+}
+
+
+
 
 const UserContext = createContext<UserContextInterface | null>(null);
 

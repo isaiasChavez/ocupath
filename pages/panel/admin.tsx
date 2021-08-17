@@ -1,41 +1,34 @@
 import { makeStyles } from '@material-ui/core/styles'
 import Drawer from '@material-ui/core/Drawer'
-import AppBar from '@material-ui/core/AppBar'
-import Toolbar from '@material-ui/core/Toolbar'
 import List from '@material-ui/core/List'
 import Typography from '@material-ui/core/Typography'
 import Divider from '@material-ui/core/Divider'
 import Grid from '@material-ui/core/Grid'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 export interface AdminProps { }
-import {
-  secondaryListItems
-} from '../../src/components/superadmin/listItems'
 import { COLORS } from '../../src/types/index'
 import EditUser from '../../src/components/general/EditUser'
 import TableAdmin from '../../src/components/admin/TableAdmin'
-
 import TableFiles from '../../src/components/general/TableFiles'
 import { USERS } from '../../src/types/index'
 import theme from '../../src/theme'
 import AppBarCms from '../../src/components/general/AppBarCms'
+import withAuth from '../../src/auth/WithAuth'
+import SesionContext from '../../src/context/sesion/sesion.context'
 const drawerWidth = 240
-
 const PROFILE = 0
 const USER = 1
 const FILES = 2
-
 const AdminModAdmin = () => {
   const classes = useStyles()
   const [currentTab,setCurrentTab] = useState<number>(0)
-
+const {logout} = useContext(SesionContext)
   return (
     <div className={ classes.root }>
       <div className={ classes.inner }>
       <AppBarCms/>
-
         {/* Barra lateral */ }
         <Drawer
           variant="permanent"
@@ -63,7 +56,6 @@ const AdminModAdmin = () => {
               >
                 <ListItemText className={ classes.link } primary='Files' />
               </ListItem>
-
               <ListItem
                 button
                 className={ classes.link }
@@ -77,8 +69,10 @@ const AdminModAdmin = () => {
             </div>
           </List>
           <Divider />
-          <List>{ secondaryListItems }</List>
-        </Drawer>
+          <ListItem button >
+      <ListItemText onClick={()=>logout()} primary="Logout" />
+    </ListItem>
+            </Drawer>
         {/* Barra lateral */ }
         <main className={ classes.content }>
           <Grid justify="center" alignItems="center" direction="row" container style={ { height: '85%' } } >
@@ -148,5 +142,5 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'column'
   },
 }))
+export default withAuth(AdminModAdmin);
 
-export default AdminModAdmin

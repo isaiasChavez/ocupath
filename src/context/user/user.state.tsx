@@ -2,6 +2,7 @@ import { useReducer, useState } from "react";
 import axios, { tokenAuth } from "../../config/axios";
 import { useRouter } from "next/router";
 import UserContext, {
+  AddNewSuscriptionSuscriptionDTO,
   ChangeName,
   ConfirmUserPassword,
   CreateAdminDTO,
@@ -44,7 +45,6 @@ const UserState = ({ children }) => {
   const validateToken = async (token: string) => {
     try {
       setLoading(true)
-      console.log("Validating")
       const url =  `${URLS.validateToken}${token}`
       const { data } = await axios.post( `${url}`, );
       setLoading(false)
@@ -109,13 +109,19 @@ const UserState = ({ children }) => {
   };
   const getUserChildrens = async () => {
     try {
+      setLoading(true)
       const { data } = await axios.post(URLS.childrens);
       console.log({data})
-      dispatch({
-        type: US_A.CHILDRENS,
-        payload: data,
-      });
+      setLoading(false)
+      if (data.status ===0) {
+        dispatch({
+          type: US_A.CHILDRENS,
+          payload: data,
+        });
+        
+      }
     } catch (error) {
+      setLoading(false)
       console.error("** Error geting user childrens ** ", { error });
     }
   };
@@ -139,37 +145,48 @@ const UserState = ({ children }) => {
 
   const getUserDetail = async () => {
     try {
+      console.log("getUserDetail")
+      setLoading(true)
       const { data } = await axios.get(URLS.userDetail);
+      setLoading(false)
       if (data.status ===0) {
         dispatch({ type: US_A.GET_USER_DETAIL, payload: data.profile });
       }
     } catch (error) {
+      setLoading(false)
       console.error("** Error validating addUserAdm ** ", { error });
     }
   };
-
+  
   const getUserChildDetail = async () => {
     try {
+      console.log("==================================")
+      console.log(state.selectedUser,"<===")
       const dto = new GetUserDetailDTO(state.selectedUser.uuid)
       await validateOrReject(dto);
-      const { data } = await axios.post(URLS.createAdm, dto);
-      console.log({data})
+      setLoading(true)
+      const { data } = await axios.post(URLS.userChildDetail, dto);
+      setLoading(false)
+  
       if (data.status ===0) {
-          dispatch({ type: AD_A.ADMIN_CHILD_DETAIL, payload: data });
+        dispatch({ type: AD_A.USER_CHILD_DETAIL, payload: data });
       }
       if (data.status ===2) {
-          alert("El email ya existe")
+        alert("El email ya existe")
       }
+
     } catch (error) {
+      setLoading(false)
       console.error("** Error validating getUserChildDetail ** ", { error });
     }
   };
   const getAdminChildDetail = async () => {
     try {
-      console.log("====",state.selectedUser,'====')
       const dto = new GetAdminDetailDTO(state.selectedUser.uuid)
+
       await validateOrReject(dto);
       const { data } = await axios.post(URLS.adminChildDetail, dto);
+      console.log({data},AD_A.ADMIN_CHILD_DETAIL)
       dispatch({ type: AD_A.ADMIN_CHILD_DETAIL, payload: data });
       // if (data.status ===0) {
       //     alert("Registro exitoso")
@@ -199,7 +216,7 @@ const UserState = ({ children }) => {
     }
   };
 
-  const updateName =async (name:string): Promise<{status:number}> => {
+  const updateName =async (name:string): Promise<{status:number,name:string}> => {
     try {
       const changeNameDTO = new ChangeName(name)
       await validateOrReject(changeNameDTO);
@@ -209,31 +226,14 @@ const UserState = ({ children }) => {
           type: US_A.UPDATE_SUCCESS,
           payload: name,
         });
-        return {status:data.status}
+        return {status:data.status,name}
       }
       return null
     } catch (error) {
       console.error("** Error validating deleteUserAdm ** ", { error });
     }
   }
-  const updateAvatar =async (name:string): Promise<{status:number}> => {
-    try {
-      const changeNameDTO = new ChangeName(name)
-      await validateOrReject(changeNameDTO);
-      const { data } = await axios.post(URLS.updateName, changeNameDTO);
-      if (data.status ===0) {
-        dispatch({
-          type: US_A.UPDATE_SUCCESS,
-          payload: name,
-        });
-        return {status:data.status}
-      }
-      return null
-    } catch (error) {
-      console.error("** Error validating deleteUserAdm ** ", { error });
-    }
-  }
-
+  
 
   const deleteUserAdm = async () => {
     try {
@@ -347,6 +347,25 @@ console.log({deleteUserDTO})
   };
  
 
+  const addNewPeriod = async (addNewSuscriptionSuscriptionDTO: AddNewSuscriptionSuscriptionDTO) => {
+    try {
+
+      setLoading(true)
+      await validateOrReject(addNewSuscriptionSuscriptionDTO);
+      
+      const { data } = await axios.put(URLS.addPeriod, addNewSuscriptionSuscriptionDTO);
+      console.log("addNewPeriod:",{data})
+      if (data.status ===0) {
+        await getUserChildrens()
+      }
+      setLoading(false)
+    } catch (error) {
+      setLoading(false)
+      console.error("** Error validating updateUser ** ", { error });
+    }
+  };
+
+
   const logUser = async (loginDTO: LoginDTO) => {
     try {
       await validateOrReject(loginDTO);
@@ -393,6 +412,7 @@ console.log({deleteUserDTO})
         addUserAdm,
         resetPass,
         suspendUserAdm,
+        addNewPeriod,
         updateUserAdm,
         confirmPass,
         deleteUserAdm,
@@ -429,6 +449,7 @@ const initialState = () => {
         isDeleted:false,
         startedAt:""
       },
+      suscriptionWaiting:null,
       status:0,
       lastname:'',
       suscriptions:[],

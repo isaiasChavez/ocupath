@@ -1,6 +1,7 @@
 import { AxiosResponse } from "axios";
 import { LOG_A } from "../types";
-
+import { tokenAuth } from "./axios";
+import jwt from 'jsonwebtoken'
 export const verifyEmail = (email: string): boolean => {
   if (
     /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i.test(
@@ -12,6 +13,39 @@ export const verifyEmail = (email: string): boolean => {
     return false;
   }
 };
+export const verifyToken = (token: string):{status:any,jwtDecoded:{
+  usuario:{
+    type: number,
+uuid:string,
+  }
+}} => {
+  try {
+    const jwtDecoded = jwt.verify(token, 'ocupath');
+    console.log({jwtDecoded})
+    tokenAuth(token)
+    return {status:true,jwtDecoded}
+  } catch (error) {
+    alert("Error al validar el token")
+    console.log({error})
+    return {status:false,jwtDecoded:null}
+  }
+};
+export const decifreToken = (token: string) => {
+  try {
+    console.log({token})
+    const jwtDecoded = jwt.verify(token, 'ocupath');
+    console.log({jwtDecoded})
+    return {status:true,jwtDecoded}
+  } catch (error) {
+    alert("Error al validar el token")
+    console.log({error})
+    return {status:false,jwtDecoded:null}
+  }
+};
+
+
+
+
 export const verifyPassword = (pass: string) => {
   if (pass.length >= 8) {
     let mayuscula = false;

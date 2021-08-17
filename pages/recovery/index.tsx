@@ -13,9 +13,10 @@ import { verifyPassword } from "../../src/config/utils";
 import UserContext, {
   PasswordRecovery,
 } from "../../src/context/user/user.context";
+import withAuth from "../../src/auth/WithAuth";
 export interface RecoveryProps {}
 
-const Recovery: React.FC<RecoveryProps> = () => {
+const RecoveryIndex: React.FC<RecoveryProps> = () => {
   const { resetPass } = useContext(UserContext);
   const router = useRouter();
   const { id } = router.query;
@@ -124,5 +125,5 @@ const Recovery: React.FC<RecoveryProps> = () => {
     </Layout>
   );
 };
+export default withAuth(RecoveryIndex);
 
-export default Recovery;

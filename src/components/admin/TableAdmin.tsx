@@ -20,7 +20,7 @@ import Button from '@material-ui/core/Button'
 import InviteModal from '../general/InviteModal'
 import UserDetailModal from '../superadmin/UserDetailModal'
 import AskModal from '../general/AskModal'
-import { COMPANIES, GUEST,USERS } from '../../types'
+import { COMPANIES, GUEST,USERS,USERS_TYPES } from '../../types'
 import UserContext from '../../context/user/user.context'
 import moment from 'moment'
 import { User } from '../../context/user/user.reducer'
@@ -93,8 +93,9 @@ const TableAdmin: React.FC<TableAdminProps> = () => {
     selectUser(dataUser,USERS.GUEST)
   }
   const onEdit = (dataUser:User)=>{
-    handleToggleDetailModal()
+    console.log({dataUser})
     selectUser(dataUser,USERS.GUEST)
+    handleToggleDetailModal()
     getUserChildDetail()
   }
   
@@ -110,6 +111,7 @@ const TableAdmin: React.FC<TableAdminProps> = () => {
       <UserDetailModal
         isOpen={isOpenUserDetailModal}
         handleClose={handleCloseUserDetailModal}
+        type={USERS_TYPES.GUEST}
       />
       <AskModal
         isOpen={isOpenDeleteUserModal}
@@ -143,7 +145,7 @@ const TableAdmin: React.FC<TableAdminProps> = () => {
           onChange={handleChange}
           aria-label='ant example'
         >
-          <AntTab label='Companies' />
+          <AntTab label='Users' />
           <Button
             style={{ height: '80%', margin: 'auto' }}
             onClick={handleOpenInviteModal}
@@ -162,14 +164,13 @@ const TableAdmin: React.FC<TableAdminProps> = () => {
                 <StyledTableCell align='center'>
                   Registration Date
                 </StyledTableCell>
-                <StyledTableCell align='center'>Edit</StyledTableCell>
                 <StyledTableCell align='center'>Suspend</StyledTableCell>
                 <StyledTableCell align='center'>Delete</StyledTableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows.map(user => (
-                <StyledTableRow key={user.name}>
+              {rows.map((user,i) => (
+                <StyledTableRow key={user.name+i}>
                   <StyledTableCell align='center' component='th' scope='user'>
                     {user.name}
                   </StyledTableCell>
@@ -179,15 +180,7 @@ const TableAdmin: React.FC<TableAdminProps> = () => {
               <StyledTableCell align='center'>
                           { moment(user.lastSuscription.finishedAt).from(moment())}
                     </StyledTableCell>
-              <StyledTableCell align='right'>
-                      <Chip
-                        size='small'
-                        label='Edit'
-                        clickable
-                        onClick={()=>onEdit(user)}
-                        color='primary'
-                      />
-                    </StyledTableCell>
+              
                     <StyledTableCell align='right'>
                       {' '}
                       <Chip

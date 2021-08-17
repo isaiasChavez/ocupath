@@ -1,10 +1,10 @@
 import { Chip, Table, TableBody, TableHead, TablePagination, TableRow } from '@material-ui/core';
 import moment from 'moment';
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { getStatus } from '../../config/utils';
 import UserContext from '../../context/user/user.context';
 import { StyledTableCell, StyledTableRow } from '../superadmin/TableCompanies';
-import {USERS} from '../../types/'
+import {USERS,USERS_TYPES} from '../../types/'
 import { User } from '../../context/user/user.reducer';
 import UserDetailModal from '../superadmin/UserDetailModal';
 import AskModal from './AskModal';
@@ -27,10 +27,17 @@ const TableGuest: React.FC<TableGuestProps> = () => {
     const [rowsPerPage, setRowsPerPage] = useState(5)
     const [page, setPage] = React.useState(0)
     
-    const {childrens,selectUser,getAdminChildDetail,selectedUser,deleteUser,suspendUser} = useContext(UserContext)
+    const {childrens,selectUser,getUserChildDetail,selectedUser,deleteUser,suspendUser} = useContext(UserContext)
     const rows = childrens.users
 
+    useEffect(() => {
+        console.log("Me estoy renderizando")
+    }, [])
 
+    useEffect(() => {
+        console.log({isOpenUserDetailModal})
+      
+    }, [isOpenUserDetailModal])
 
  
  const handleChangeRowsPerPage = (
@@ -49,6 +56,7 @@ const TableGuest: React.FC<TableGuestProps> = () => {
     setIsOpenSuspendUserModal(!isOpenSuspendUserModal)
   }
   const handleToggleDetailModal = () => {
+    console.log("Togleando",{isOpenUserDetailModal})
     setIsOpenUserDetailModal(!isOpenUserDetailModal)
   }
 
@@ -61,13 +69,13 @@ const TableGuest: React.FC<TableGuestProps> = () => {
     toggleDeleteUserModal()
     selectUser(dataUser,USERS.ADMIN)
   }
-  const onEdit = (dataUser:User)=>{
-  console.log("EDIT")
+  const onEdit =async (dataUser:User)=>{
+    selectUser(dataUser,USERS.GUEST)
     handleToggleDetailModal()
-    selectUser(dataUser,USERS.ADMIN)
-    getAdminChildDetail()
+    await getUserChildDetail()
   }
-  const getDataStatus = (status):{color:string,name:string}=>{
+  const getDataStatus = (status):{color:'default'|'primary'|'secondary',name:string}=>{
+
     console.log("==>",{status})
     if (status === 1) {
         return {
@@ -81,9 +89,15 @@ const TableGuest: React.FC<TableGuestProps> = () => {
         name:"INACTIVE"
       }
   }
+  if (status === 3) {
     return {
-      color:"#fff",
-      name:"ACTIVE"
+      color:"secondary",
+      name:"EXPIRED"
+    }
+}
+    return {
+      color:"default",
+      name:"EXPIRED"
     }
   }
  return (
@@ -91,6 +105,7 @@ const TableGuest: React.FC<TableGuestProps> = () => {
    <UserDetailModal
         isOpen={ isOpenUserDetailModal }
         handleClose={ handleToggleDetailModal }
+        type={USERS_TYPES.GUEST}
       />
       <AskModal
         isOpen={ isOpenDeleteUserModal }

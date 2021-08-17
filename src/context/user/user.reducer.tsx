@@ -27,6 +27,7 @@ export type User = {
   name: string,
   suscriptions: Suscription[],
   lastSuscription: Suscription,
+  suscriptionWaiting:Suscription|null,
   status:Status
 }
 export type Childrens = {
@@ -60,8 +61,11 @@ type Actions =
   | { type: "GET_USER_DETAIL"; payload: any }
   | { type: "CHILD_DETAIL"; payload: any }
   | { type: "ADMIN_CHILD_DETAIL"; payload: any }
-  | { type: "UPDATE_NAME"; payload: any }
+  | { type: "USER_CHILD_DETAIL"; payload: any }
   
+
+  | { type: "UPDATE_NAME"; payload: any }
+  | { type: "UPDATE_PERIOD_SUCCESS"; payload: any }
   | { type: "LOGIN_ERROR"; payload: any }
   | { type: "CLOSE_SESION"; payload: any }
   | { type: "SELECT_USER"; payload: any }
@@ -129,8 +133,8 @@ const userReducer = (state: UserStateType,action: Actions): UserStateType => {
       console.log({ newState })
       return newState
     case US_A.CHILDRENS:
-      console.log(US_A.CHILDRENS,{ payload });
-      return {
+      
+    return {
         ...state,
         profile: payload.profile,
         type: payload.profile.type,
@@ -198,6 +202,8 @@ const userReducer = (state: UserStateType,action: Actions): UserStateType => {
           ...payload.user
         }
       };
+
+      
       case US_A.CHILD_DETAIL:
       console.log(US_A.CHILD_DETAIL,{ payload });
       return {
@@ -212,6 +218,16 @@ const userReducer = (state: UserStateType,action: Actions): UserStateType => {
             ...payload.admin
           }
         };
+        case AD_A.USER_CHILD_DETAIL:
+          console.log("reducer")
+          console.log(AD_A.USER_CHILD_DETAIL,{ payload });
+          return {
+            ...state,
+            selectedUser:{
+              ...state.selectedUser,
+              ...payload.user
+            }
+          };
     case AD_A.DELETE_ADM_SUCCESS:
       console.log(AD_A.DELETE_ADM_SUCCESS,{ payload });
       return {
