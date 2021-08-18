@@ -32,6 +32,7 @@ const UserState = ({ children }) => {
     try {
       await validateOrReject(resetPassword);
       const { data } = await axios.post(URLS.recoverpass, resetPassword);
+      
       console.log({data})
       dispatch({
         type: LOG_A.RESET_PASS_SUCCESS,
