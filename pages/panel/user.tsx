@@ -22,6 +22,19 @@ const FILES = 2
 const UserMod = () => {
   const classes = useStyles()
   const [currentTab,setCurrentTab] = useState<number>(0)
+  const [isEditingAvatar,setIsEditingAvatar] = useState(false)
+
+  const titleHeader = ()=>{
+    if (currentTab === PROFILE) {
+      return "Profile" 
+    }
+    if (currentTab === FILES) {
+      
+      return "Files" 
+    }
+  }
+  
+
   return (
     <div className={ classes.root }>
       <div className={ classes.inner }>
@@ -39,12 +52,12 @@ const UserMod = () => {
                 fontWeight: 'bold',
                 color: 'white'
               } } component="h1" variant="h4"   >
-                Profile
+                   {titleHeader()}
               </Typography>
 
             </Grid>
             <Grid item xs={ 12 } md={ 11 } lg={ 11 } style={ { height: '100%' } } >
-            {currentTab === PROFILE && <EditUser type={USERS.GUEST} />}
+            {currentTab === PROFILE && <EditUser  isEditingAvatar={isEditingAvatar} setIsEditingAvatar={setIsEditingAvatar}type={USERS.GUEST} />}
               { currentTab === FILES && <TableFiles />}
             </Grid>
           </Grid>

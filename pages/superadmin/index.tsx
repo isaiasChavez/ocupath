@@ -19,7 +19,7 @@ const Admin: React.FC<AdminProps> = () => {
 
   const {logout} = useContext(SesionContext)
 
-
+  const [isEditingAvatar, setIsEditingAvatar] = useState(false)
   return (
     <div className={ classes.root }>
       <div className={ classes.inner }>
@@ -73,16 +73,22 @@ const Admin: React.FC<AdminProps> = () => {
               marginTop: theme.spacing(3),
               height: '8%',
             } }>
-              <Typography style={ {
+              {currentTab === PROFILE && <Typography style={ {
                 fontWeight: 'bold',
                 color: 'white'
               } } component="h1" variant="h4"   >
                 Profile
-              </Typography>
-
+              </Typography>}
+              {currentTab === USER && <Typography style={ {
+                fontWeight: 'bold',
+                color: 'white'
+              } } component="h1" variant="h4"   >
+                Users
+              </Typography>}
+              
             </Grid>
             <Grid item xs={ 12 } md={ 11 } lg={ 11 } style={ { height: '100%' } } >
-              { currentTab === PROFILE && <EditUser type={ USERS.SUPER } /> }
+              { currentTab === PROFILE && <EditUser isEditingAvatar={isEditingAvatar} setIsEditingAvatar={setIsEditingAvatar} type={ USERS.SUPER } /> }
               { currentTab === USER && <TableSuperAdmin /> }
             </Grid>
           </Grid>

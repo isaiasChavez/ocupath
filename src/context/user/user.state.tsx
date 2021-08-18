@@ -76,7 +76,7 @@ const UserState = ({ children }) => {
     try {
       await validateOrReject(passwordRecovery);
       console.log({ passwordRecovery });
-      const response = await axios.get(
+      const response = await axios.post(
         `${URLS.reset}${passwordRecovery.email}`
       );
       if (validateResponse(response, LOG_A.RECOVER_PASS_SUCCESS)) {
@@ -132,12 +132,16 @@ const UserState = ({ children }) => {
       const { data } = await axios.post(URLS.createAdm, createUserAdmDTO);
       if (data.status ===0) {
           alert("Registro exitoso")
+          router.push("/login");
       }
       if (data.status ===2) {
           alert("El email ya existe")
       }
-      return data.status
+      if (data.status === 3) {
+        alert("Se ha enviado la invitación pero el correo no existe")
+      }
       dispatch({ type: AD_A.REGISTER_ADM_SUCCES, payload: data });
+      return data.status
     } catch (error) {
       console.error("** Error validating addUserAdm ** ", { error });
     }
@@ -180,10 +184,10 @@ const UserState = ({ children }) => {
       console.error("** Error validating getUserChildDetail ** ", { error });
     }
   };
-  const getAdminChildDetail = async () => {
+  const getAdminChildDetail = async (uuid) => {
     try {
-      const dto = new GetAdminDetailDTO(state.selectedUser.uuid)
-
+      const dto = new GetAdminDetailDTO(uuid)
+      console.log({dto})
       await validateOrReject(dto);
       const { data } = await axios.post(URLS.adminChildDetail, dto);
       console.log({data},AD_A.ADMIN_CHILD_DETAIL)
@@ -450,6 +454,7 @@ const initialState = () => {
         startedAt:""
       },
       suscriptionWaiting:null,
+      totalCost:0,
       status:0,
       lastname:'',
       suscriptions:[],

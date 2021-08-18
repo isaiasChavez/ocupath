@@ -81,13 +81,13 @@ const FormEdit: React.FC<FormEditProps> = ({ type }) => {
   const Header = () => {
     let headerText: string = 'Invitación'
     if (type === USERS.ADMIN) {
-      headerText = 'Administrador'
+      headerText = 'ADMINISTRATOR'
     }
     if (type === USERS.SUPER) {
-      headerText = 'Super administrador'
+      headerText = 'SUPER ADMINISTRATOR'
     }
     if (type === USERS.GUEST) {
-      headerText = 'Invitado'
+      headerText = 'Guest'
     }
     return (<Typography variant="h5" gutterBottom style={ { position: 'relative',left: '-10px',textTransform: 'uppercase' } }>
       <Box fontWeight="fontWeightBold" m={ 1 }>

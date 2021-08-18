@@ -29,6 +29,7 @@ export type User = {
   lastSuscription: Suscription,
   suscriptionWaiting:Suscription|null,
   status:Status
+  totalCost:number|undefined,
 }
 export type Childrens = {
   admins: User[],
@@ -210,7 +211,9 @@ const userReducer = (state: UserStateType,action: Actions): UserStateType => {
         ...state,
       };
       case AD_A.ADMIN_CHILD_DETAIL:
+        console.log("================")
         console.log(AD_A.ADMIN_CHILD_DETAIL,{ payload });
+        console.log("================")
         return {
           ...state,
           selectedUser:{

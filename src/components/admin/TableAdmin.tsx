@@ -39,15 +39,6 @@ const TableAdmin: React.FC<TableAdminProps> = () => {
   const rows = childrens.users
   const [rowsPerPage, setRowsPerPage] = useState(5)
   const [page, setPage] = React.useState(0)
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage)
-  }
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setRowsPerPage(parseInt(event.target.value, 10))
-    setPage(0)
-  }
   const [isOpenInviteModal, setIsOpenInviteModal] = useState<boolean>(false)
   const [isOpenUserDetailModal, setIsOpenUserDetailModal] = useState<boolean>(
     false
@@ -58,6 +49,18 @@ const TableAdmin: React.FC<TableAdminProps> = () => {
   const [isOpenSuspendUserModal, setIsOpenSuspendUserModal] = useState<boolean>(
     false
   )
+  
+  
+
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage)
+  }
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10))
+    setPage(0)
+  }
   const handleCloseInviteModal = () => {
     setIsOpenInviteModal(false)
   }

@@ -48,9 +48,10 @@ const TableCompanies: React.FC<TableCompaniesProps> = () => {
     selectUser(dataUser,USERS.ADMIN)
   }
   const onEdit = (dataUser:User)=>{
+    console.log({dataUser})
     handleToggleDetailModal()
     selectUser(dataUser,USERS.ADMIN)
-    getAdminChildDetail()
+    getAdminChildDetail(dataUser.uuid)
   }
   
 
@@ -106,7 +107,9 @@ const TableCompanies: React.FC<TableCompaniesProps> = () => {
       <AskModal
         isOpen={ isOpenDeleteUserModal }
         handleClose={ toggleDeleteUserModal }
-        handleOk={()=>deleteUserAdm()}
+        handleOk={()=>{
+          toggleDeleteUserModal()
+          deleteUserAdm()}}
         okText='Sure'
         cancelText='Cancel'
         title='Delete User'
@@ -114,7 +117,10 @@ const TableCompanies: React.FC<TableCompaniesProps> = () => {
       />
       <AskModal
         isOpen={ isOpenSuspendUserModal }
-        handleOk={()=>suspendUserAdm()}
+        handleOk={()=>{
+          suspendUserAdm()
+          toggleSuspendUserModal()
+        }}
         handleClose={ toggleSuspendUserModal }
         okText='Sure'
         cancelText='Cancel'

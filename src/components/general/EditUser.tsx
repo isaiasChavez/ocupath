@@ -10,16 +10,13 @@ import UserContext,{ UpdateUserDTO } from '../../context/user/user.context';
 import { Button,Grid,IconButton } from '@material-ui/core';
 import AskModal from './AskModal';
 import axios from 'axios';
-
-
-const EditUser: React.FC<EditUserProps> = ({ type }) => {
+const EditUser: React.FC<EditUserProps> = ({ type ,isEditingAvatar,setIsEditingAvatar}) => {
   const { getUserDetail } = useContext(UserContext)
   const classes = useStyles();
   useEffect(() => {
     getUserDetail()
   },[])
-
-  const [isEditingAvatar,setIsEditingAvatar] = useState(false)
+  
 
   const toggleEditAvatar = () => {
     setIsEditingAvatar(!isEditingAvatar)
@@ -37,6 +34,7 @@ const EditUser: React.FC<EditUserProps> = ({ type }) => {
 const EditCard: React.FC<EditCardProps> = ({ type,toggleEditAvatar }) => {
   const classes = useStyles();
   const { profile } = useContext(UserContext)
+  console.log({profile})
   return (<>
     <CardContent >
       <Avatar src={ profile.thumbnail } alt="Remy Sharp" className={ classes.large } />
@@ -100,7 +98,6 @@ const EditAvatar = ({ toggleEditAvatar }) => {
         handleClose={ onCancelAvatar }
         handleOk={ onSaveAvatar }
         subtitle="Are you sure you want to save these changes?"
-
       />
       <div className={ classes.rootIframe } >
         <div className={ classes.header }>
@@ -109,8 +106,6 @@ const EditAvatar = ({ toggleEditAvatar }) => {
           </IconButton>
         </div>
         <iframe className={ classes.iframe } src={ iframeUrl }>
-
-
         </iframe>
         <div className={ classes.button }>
           { urlAvatar !== null && <Button onClick={ () => setIsModalVisible(true) } variant="contained" href="#contained-buttons">
@@ -174,13 +169,15 @@ const useStyles = makeStyles((theme) => ({
     width: theme.spacing(12),
     height: theme.spacing(12),
     marginBottom: '0.5rem',
-    marginTop: '3rem'
+    marginTop: '3rem',
   },
 
 }));
 
 interface EditUserProps {
-  type: number
+  type: number,
+  isEditingAvatar:boolean,
+  setIsEditingAvatar:Function,
 }
 export interface EditCardProps {
   type: number,

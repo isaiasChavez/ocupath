@@ -89,7 +89,9 @@ export interface DataAdminProps {
 
 const DataAdmin: React.FC<DataAdminProps> = () => {
   const { selectedUser } = useContext(UserContext)
-
+  useEffect(() => {
+      console.log({selectedUser})
+  }, [selectedUser])
   const classes = useStyles()
 
   return (
@@ -178,14 +180,7 @@ const DataAdmin: React.FC<DataAdminProps> = () => {
               />
             </Grid>
             <Grid item xs={ 12 }>
-            <List disablePadding>
-              <ListItem className={ classes.listItem }>
-                <ListItemText primary='Grand Total' />
-                <Typography variant='subtitle1' className={ classes.total }>
-                  $34.06
-                </Typography>
-              </ListItem>
-            </List>
+            
           </Grid>
           </Grid>
         </Grid>
@@ -239,7 +234,7 @@ const DataAdmin: React.FC<DataAdminProps> = () => {
               <ListItem className={ classes.listItem }>
                 <ListItemText primary='Grand Total' />
                 <Typography variant='subtitle1' className={ classes.total }>
-                  $34.06
+                  ${selectedUser.totalCost}
                 </Typography>
               </ListItem>
             </List>
@@ -327,16 +322,7 @@ const DataGuest: React.FC<DataAdminProps> = () => {
                 label='Total Cost'
               />
             </Grid>
-            <Grid item xs={ 12 }>
-            <List disablePadding>
-              <ListItem className={ classes.listItem }>
-                <ListItemText primary='Grand Total' />
-                <Typography variant='subtitle1' className={ classes.total }>
-                  $34.06
-                </Typography>
-              </ListItem>
-            </List>
-          </Grid>
+          
           </Grid>
         </Grid>
       </Grid>
@@ -376,14 +362,7 @@ const DataGuest: React.FC<DataAdminProps> = () => {
               />
             </Grid>
             <Grid item xs={ 12 }>
-            <List disablePadding>
-              <ListItem className={ classes.listItem }>
-                <ListItemText primary='Grand Total' />
-                <Typography variant='subtitle1' className={ classes.total }>
-                  $34.06
-                </Typography>
-              </ListItem>
-            </List>
+          
           </Grid>
           </Grid>
         </Grid>

@@ -23,8 +23,11 @@ const USER = 1
 const FILES = 2
 const AdminModAdmin = () => {
   const classes = useStyles()
+  
   const [currentTab,setCurrentTab] = useState<number>(0)
-const {logout} = useContext(SesionContext)
+  const {logout} = useContext(SesionContext)
+  const [isEditingAvatar,setIsEditingAvatar] = useState(false)
+
   return (
     <div className={ classes.root }>
       <div className={ classes.inner }>
@@ -84,12 +87,12 @@ const {logout} = useContext(SesionContext)
                 fontWeight: 'bold',
                 color: 'white'
               } } component="h1" variant="h4"   >
-                Profile
+                {titleHeader(currentTab)}
               </Typography>
 
             </Grid>
             <Grid item xs={ 12 } md={ 11 } lg={ 11 } style={ { height: '100%' } } >
-              { currentTab === PROFILE && <EditUser type={ USERS.ADMIN } /> }
+              { currentTab === PROFILE && <EditUser isEditingAvatar={isEditingAvatar} setIsEditingAvatar={setIsEditingAvatar} type={ USERS.ADMIN } /> }
               { currentTab === FILES && <TableFiles /> }
               { currentTab === USER && <TableAdmin /> }
             </Grid>
@@ -99,6 +102,21 @@ const {logout} = useContext(SesionContext)
 
     </div>
   )
+}
+const titleHeader = (currentTab)=>{
+  if (currentTab === PROFILE) {
+    return "Profile" 
+  }
+  if (currentTab === FILES) {
+    
+    return "Files" 
+  }
+  if (currentTab === USER) {
+    return "Users" 
+  }
+  if (currentTab === USER) {
+    return "Users" 
+  }
 }
 
 const useStyles = makeStyles(theme => ({
