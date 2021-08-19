@@ -1,100 +1,45 @@
 import { makeStyles } from '@material-ui/core/styles'
-import Drawer from '@material-ui/core/Drawer'
-import List from '@material-ui/core/List'
-import Typography from '@material-ui/core/Typography'
-import Divider from '@material-ui/core/Divider'
 import Grid from '@material-ui/core/Grid'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemText from '@material-ui/core/ListItemText'
-import { useContext, useState } from 'react'
+import {useState } from 'react'
 export interface AdminProps { }
-import { COLORS } from '../../src/types/index'
+import { COLORS} from '../../src/types/index'
 import EditUser from '../../src/components/general/EditUser'
 import TableAdmin from '../../src/components/admin/TableAdmin'
 import TableFiles from '../../src/components/general/TableFiles'
 import { USERS } from '../../src/types/index'
-import theme from '../../src/theme'
 import AppBarCms from '../../src/components/general/AppBarCms'
 import withAuth from '../../src/auth/WithAuth'
-import SesionContext from '../../src/context/sesion/sesion.context'
-const drawerWidth = 240
+import SideBar from '../../src/components/general/SideBar';
 const PROFILE = 0
 const USER = 1
 const FILES = 2
 const AdminModAdmin = () => {
   const classes = useStyles()
-  
   const [currentTab,setCurrentTab] = useState<number>(0)
-  const {logout} = useContext(SesionContext)
   const [isEditingAvatar,setIsEditingAvatar] = useState(false)
 
+
+  const CurretView = ()=>{
+    switch (currentTab) {
+      case PROFILE:
+          return <EditUser isEditingAvatar={isEditingAvatar} setIsEditingAvatar={setIsEditingAvatar} type={ USERS.ADMIN } />
+      case FILES:
+            return  <TableFiles />
+      case USER:
+              return <TableAdmin />
+      default:
+        break;
+    }
+  }
   return (
     <div className={ classes.root }>
       <div className={ classes.inner }>
       <AppBarCms/>
-        {/* Barra lateral */ }
-        <Drawer
-          variant="permanent"
-          classes={ {
-            paper: classes.drawerPaper,
-          } }
-        >
-          <List >
-            <div>
-              <ListItem
-                button
-                selected={ currentTab === PROFILE }
-                onClick={ () => {
-                  setCurrentTab(PROFILE)
-                } }
-              >
-                <ListItemText className={ classes.link } primary='Profile' />
-              </ListItem>
-              <ListItem
-                button
-                selected={ currentTab === FILES }
-                onClick={ () => {
-                  setCurrentTab(FILES)
-                } }
-              >
-                <ListItemText className={ classes.link } primary='Files' />
-              </ListItem>
-              <ListItem
-                button
-                className={ classes.link }
-                selected={ currentTab === USER }
-                onClick={ () => {
-                  setCurrentTab(USER)
-                } }
-              >
-                <ListItemText primary='User' />
-              </ListItem>
-            </div>
-          </List>
-          <Divider />
-          <ListItem button >
-      <ListItemText onClick={()=>logout()} primary="Logout" />
-    </ListItem>
-            </Drawer>
-        {/* Barra lateral */ }
+        <SideBar currentTab={currentTab} setCurrentTab={setCurrentTab} />
         <main className={ classes.content }>
-          <Grid justify="center" alignItems="center" direction="row" container style={ { height: '85%' } } >
-            <Grid item xs={ 12 } md={ 11 } lg={ 11 } justify="center" style={ {
-              marginTop: theme.spacing(3),
-              height: '8%',
-            } }>
-              <Typography style={ {
-                fontWeight: 'bold',
-                color: 'white'
-              } } component="h1" variant="h4"   >
-                {titleHeader(currentTab)}
-              </Typography>
-
-            </Grid>
+          <Grid justify="center" alignItems="center" direction="row" container style={ { height: '88%' } } >
             <Grid item xs={ 12 } md={ 11 } lg={ 11 } style={ { height: '100%' } } >
-              { currentTab === PROFILE && <EditUser isEditingAvatar={isEditingAvatar} setIsEditingAvatar={setIsEditingAvatar} type={ USERS.ADMIN } /> }
-              { currentTab === FILES && <TableFiles /> }
-              { currentTab === USER && <TableAdmin /> }
+              <CurretView/>
             </Grid>
           </Grid>
         </main>
@@ -103,22 +48,6 @@ const AdminModAdmin = () => {
     </div>
   )
 }
-const titleHeader = (currentTab)=>{
-  if (currentTab === PROFILE) {
-    return "Profile" 
-  }
-  if (currentTab === FILES) {
-    
-    return "Files" 
-  }
-  if (currentTab === USER) {
-    return "Users" 
-  }
-  if (currentTab === USER) {
-    return "Users" 
-  }
-}
-
 const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
@@ -127,30 +56,19 @@ const useStyles = makeStyles(theme => ({
   },
   inner: {
     display: 'flex',
-    paddingTop: '4.1rem',
     height: '100%',
     width: '100%',
-  },  
-  link: {
-    color: 'white',
-    fontWeight: 'bold'
-  },
-  drawerPaper: {
-    position: 'static',
-    width: drawerWidth,
-    height: '100%',
-    justifyContent: 'space-between'
-    ,backgroundColor: COLORS.gray,
-  },
-
+  }, 
   content: {
     height: '100%',
     display: 'flex',
     flexDirection: 'column',
+    justifyContent: 'flex-end',
+    paddingBottom: '2rem',
     overflow: 'auto',
     overflowX: 'hidden',
     width: '100%',
-    backgroundColor: COLORS.gray,
+    backgroundColor: COLORS.gray_secondary,
   },
   paper: {
     padding: theme.spacing(2),

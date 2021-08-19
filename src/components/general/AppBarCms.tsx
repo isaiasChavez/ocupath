@@ -10,14 +10,11 @@ const AppBarCms: React.FC<AppBarCmsProps> = () => {
 
  return (  
   <AppBar style={ {
-   backgroundColor: COLORS.gray,
- } }>
-   <Toolbar className={ classes.toolbar }>
-     <Typography component="h1" variant="h6" color="inherit" noWrap className={ classes.title }>
-       OCUPATH
-     </Typography>
-   </Toolbar>
- </AppBar>
+    backgroundColor: COLORS.gray_primary,
+  } }>
+    <Toolbar  >
+    </Toolbar>
+  </AppBar>
  );
 }
 const useStyles = makeStyles(theme => ({

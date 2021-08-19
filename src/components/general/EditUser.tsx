@@ -32,17 +32,10 @@ const EditUser: React.FC<EditUserProps> = ({ type ,isEditingAvatar,setIsEditingA
 
 
 const EditCard: React.FC<EditCardProps> = ({ type,toggleEditAvatar }) => {
-  const classes = useStyles();
   const { profile } = useContext(UserContext)
   console.log({profile})
   return (<>
-    <CardContent >
-      <Avatar src={ profile.thumbnail } alt="Remy Sharp" className={ classes.large } />
-      <button onClick={ toggleEditAvatar } className={ classes.buttonEdit }>
-        Edit Avatar
-      </button>
-    </CardContent>
-    <FormEdit type={ type } />
+    <FormEdit type={ type } toggleEditAvatar={toggleEditAvatar} />
   </>);
 }
 
@@ -125,10 +118,6 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     height: '100%',
     padding: '2rem',
-    borderTop: '2rem solid',
-    borderTopColor: COLORS.GRAY_MEDIUM,
-    borderBottom: '2rem solid',
-    borderBottomColor: COLORS.GRAY_MEDIUM
   },
   rootIframe: {
     display: 'flex',
@@ -151,26 +140,11 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center'
   },
   buttonEdit: {
-    borderColor: 'black',
-    border: 'solid 1px',
-    textalign: 'center',
-    width: '100%',
-    background: 'transparent',
-    borderRadius: '19pt',
-    paddingTop: '0.12rem',
-    cursor: 'pointer',
-    paddingBottom: '0.12rem',
-    '&:hover': {
-      background: '#eeee',
-    },
+    fontSize: '0.75rem',
+    textTransform: 'capitalize'
   },
 
-  large: {
-    width: theme.spacing(12),
-    height: theme.spacing(12),
-    marginBottom: '0.5rem',
-    marginTop: '3rem',
-  },
+  
 
 }));
 

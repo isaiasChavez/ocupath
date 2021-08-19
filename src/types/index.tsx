@@ -1,3 +1,5 @@
+const logo = 'https://ocupath.fra1.digitaloceanspaces.com/app/logo.png'
+
 export enum LOG_A {
   RESET_PASS_SUCCESS = "RESET_PASS_SUCCESS",
   CONFIRM_PASS_SUCCESS = "CONFIRM_PASS_SUCCESS",
@@ -107,4 +109,15 @@ export enum USERS_TYPES {
 export const COLORS = {
   gray:'#A8A8A8',
   GRAY_MEDIUM:'#C4C4C4',
+
+  gray_primary:'#a6abaf',
+  gray_secondary:'#7a8690',
+  gray_admin:'#2b334a',
+  blue_primary:'#000D34',
+  blue_selected:'#76D3F8',
+  selected:'#2c3d71'
+}
+
+export const Images = {
+  logo,
 }

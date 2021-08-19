@@ -43,19 +43,7 @@ const UserMod = () => {
         <SideBar setCurrentTab={setCurrentTab} currentTab={currentTab} />
         {/* Barra lateral */ }
         <main className={ classes.content }>
-          <Grid justify="center" alignItems="center" direction="row" container style={ { height: '85%' } } >
-            <Grid item xs={ 12 } md={ 11 } lg={ 11 } justify="center" style={ {
-              marginTop: theme.spacing(3),
-              height: '8%',
-            } }>
-              <Typography style={ {
-                fontWeight: 'bold',
-                color: 'white'
-              } } component="h1" variant="h4"   >
-                   {titleHeader()}
-              </Typography>
-
-            </Grid>
+          <Grid justify="center" alignItems="center" direction="row" container style={ { height: '88%' } } >
             <Grid item xs={ 12 } md={ 11 } lg={ 11 } style={ { height: '100%' } } >
             {currentTab === PROFILE && <EditUser  isEditingAvatar={isEditingAvatar} setIsEditingAvatar={setIsEditingAvatar}type={USERS.GUEST} />}
               { currentTab === FILES && <TableFiles />}
@@ -76,32 +64,27 @@ const useStyles = makeStyles(theme => ({
   },
   inner: {
     display: 'flex',
-    paddingTop: '4.1rem',
     height: '100%',
     width: '100%',
-  },
-  link: {
-    color: 'white',
-    fontWeight: 'bold'
-  },
-  drawerPaper: {
-    position: 'static',
-    width: drawerWidth,
-    height: '100%',
-    justifyContent: 'space-between'
-    ,backgroundColor: COLORS.gray,
-  },
-
+  }, 
   content: {
     height: '100%',
     display: 'flex',
     flexDirection: 'column',
+    justifyContent: 'flex-end',
+    paddingBottom: '2rem',
     overflow: 'auto',
     overflowX: 'hidden',
     width: '100%',
-    backgroundColor: COLORS.gray,
+    backgroundColor: COLORS.gray_secondary,
   },
-
+  paper: {
+    padding: theme.spacing(2),
+    display: 'flex',
+    overflowX: 'hidden',
+    overflow: 'auto',
+    flexDirection: 'column'
+  },
 }))
 export default withAuth(UserMod);
 

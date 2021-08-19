@@ -61,7 +61,7 @@ const EditSuperAdmin: React.FC<EditSuperAdminProps> = () => {
         </CardContent>
        
       </div>
-     <FormEdit type={0}/>
+     <FormEdit toggleEditAvatar={()=>{}} type={0}/>
     </Card>
   );
 }
