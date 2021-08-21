@@ -105,7 +105,9 @@ const Login: React.FC<LoginProps> = () => {
       height: '100vh',
       display: 'flex',
       justifyContent: 'center',
-      alignItems: 'center'
+      alignItems: 'center',
+      backgroundColor:COLORS.blue_primary,
+      color:'white'
     } }>
       <HeaderCustom/>
       <Head>
@@ -125,7 +127,8 @@ const Login: React.FC<LoginProps> = () => {
 Fill the information below to enter your profile          </Box>
         </Typography>
             <TextField
-              margin="normal"
+            
+              margin="normal" 
               required
               fullWidth
               onChange={ onChange }
@@ -135,10 +138,12 @@ Fill the information below to enter your profile          </Box>
               name="email"
               autoComplete="email"
               helperText={ errors.email }
+              size="small"
               
-             variant="outlined"
+              variant="outlined"
               />
              <TextField
+              size="small"
              variant="outlined"
               margin="normal"
               required
@@ -153,14 +158,22 @@ Fill the information below to enter your profile          </Box>
           <div style={ {
             display:'flex',
             justifyContent: 'flex-end',
-            alignItems:'flex-end',
+            alignItems:'center',
             flexDirection:'column'
           }}>
+            <Link
+              style={ {
+                marginTop:'1rem',
+                width: '100%',
+                textAlign:'center',
+                color:COLORS.blue_secondary,
+                textDecoration:'underline'
+                }}
+              href="login/forgot">Forgot your password?</Link>
 
             <Button
               type="submit"
               variant="contained"
-              color="default"
               className={ classes.submit }
               disableElevation
               >
@@ -168,13 +181,6 @@ Fill the information below to enter your profile          </Box>
                 <span className={ classes.button }>Login</span>
               </Link>
             </Button>
-            <Link
-              style={ {
-                marginTop:'1rem',
-                width: '100%',
-                textAlign:'center'
-                }}
-              href="login/forgot">Forgot password?</Link>
                 </div>
 
           </form>
@@ -201,7 +207,7 @@ export interface HeaderLandingProps {
       margin: theme.spacing(3, 0, 2),
       minWidth: '9rem',
       borderRadius:'3px',
-      backgroundColor:'black'
+      backgroundColor:COLORS.blue_secondary
     },
     bodyHeader: {
       position: 'absolute',

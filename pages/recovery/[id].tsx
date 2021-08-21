@@ -14,6 +14,7 @@ import UserContext, {
   PasswordRecovery,
 } from "../../src/context/user/user.context";
 import { CircularProgress } from "@material-ui/core";
+import { COLORS } from "../../src/types";
 export interface RecoveryProps {}
 
 // eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbiI6eyJlbWFpbCI6ImFkbWluQGlubWVyc3lzLmNvbSIsInR5cGUiOnsiaWQiOjIsIm5hbWUiOiJBRE1JTiJ9LCJhZG1pbiI6eyJpZCI6OCwibmFtZSI6ImFzZGZzZGYiLCJsYXN0bmFtZSI6IkNow6F2ZXoiLCJhdmF0YXIiOiJodHRwczovL2QxYTM3MG5lbWl6YmpxLmNsb3VkZnJvbnQubmV0LzI0YzJmMzk4LTIyY2MtNDY5Mi05ZGI0LTIxYjkyMDc1ZDRmYy5nbGIiLCJ0aHVtYm5haWwiOiJodHRwczovL3JlbmRlcmFwaS5zMy5hbWF6b25hd3MuY29tL0xPWnNia0oyNi5wbmciLCJlbWFpbCI6ImFkbWluQGlubWVyc3lzLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEyJFNoRVQ2NURpMXJZdnlyNm5mcTBaOS5FM3VpLlJMSkQxNlpESm84d1MwR2VaLzRJL09tdUpTIiwiYnVzaW5lc3MiOm51bGwsInV1aWQiOiI2MTY3Yjk5ZS1kZTkxLTRiNzAtODgxYy04YTVhOTBiZjE1YzEiLCJpc0RlbGV0ZWQiOmZhbHNlLCJpc0FjdGl2ZSI6dHJ1ZSwiY3JlYXRlZEF0IjoiMjAyMS0wNi0wM1QwMzowOToyNy4zMDVaIiwidXBkYXRlZEF0IjoiMjAyMS0wOC0wNVQyMToxMTo1Ny43NThaIiwidHlwZSI6eyJpZCI6MiwibmFtZSI6IkFETUlOIn19LCJzdXBlckFkbWluIjpudWxsLCJ1c2VyIjpudWxsLCJpZCI6IjkyNDkxNWJiLWE2ZWUtNGRlOS1iODg5LTAzZmVmNDRhMzNlOCJ9LCJpYXQiOjE2MjgyMTcyNjQsImV4cCI6MTYzNTQxNzI2NH0.13mM21HB2w46B52OwfLBK8sxF7LeI7_tQwHnX1PfWoI
@@ -84,6 +85,7 @@ const Recovery: React.FC<RecoveryProps> = () => {
   const useStyles = makeStyles((theme) => ({
     paper: {
       marginTop: theme.spacing(8),
+
       display: "flex",
       flexDirection: "column",
       alignItems: "center",

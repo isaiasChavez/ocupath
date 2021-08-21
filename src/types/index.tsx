@@ -109,11 +109,12 @@ export enum USERS_TYPES {
 export const COLORS = {
   gray:'#A8A8A8',
   GRAY_MEDIUM:'#C4C4C4',
-
+  gray_header:'#767b8a',
   gray_primary:'#a6abaf',
   gray_secondary:'#7a8690',
   gray_admin:'#2b334a',
   blue_primary:'#000D34',
+  blue_secondary:'#45A0C5',
   blue_selected:'#76D3F8',
   selected:'#2c3d71'
 }

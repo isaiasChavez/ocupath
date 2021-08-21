@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
       left: 0,
       right: 0,
       height: '4.1rem',
-      backgroundColor:COLORS.blue_primary
+      backgroundColor:COLORS.gray_header
     },
      headerRight: {
       display: 'flex',

@@ -15,6 +15,7 @@ import UserContext, {
 } from "../../src/context/user/user.context";
 import HeaderCustom from "../../src/components/general/HeaderCustom";
 import { Box } from "@material-ui/core";
+import { COLORS } from "../../src/types";
 export interface ForgotProps {}
 
 const Forgot: React.FC<ForgotProps> = () => {
@@ -62,18 +63,19 @@ const Forgot: React.FC<ForgotProps> = () => {
    
      inner: {
       width: '34rem',
+      marginTop: '-3rem'
     },
     button: {
       color: "white",
     },
     form: {
       width: "100%", // Fix IE 11 issue.
-      marginTop: theme.spacing(1),
+      marginTop: theme.spacing(5),
     },
     submit: {
       margin: theme.spacing(3, 0, 2),
       minWidth: '10rem',
-      backgroundColor:'black'
+      backgroundColor:COLORS.blue_secondary
     },
   }));
   const classes = useStyles();
@@ -83,7 +85,9 @@ const Forgot: React.FC<ForgotProps> = () => {
       height: '100vh',
       display: 'flex',
       justifyContent: 'center',
-      alignItems: 'center'
+      alignItems: 'center',
+      backgroundColor:COLORS.blue_primary,
+      color:'white'
     } }>
       <Head>
         <title>Ocupath - Login </title>
@@ -92,18 +96,19 @@ const Forgot: React.FC<ForgotProps> = () => {
 
       <div className={classes.inner}>
         <Typography component="h3" variant="h3" style={{textAlign: 'center'}} >
-          <Box fontWeight="fontWeightBold" m={1} >
-            RECOVER PASSWORD
+          <Box fontWeight="fontWeightBold" m={4} >
+            Recover Password
       </Box>
           </Typography>
           <form onSubmit={onSubmit} className={classes.form}>
-          <Typography component="h3"  style={ { textAlign: 'center' } } >
+          <Typography component="h3"   style={ { fontSize:'16px', textAlign: 'center' } } >
             <Box fontWeight="fontWeightLight" m={ 1 } >
               
             Enter the email in which you want to receive your password 
           </Box>
         </Typography>
             <TextField
+            size="small"
               margin="normal"
               required
               fullWidth
@@ -120,7 +125,7 @@ const Forgot: React.FC<ForgotProps> = () => {
             <div style={ {
             display:'flex',
             justifyContent: 'flex-end',
-            alignItems:'flex-end',
+            alignItems:'center',
             flexDirection:'column'
           }}>
 
