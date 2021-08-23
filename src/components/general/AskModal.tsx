@@ -4,14 +4,14 @@ import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
+import { Box } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     paper: {
       margin: '0 auto 0 auto',
-      maxWidth: 1280,
-      width:'40%',
-      height:'50%',
+      minHeight:'200px',
+      minWidth:'392px',
       backgroundColor: theme.palette.background.paper,
       padding: theme.spacing(2, 4, 3),
     },
@@ -36,31 +36,28 @@ const AskModal: React.FC<AskModalProps> = ({handleClose,handleOk,isOpen,title,su
 
   
   const body = (
-    <div  className={classes.paper}>
-      <Typography variant="h6" gutterBottom>
+    <Box display="flex" flexDirection="column" borderRadius={8} justifyContent="space-around" className={classes.paper}>
+      <Box fontWeight='fontWeightBold'  fontSize={32} textAlign="center" my={2}>
         {title}
-      </Typography>
-      <Grid container spacing={3}    direction="column"
->
-        <Grid item xs={12} md={12}>
-         <Typography variant="h6" gutterBottom>
+      </Box>
+        <Box fontSize={22}  width="80%" mx="auto" mb={4} textAlign="center">
         {subtitle}
-      </Typography>
-        </Grid>
-     
-     
-        <Grid container spacing={2} justify="flex-end" alignContent="flex-end"  >
-         <Grid item>
-              <Button size="medium" onClick={handleClose} variant="contained">{cancelText}</Button>
-         </Grid>
-          <Grid item>
-              <Button size="medium" color="primary" onClick={handleOk} variant="contained">{okText}</Button>
-         </Grid>
-        </Grid>
-
-   
-      </Grid>
-    </div>
+        </Box>
+        <Box display='flex' justifyContent='space-around'>
+          <Box mr={2} width='100%'>
+              <Button size="medium"
+                            color='secondary'
+              variant='outlined'
+               fullWidth={true} onClick={handleClose} >{cancelText}</Button>
+         </Box>
+          <Box ml={2} width='100%'>
+              <Button size="medium" 
+               color='secondary'
+              
+              fullWidth={true}  onClick={handleOk} variant="contained">{okText}</Button>
+         </Box>
+        </Box>
+    </Box>
   );
 
  

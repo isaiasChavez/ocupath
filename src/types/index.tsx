@@ -116,7 +116,8 @@ export const COLORS = {
   blue_primary:'#000D34',
   blue_secondary:'#45A0C5',
   blue_selected:'#76D3F8',
-  selected:'#2c3d71'
+  selected:'#2c3d71',
+  blue_header:'#32406a'
 }
 
 export const Images = {

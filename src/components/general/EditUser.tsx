@@ -1,22 +1,20 @@
 import React,{ useContext,useEffect,useState } from 'react';
-import { makeStyles,useTheme } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
 import ArrowBack from '@material-ui/icons/ArrowBack';
-import Avatar from '@material-ui/core/Avatar';
 import FormEdit from './FormEdit';
 import { COLORS } from '../../types';
 import UserContext,{ UpdateUserDTO } from '../../context/user/user.context';
-import { Button,Grid,IconButton } from '@material-ui/core';
+import { Button,IconButton } from '@material-ui/core';
 import AskModal from './AskModal';
 import axios from 'axios';
 const EditUser: React.FC<EditUserProps> = ({ type ,isEditingAvatar,setIsEditingAvatar}) => {
   const { getUserDetail } = useContext(UserContext)
   const classes = useStyles();
+  
   useEffect(() => {
     getUserDetail()
   },[])
-  
 
   const toggleEditAvatar = () => {
     setIsEditingAvatar(!isEditingAvatar)
@@ -24,21 +22,11 @@ const EditUser: React.FC<EditUserProps> = ({ type ,isEditingAvatar,setIsEditingA
 
   return (
     <Card className={ classes.root }>
-      { !isEditingAvatar && <EditCard toggleEditAvatar={ toggleEditAvatar } type={ type } /> }
+      { !isEditingAvatar && <FormEdit toggleEditAvatar={ toggleEditAvatar } type={ type } /> }
       { isEditingAvatar && <EditAvatar toggleEditAvatar={ toggleEditAvatar } /> }
     </Card>
   );
 }
-
-
-const EditCard: React.FC<EditCardProps> = ({ type,toggleEditAvatar }) => {
-  const { profile } = useContext(UserContext)
-  console.log({profile})
-  return (<>
-    <FormEdit type={ type } toggleEditAvatar={toggleEditAvatar} />
-  </>);
-}
-
 
 
 const EditAvatar = ({ toggleEditAvatar }) => {

@@ -129,7 +129,6 @@ const userReducer = (state: UserStateType,action: Actions): UserStateType => {
           ...state.profile,
           ...payload
         },
-        type: payload.type,
       };
       console.log({ newState })
       return newState

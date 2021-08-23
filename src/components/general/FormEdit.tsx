@@ -1,64 +1,69 @@
-import React,{ useContext, useEffect, useState } from 'react';
-import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid';
-import TextField from '@material-ui/core/TextField';
-import { Avatar, Box,Button,makeStyles, withStyles } from '@material-ui/core';
+import React, { useContext, useEffect, useState } from 'react'
+import {
+  Typography,
+  TextField,
+  Grid,
+  Avatar,
+  Box,
+  Button,
+  makeStyles,
+  withStyles
+} from '@material-ui/core'
 import { USERS } from '../../types/index'
-import EditIcon from '@material-ui/icons/Edit';
-import UserContext from '../../context/user/user.context';
+import EditIcon from '@material-ui/icons/Edit'
+import UserContext from '../../context/user/user.context'
 
 interface FormEditProps {
-  type: number,
-  toggleEditAvatar:Function
+  type: number
+  toggleEditAvatar: Function
 }
-const FormEdit: React.FC<FormEditProps> = ({ type,toggleEditAvatar }) => {
-  const {profile,updateName} = useContext(UserContext)
-  const classes = useStyles();
-  const [isBlocked,setIsBlocked] = useState(true)
-  const [error, setError] = useState("")
+
+const FormEdit: React.FC<FormEditProps> = ({ type, toggleEditAvatar }) => {
+  const { profile, updateName } = useContext(UserContext)
+  const classes = useStyles()
+  const [isBlocked, setIsBlocked] = useState(true)
+  const [error, setError] = useState('')
   const [hasError, setHasError] = useState(false)
   const [name, setName] = useState(profile.name)
 
   const handleUnlock = () => {
     setIsBlocked(!isBlocked)
-    setError("")
+    setError('')
     setHasError(false)
   }
-  const onChange = (e) => {
+  const onChange = e => {
     setHasError(false)
-    setError("")
+    setError('')
     setName(e.target.value)
-  };
+  }
   useEffect(() => {
-      setName(profile.name)
+    setName(profile.name)
   }, [])
-
 
   const validateName = () => {
     let isValid = true
-    if (!name|| name.trim().length===0 ||name.trim().length >=100 ) {
+    if (!name || name.trim().length === 0 || name.trim().length >= 100) {
       setHasError(true)
-      setError("Ingrese un nombre válido")
-      isValid= false
-    }else if (name.trim().includes(" ") ) {
+      setError('Ingrese un nombre válido')
+      isValid = false
+    } else if (name.trim().includes(' ')) {
       setHasError(true)
-      setError("No puedes incluir espacios")
-      isValid= false
-    }
-    else if (name.trim().length<5 ) {
+      setError('No puedes incluir espacios')
+      isValid = false
+    } else if (name.trim().length < 5) {
       setHasError(true)
-      setError("Deben ser al menos 5 caracteres.")
-      isValid= false
+      setError('Deben ser al menos 5 caracteres.')
+      isValid = false
     }
     return isValid
-  };
+  }
 
-  const onSubmit=async ()=>{
+  const onSubmit = async () => {
     if (validateName()) {
       const res = await updateName(name.trim())
-      if (res.status ===0) {
+      if (res.status === 0) {
         setName(res.name)
-      }else{
+      } else {
         setName(profile.name)
       }
       handleUnlock()
@@ -75,94 +80,144 @@ const FormEdit: React.FC<FormEditProps> = ({ type,toggleEditAvatar }) => {
     if (type === USERS.GUEST) {
       headerText = 'Guest'
     }
-    return (<Typography variant="h4" gutterBottom style={ { position: 'relative',left: '-10px',fontSize:'1.5rem' } }>
-      <Box fontWeight="fontWeightBold" m={ 1 }>
-        { headerText }
-      </Box>
-    </Typography>)
+    return (
+      <Typography
+        gutterBottom
+      >
+        <Box fontSize={32} fontWeight='fontWeightBold' >
+          {headerText}
+        </Box>
+      </Typography>
+    )
   }
   return (
-    <div className={ classes.root }>
+    <Box width={'100%'} className={classes.root} pl={3}>
       <Header />
-      <Box display="flex" alignItems="center">
-
-      <h3 className={ classes.information }>Information
-       </h3>
-
-
+      <Box height='6%' display='flex' alignItems='center' fontSize={18} fontWeight="fontWeightBold">
+        Information
       </Box>
-       <h4 className={ classes.subtitle }>Avatar
-       </h4>
-      <Avatar src={ profile.thumbnail } alt="Remy Sharp" className={ classes.large } />
-      <Button variant="contained" onClick={ ()=>toggleEditAvatar() } className={ classes.buttonEdit } >
-        Edit Avatar
-      </Button>
-      <Box display="flex" alignItems="center">
+      <Box height='94%' minWidth='12rem' width='14%'>
+        <Box
+          display='flex'
+          justifyContent='space-between'
+          flexDirection='column'
+          alignItems='center'
+        >
+          <Box textAlign='left' width='100%' fontSize={16} fontWeight='fontWeightBold'    >
+            <h4 className={classes.information}>Avatar</h4>
+          </Box>
+          <Avatar
+            src={profile.thumbnail}
+            alt='Remy Sharp'
+            className={classes.large}
+          />
+          <Button
+          
+            fullWidth={true}
+            variant='outlined'
+            color='secondary'
+            onClick={() => toggleEditAvatar()}
+            className={classes.buttonEdit}
+            size='large'
+          >
+            Edit Avatar
+          </Button>
+        </Box>
+        <Box
+          display='flex'
+          flexDirection='column'
+          justifyContent='space-between'
+        >
+          <Box my={1} alignItems='center' display='flex' >
+            <h3 className={classes.information}>
+              Personal information
+              <EditIcon
+                onClick={handleUnlock}
+                color='primary'
+                style={{
+                  marginLeft: '0.4rem',
+                  position:'relative',
+                  fontSize:'1.2rem',
+                  cursor: 'pointer'
+                }}
+              />
+            </h3>
+          </Box>
+          <Box>
+            <Box mb={4}>
+              <TextField
+              size="small"
+              error={hasError}
+              helperText={error}
+                datatype='text'
+                onChange={onChange}
+                placeholder={profile.name}
+                value={name}
+                required
+                id='cardName'
+                variant='outlined'
+                disabled={isBlocked}
+                label='NickName'
+                fullWidth
+                />
+            </Box>
+            <TextField
+                size="small"
+              value={profile.email}
+              variant='outlined'
+              disabled={true}
+              required
+              label='E-mail'
+              fullWidth
+            />
+          </Box>
+        </Box>
 
-      <h3 className={ classes.information }>Personal information
-      <EditIcon onClick={ handleUnlock } color="primary" style={{
-        marginLeft:'0.5rem',
-        cursor:'pointer'
-      }} />
-       </h3>
-
-      </Box>
-      <Grid container spacing={ 3 } direction="column"
-      >
-        <Grid item xs={ 12 } md={ 12 }>
-          <TextField error={hasError} helperText={error}   datatype="text" onChange={onChange} placeholder={profile.name}  value={name} required id="cardName" variant="outlined" disabled={ isBlocked } label="Name" fullWidth  />
-        </Grid>
-        <Grid item xs={ 12 } md={ 12 }>
-          <TextField value={profile.email} variant="outlined" disabled={ true } required label="Email" fullWidth />
-        </Grid>
-        { !isBlocked && <Grid item xs={ 12 } md={ 12 }>
-          <ButtonSave  onClick={onSubmit}  variant="contained" color="primary">
+        {!isBlocked && (
+        <Box mt={5}>
+          <ButtonSave  fullWidth={true} size="large" onClick={onSubmit} variant='contained' color='secondary'>
             Save
           </ButtonSave>
-        </Grid> }
-
-      </Grid>
-    </div>
-  );
+        </Box>
+        )}
+      </Box>
+    </Box>
+  )
 }
 
 const ButtonSave = withStyles({
   root: {
     textTransform: 'none',
     fontSize: '0.9rem',
-    minWidth:'5rem',
-    width:'5rem'
-  },
-})(Button);
+    color:'white'
+  }
+})(Button)
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
     height: '100%',
-    paddingLeft: '2rem',
     flexDirection: 'column'
   },
   information: {
-    marginTop: '-0.4rem',
-    display: 'flex',
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
+    fontSize: '0.9rem'
   },
- subtitle:{
-  fontsize: '1.25rem',
-  textTransform:'capitalize',
- },
+  subtitle: {
+    fontsize: '1.5rem',
+    textTransform: 'capitalize'
+  },
   large: {
     marginTop: '-0.2rem',
-    width: theme.spacing(12),
-    height: theme.spacing(12),
-    marginBottom: '0.5rem',
+    width: theme.spacing(15),
+    height: theme.spacing(15),
+    marginBottom: '0.5rem'
   },
   buttonEdit: {
-    fontSize: '0.75rem',
-    width: theme.spacing(12),
     textTransform: 'capitalize',
-    marginBottom: '2rem',
-    marginTop:'0.5rem'
-  },
-}));
+    marginTop: '0.5rem',
+    borderWidth: '2px',
+    fontWeight: 'bold',
+  }
+}))
 export default FormEdit

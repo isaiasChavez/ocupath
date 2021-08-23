@@ -1,11 +1,12 @@
 import {
   AppBar,
   Button,
+  Container,
   IconButton,
   Toolbar,
   Typography,
 } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles,Box } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import Link from "next/link";
 
@@ -37,7 +38,11 @@ export default function Home() {
 
 
   return (
-    <AppBar position="static">
+    <div style={{ 
+      backgroundColor:'green',
+      height:'100vh'
+    }}>
+    <AppBar position="fixed">
       <Toolbar>
         <div className={classes.title}>
         <Typography variant="h6" >
@@ -76,7 +81,20 @@ export default function Home() {
         </div>
       </Toolbar>
     </AppBar>
+
+    <Box  height="100%" pt={10} bgcolor="primary.secondary" color="primary.main" display="flex">
+          <Box>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque asperiores amet officiis ullam esse, dolore architecto hic deserunt dolorum quia.
+          </Box>
+          <Box>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque asperiores amet officiis ullam esse, dolore architecto hic deserunt dolorum quia.
+          </Box>
+          <Box>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque asperiores amet officiis ullam esse, dolore architecto hic deserunt dolorum quia.
+          </Box>
+    </Box>
      
+    </div>
   );
 }
 

@@ -1,55 +1,65 @@
-import React, { MouseEventHandler, useContext, useState } from 'react';
-import { Button, Typography, TextField, Grid } from '@material-ui/core';
-import MomentUtils from '@date-io/moment';
-import { COMPANIES, GUEST } from '../../types';
+import React, { MouseEventHandler, useContext, useState } from 'react'
+import { Button, Typography, TextField, Grid, Box } from '@material-ui/core'
+import MomentUtils from '@date-io/moment'
+import { COMPANIES, GUEST } from '../../types'
 import moment from 'moment'
 import {
   DatePicker,
   MuiPickersUtilsProvider,
-} from '@material-ui/pickers';
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
-import Modal from '@material-ui/core/Modal';
-import { NewUserDTO, NewUserErrors } from '../../types/types';
-import { verifyEmail } from '../../config/utils';
-import UserContext from '../../context/user/user.context';
+  KeyboardDatePicker
+} from '@material-ui/pickers'
+import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
+import Modal from '@material-ui/core/Modal'
+import { NewUserDTO, NewUserErrors } from '../../types/types'
+import { verifyEmail } from '../../config/utils'
+import UserContext from '../../context/user/user.context'
 
 export interface InviteModalProps {
-  handleOpen: MouseEventHandler,
-  handleClose: MouseEventHandler,
-  isOpen: boolean,
+  handleOpen: MouseEventHandler
+  handleClose: MouseEventHandler
+  isOpen: boolean
   type: number
 }
-const InviteModal: React.FC<InviteModalProps> = ({ handleOpen, handleClose, isOpen, type }) => {
+const InviteModal: React.FC<InviteModalProps> = ({
+  handleOpen,
+  handleClose,
+  isOpen,
+  type
+}) => {
   const MIN_INVITATIONS = 1
   const MAX_INVITATIONS = 4
 
-  const [startedAt, setStartDate] = useState(new Date());
-  const [finishedAt, setFinishDate] = useState(new Date());
+  const [startedAt, setStartDate] = useState(new Date())
+  const [finishedAt, setFinishDate] = useState(new Date())
   const [dataNewUser, setDataNewUser] = useState<NewUserDTO>(initialState(type))
   const [errors, setErrors] = useState<NewUserErrors>(initialErrors())
   const { inviteUser } = useContext(UserContext)
 
-  
-
-  const handleDateStartChange = (e) => {
+  const handleDateStartChange = e => {
     setErrors(initialErrors())
     if (moment(e.format()).isAfter(finishedAt)) {
-      setErrors({ ...errors, startedAt: `La fecha debe ser anterior a la final.` });
+      setErrors({
+        ...errors,
+        startedAt: `La fecha debe ser anterior a la final.`
+      })
     } else {
       setStartDate(e.format())
     }
   }
-  const handleDateEndChange = (e) => {
+  const handleDateEndChange = e => {
     setErrors(initialErrors())
     console.log({ e }, e.format())
     if (moment(e.format()).isBefore(startedAt)) {
-      setErrors({ ...errors, finishedAt: `La fecha debe ser después al inicio.` });
+      setErrors({
+        ...errors,
+        finishedAt: `La fecha debe ser después al inicio.`
+      })
     } else {
       setFinishDate(e.format())
     }
   }
 
-  const onChangeInput = (e) => {
+  const onChangeInput = e => {
     setErrors(initialErrors())
     setDataNewUser({
       ...dataNewUser,
@@ -57,22 +67,24 @@ const InviteModal: React.FC<InviteModalProps> = ({ handleOpen, handleClose, isOp
     })
   }
 
-
   const isCommondFieldsValid = (): boolean => {
     let isValid = true
-    console.log("Validando comunes")
+    console.log('Validando comunes')
     let newErrors: NewUserErrors = { ...errors }
     if (!verifyEmail(dataNewUser.email)) {
-      console.log("No es válido")
-      newErrors.email = "Ingrese un valor válido";
-      console.log("Validando email")
+      console.log('No es válido')
+      newErrors.email = 'Ingrese un valor válido'
+      console.log('Validando email')
       isValid = false
     }
     if (!moment(startedAt).isValid() || moment(startedAt).isAfter(finishedAt)) {
       newErrors.startedAt = `Debes seleccionar una fecha`
       isValid = false
     }
-    if (!moment(finishedAt).isValid() || moment(finishedAt).isBefore(startedAt)) {
+    if (
+      !moment(finishedAt).isValid() ||
+      moment(finishedAt).isBefore(startedAt)
+    ) {
       newErrors.finishedAt = `Debes seleccionar una fecha`
       isValid = false
     }
@@ -80,7 +92,6 @@ const InviteModal: React.FC<InviteModalProps> = ({ handleOpen, handleClose, isOp
       newErrors.finishedAt = `Las fechas deben ser distintas`
       newErrors.startedAt = `Las fechas deben ser distintas`
       isValid = false
-
     }
     if (dataNewUser.cost <= 0) {
       newErrors.cost = `No puedes colocar este valor`
@@ -94,23 +105,25 @@ const InviteModal: React.FC<InviteModalProps> = ({ handleOpen, handleClose, isOp
 
   const validateCompany = (): boolean => {
     let isValid = true
-    console.log("Validando compañyu")
+    console.log('Validando compañyu')
     const newErrors: NewUserErrors = {
       ...errors
     }
     if (dataNewUser.company.trim().length === 0) {
-      newErrors.company = "Ingrese un valor válido"
+      newErrors.company = 'Ingrese un valor válido'
       isValid = false
     }
     if (dataNewUser.invitations <= MIN_INVITATIONS) {
-      newErrors.invitations = `Ingrese un mínimo de ${MIN_INVITATIONS} ${MIN_INVITATIONS === 1 ? 'invitación.' : 'invitaciones.'}`
+      newErrors.invitations = `Ingrese un mínimo de ${MIN_INVITATIONS} ${
+        MIN_INVITATIONS === 1 ? 'invitación.' : 'invitaciones.'
+      }`
       isValid = false
     }
     if (dataNewUser.invitations > MAX_INVITATIONS) {
       newErrors.invitations = `Solo puedes escoger hasta ${MAX_INVITATIONS} invitaciones.`
       isValid = false
     }
-    console.log("validateCompany:", { newErrors })
+    console.log('validateCompany:', { newErrors })
     if (!isValid) {
       setErrors(newErrors)
     }
@@ -120,15 +133,15 @@ const InviteModal: React.FC<InviteModalProps> = ({ handleOpen, handleClose, isOp
   const validateGuest = (): boolean => {
     let isValid = true
     if (dataNewUser.name.trim().length === 0) {
-      setErrors({ ...errors, name: "Ingrese un valor válido" });
+      setErrors({ ...errors, name: 'Ingrese un valor válido' })
       isValid = false
     }
-    console.log("validateGuest:",{isValid})
+    console.log('validateGuest:', { isValid })
 
     return isValid
   }
 
-  const handleSend =async () => {
+  const handleSend = async () => {
     const userToValid = type === COMPANIES ? validateCompany : validateGuest
     if (isCommondFieldsValid() && userToValid()) {
       setErrors(initialErrors())
@@ -139,108 +152,251 @@ const InviteModal: React.FC<InviteModalProps> = ({ handleOpen, handleClose, isOp
       }
       await inviteUser(inviteDTO)
       setDataNewUser(initialState(type))
-      
     } else {
       alert('Invalid!')
     }
   }
-  const classes = useStyles();
+  const classes = useStyles()
 
   const Header = () => {
     let headerText: string = 'Invitación'
     if (type === COMPANIES) {
-      headerText = 'INVITE NEW COMPANY'
+      headerText = 'Invite new company'
     }
     if (type === GUEST) {
-      
-      headerText = 'INVITE NEW GUEST'
+      headerText = 'Invite new guest'
     }
-    return (<Typography variant="h6" gutterBottom>
-      { headerText }
-    </Typography>)
+    return (
+      <Box height='12%'  display="flex" alignItems="center" justifyContent="center" fontWeight='fontWeightBold' fontSize={32}  >
+          {headerText}
+      </Box>
+    )
   }
 
-
   const body = (
-    <div className={ classes.paper }>
+    <Box borderRadius={8} className={classes.paper}>
       <Header />
 
-      <Grid container spacing={ 3 } direction="column">
-        { type === COMPANIES && <Grid item xs={ 12 } md={ 6 }>
-          <TextField helperText={ errors.company } error={ errors.company !== null } onChange={ onChangeInput } required type="string" name="company" id="company" label="Company" fullWidth value={dataNewUser.company} />
-        </Grid> }
-        { type === GUEST && <Grid item xs={ 12 } md={ 6 }>
-          <TextField helperText={ errors.name } error={ errors.name !== null } onChange={ onChangeInput } required type="string" name="name" id="name" label="Name" value={dataNewUser.name} fullWidth autoComplete="name" />
-        </Grid> }
+      <Box
+        display='flex'
+        minHeight="28%"
+        flexDirection='column'
+        justifyContent='space-around'
+        
+      >
+        <Box mt={2} fontSize={16} fontWeight='fontWeightBold'>
+          Personal Information
+        </Box>
+        {type === COMPANIES && (
+          <Box my={2}>
+            <TextField
+            size="small"
+              helperText={errors.company}
+              error={errors.company !== null}
+              variant='outlined'
+              onChange={onChangeInput}
+              required
+              type='string'
+              name='company'
+              id='company'
+              label='Company'
+              fullWidth
+              value={dataNewUser.company}
+            />
+          </Box>
+        )}
+        {type === GUEST && (
+          <Box my={2}>
+            <TextField
+            size="small"
 
-        <Grid item xs={ 12 } md={ 6 }>
-          <TextField required helperText={ errors.email } error={ errors.email !== null } onChange={ onChangeInput } type="email" name="email" label="Email" fullWidth  value={dataNewUser.email}/>
-        </Grid>
+              variant='outlined'
+              helperText={errors.name}
+              error={errors.name !== null}
+              onChange={onChangeInput}
+              required
+              type='string'
+              name='name'
+              id='name'
+              label='Name'
+              value={dataNewUser.name}
+              fullWidth
+              autoComplete='name'
+            />
+          </Box>
+        )}
 
-        { type === COMPANIES && <Grid item xs={ 12 } md={ 6 }>
-          <TextField name="invitations" helperText={ errors.invitations } onChange={ onChangeInput } error={ errors.invitations !== null } type="number" required label="No. of invitations" value={dataNewUser.invitations} fullWidth />
-        </Grid> }
-
-        <Grid item xs={ 12 } md={ 12 }>
-          <MuiPickersUtilsProvider utils={ MomentUtils }>
-            <DatePicker name="startedAt" helperText={ errors.startedAt } value={ startedAt } onChange={ handleDateStartChange } />
-            <DatePicker name="finishedAt" value={ finishedAt } helperText={ errors.finishedAt } onChange={ handleDateEndChange } />
+        <Box>
+          <TextField
+          size="small"
+            required
+            helperText={errors.email}
+            error={errors.email !== null}
+            variant='outlined'
+            onChange={onChangeInput}
+            type='email'
+            name='email'
+            label='Email'
+            fullWidth
+            value={dataNewUser.email}
+          />
+        </Box>
+      </Box>
+      <Box
+        display='flex'
+        flexDirection='column'
+        justifyContent='space-around'
+      >
+        <Box my={2} fontSize={16} fontWeight='fontWeightBold'>
+          Plan
+        </Box>
+        {type === COMPANIES && (
+          <Box mb={2}>
+            <TextField
+            size="small"
+              name='invitations'
+              variant='outlined'
+              helperText={errors.invitations}
+              onChange={onChangeInput}
+              error={errors.invitations !== null}
+              type='number'
+              required
+              placeholder='Number of invitations*'
+              value={dataNewUser.invitations}
+              fullWidth
+            />
+          </Box>
+        )}
+        <Box>
+          <TextField
+          size="small"
+            required
+            onChange={onChangeInput}
+            variant='outlined'
+            value={dataNewUser.cost}
+            error={errors.cost !== null}
+            name='cost'
+            helperText={errors.cost}
+            placeholder='Total cost'
+            fullWidth
+          />
+        </Box>
+      </Box>
+      <Box
+        height='32%'
+        display='flex'
+        flexDirection='column'
+        justifyContent='space-around'
+        
+      >
+        <Box my={2} fontSize={16} fontWeight='fontWeightBold'>
+          Period
+        </Box>
+        <Box  mb={4} >
+          <MuiPickersUtilsProvider utils={MomentUtils}>
+            <Box display='flex'>
+              <Box width='100%' mr={2}>
+                <KeyboardDatePicker
+                  size="small"
+                  fullWidth={true}
+                  autoOk
+                  variant='inline'
+                  inputVariant='outlined'
+                  label='With keyboard'
+                  helperText={errors.startedAt}
+                  format='MM/dd/yyyy'
+                  value={startedAt}
+                  InputAdornmentProps={{ position: 'start' }}
+                  onChange={handleDateStartChange}
+                />
+              </Box>
+              <Box width='100%' ml={2}>
+                <KeyboardDatePicker
+                  fullWidth={true}
+                  autoOk
+                  variant='inline'
+                  size="small"
+                  inputVariant='outlined'
+                  label='With keyboard'
+                  helperText={errors.finishedAt}
+                  format='MM/dd/yyyy'
+                  value={finishedAt}
+                  InputAdornmentProps={{ position: 'start' }}
+                  onChange={handleDateEndChange}
+                />
+              </Box>
+            </Box>
           </MuiPickersUtilsProvider>
-        </Grid>
-        <Grid item xs={ 12 } md={ 6 }>
-          <TextField required onChange={ onChangeInput } value={dataNewUser.cost} error={ errors.cost !== null } name="cost" helperText={ errors.cost } label="Total cost" fullWidth />
-        </Grid>
-        <Grid container spacing={ 2 } justify="flex-end" alignContent="flex-end"  >
-          <Grid item>
-            <Button size="medium" onClick={ handleClose } variant="contained">Cancel</Button>
-          </Grid>
-          <Grid item>
-            <Button onClick={ handleSend } size="medium" color="primary" variant="contained">Send invite</Button>
-          </Grid>
-        </Grid>
-      </Grid>
-    </div>
-  );
-
+        </Box>
+        <Box display='flex' justifyContent='space-around'>
+          <Box mr={2} width='100%'>
+            <Button
+              fullWidth={true}
+              size='large'
+              onClick={handleClose}
+              className={classes.buttons}
+              color='secondary'
+              variant='outlined'
+            >
+              Cancel
+            </Button>
+          </Box>
+          <Box ml={2} width='100%'>
+            <Button
+              onClick={handleSend}
+              fullWidth={true}
+              size='large'
+              color='secondary'
+              variant='contained'
+            >
+              Sure
+            </Button>
+          </Box>
+        </Box>
+      </Box>
+    </Box>
+  )
 
   return (
     <>
-
       <Modal
-        open={ isOpen }
-        onClose={ handleClose }
-        style={ {
+        open={isOpen}
+        onClose={handleClose}
+        style={{
           display: 'flex',
           justifyContent: 'center',
-          alignItems: 'center'
-        } }
-        aria-labelledby="simple-modal-title"
-        aria-describedby="simple-modal-description"
+          alignItems: 'center',
+          
+        }}
+        aria-labelledby='simple-modal-title'
+        aria-describedby='simple-modal-description'
       >
-        { body }
+        {body}
       </Modal>
     </>
-  );
+  )
 }
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     paper: {
       margin: '0 auto 0 auto',
-      maxWidth: 1280,
-      width: '40%',
-      height: '50%',
+      overflowY:'auto',  
+      minWidth: "468px",
+      width:'468px',
+      maxHeight: '100vh',
       backgroundColor: theme.palette.background.paper,
-      padding: theme.spacing(2, 4, 3),
+      padding: theme.spacing(2, 4, 3)
     },
-  }),
-);
+    buttons: {
+      borderColor: '#45A0C5'
+    }
+  })
+)
 
 const initialState = (type: number): NewUserDTO => {
-
   let typeToInvite: number
   if (type === COMPANIES) {
-    
     typeToInvite = 2
   }
   if (type === GUEST) {
@@ -248,12 +404,12 @@ const initialState = (type: number): NewUserDTO => {
   }
 
   return {
-    company: "",
-    name: "",
+    company: '',
+    name: '',
     cost: 0,
-    email: "",
-    finishedAt: "",
-    startedAt: "",
+    email: '',
+    finishedAt: '',
+    startedAt: '',
     invitations: 0,
     typeToInvite
   }
@@ -267,9 +423,8 @@ const initialErrors = (): NewUserErrors => {
     email: null,
     finishedAt: null,
     startedAt: null,
-    invitations: null,
+    invitations: null
   }
 }
 
-
-export default InviteModal;
+export default InviteModal

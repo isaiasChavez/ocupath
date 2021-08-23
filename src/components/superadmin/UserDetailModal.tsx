@@ -11,17 +11,13 @@ import {MIN_INVITATIONS,MAX_INVITATIONS} from '../../config'
 import {USERS_TYPES} from '../../types/'
 import {
   DatePicker,
-  TimePicker,
-  DateTimePicker,
   MuiPickersUtilsProvider
 } from '@material-ui/pickers'
 
 import { makeStyles,Theme,createStyles } from '@material-ui/core/styles'
 import Modal from '@material-ui/core/Modal'
 import UserContext, { AddNewSuscriptionSuscriptionDTO } from '../../context/user/user.context'
-import { User } from '../../context/user/user.reducer'
 import { Box,Button, CircularProgress } from '@material-ui/core'
-import { COMPANIES, GUEST } from '../../types'
 import moment from 'moment'
 
 export interface UserDetailModalProps {

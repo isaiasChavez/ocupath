@@ -10,7 +10,7 @@ const AppBarCms: React.FC<AppBarCmsProps> = () => {
 
  return (  
   <AppBar style={ {
-    backgroundColor: COLORS.gray_primary,
+    backgroundColor: COLORS.blue_header,
   } }>
     <Toolbar  >
     </Toolbar>

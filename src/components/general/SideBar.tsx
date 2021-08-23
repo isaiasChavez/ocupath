@@ -17,11 +17,12 @@ const FILES = 2
 const SideBar: React.FC<SideBarProps> = ({setCurrentTab,currentTab}) => {
  const classes = useStyles()
  const {logout} = useContext(SesionContext)
- const {type} = useContext(UserContext)
-  
-  const isAdmin =type=== USERS_TYPES.ADMIN
-  const isSuperAdmin =type=== USERS_TYPES.SUPER_ADMIN
-  const isGuest =type=== USERS_TYPES.GUEST
+ const {profile} = useContext(UserContext)
+  console.log({profile})
+  const isAdmin =profile.type=== USERS_TYPES.ADMIN
+  const isSuperAdmin = profile.type=== USERS_TYPES.SUPER_ADMIN
+  const isGuest =profile.type=== USERS_TYPES.GUEST
+
   currentTab === USER
   const styleSelected =  {
     backgroundColor:COLORS.selected,
