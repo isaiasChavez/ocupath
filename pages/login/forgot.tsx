@@ -16,6 +16,7 @@ import UserContext, {
 import HeaderCustom from "../../src/components/general/HeaderCustom";
 import { Box } from "@material-ui/core";
 import { COLORS } from "../../src/types";
+import { CustomInput } from ".";
 export interface ForgotProps {}
 
 const Forgot: React.FC<ForgotProps> = () => {
@@ -75,7 +76,9 @@ const Forgot: React.FC<ForgotProps> = () => {
     submit: {
       margin: theme.spacing(3, 0, 2),
       minWidth: '10rem',
-      backgroundColor:COLORS.blue_secondary
+      color:'white',
+      textTransform:'capitalize',
+      fontSize: '0.9rem'
     },
   }));
   const classes = useStyles();
@@ -107,7 +110,17 @@ const Forgot: React.FC<ForgotProps> = () => {
             Enter the email in which you want to receive your password 
           </Box>
         </Typography>
-            <TextField
+            <CustomInput
+              InputLabelProps={{
+                style:{
+                  color:'white',
+                }
+              }}
+              InputProps={{
+                style:{
+                  color:'white',
+              }
+              }}
             size="small"
               margin="normal"
               required
@@ -131,14 +144,14 @@ const Forgot: React.FC<ForgotProps> = () => {
 
             <Button
               type="submit"
+              size="small"
               variant="contained"
-              color="default"
+              color="secondary"
               className={ classes.submit }
               disableElevation
+              title=""
               >
-              <Link href="/superadmin">
-                <span className={ classes.button }>Send</span>
-              </Link>
+                Send
             </Button>
             
                 </div>

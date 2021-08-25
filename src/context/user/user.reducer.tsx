@@ -20,6 +20,7 @@ export type Suscription = {
 };
 export type User = {
   avatar: string,
+  thumbnail: string,
   email: string,
   isActive: boolean,
   uuid: string,

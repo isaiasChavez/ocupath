@@ -7,7 +7,8 @@ import {
   Box,
   Button,
   makeStyles,
-  withStyles
+  withStyles,
+  LinearProgress
 } from '@material-ui/core'
 import { USERS } from '../../types/index'
 import EditIcon from '@material-ui/icons/Edit'
@@ -19,7 +20,7 @@ interface FormEditProps {
 }
 
 const FormEdit: React.FC<FormEditProps> = ({ type, toggleEditAvatar }) => {
-  const { profile, updateName } = useContext(UserContext)
+  const { profile, updateName,loading } = useContext(UserContext)
   const classes = useStyles()
   const [isBlocked, setIsBlocked] = useState(true)
   const [error, setError] = useState('')
@@ -146,6 +147,7 @@ const FormEdit: React.FC<FormEditProps> = ({ type, toggleEditAvatar }) => {
           <Box>
             <Box mb={4}>
               <TextField
+              
               size="small"
               error={hasError}
               helperText={error}
@@ -156,10 +158,12 @@ const FormEdit: React.FC<FormEditProps> = ({ type, toggleEditAvatar }) => {
                 required
                 id='cardName'
                 variant='outlined'
-                disabled={isBlocked}
+                disabled={loading||isBlocked}
                 label='NickName'
                 fullWidth
                 />
+                          
+
             </Box>
             <TextField
                 size="small"
@@ -175,9 +179,12 @@ const FormEdit: React.FC<FormEditProps> = ({ type, toggleEditAvatar }) => {
 
         {!isBlocked && (
         <Box mt={5}>
-          <ButtonSave  fullWidth={true} size="large" onClick={onSubmit} variant='contained' color='secondary'>
+          <ButtonSave 
+            disabled={loading}
+          fullWidth={true} size="large" onClick={onSubmit} variant='contained' color='secondary'>
             Save
           </ButtonSave>
+
         </Box>
         )}
       </Box>

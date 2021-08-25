@@ -12,6 +12,7 @@ export class ReuestSesionLogOutDTO  {
 }
 interface SesionContextInterface {
   logout: Function;
+  loadingSesion:boolean
 }
 
 const SesionContext = createContext<SesionContextInterface | null>(null);

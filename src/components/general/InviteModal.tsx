@@ -1,10 +1,9 @@
 import React, { MouseEventHandler, useContext, useState } from 'react'
-import { Button, Typography, TextField, Grid, Box } from '@material-ui/core'
+import { Button,  TextField,  Box } from '@material-ui/core'
 import MomentUtils from '@date-io/moment'
 import { COMPANIES, GUEST } from '../../types'
 import moment from 'moment'
 import {
-  DatePicker,
   MuiPickersUtilsProvider,
   KeyboardDatePicker
 } from '@material-ui/pickers'
@@ -20,6 +19,7 @@ export interface InviteModalProps {
   isOpen: boolean
   type: number
 }
+
 const InviteModal: React.FC<InviteModalProps> = ({
   handleOpen,
   handleClose,
@@ -33,7 +33,7 @@ const InviteModal: React.FC<InviteModalProps> = ({
   const [finishedAt, setFinishDate] = useState(new Date())
   const [dataNewUser, setDataNewUser] = useState<NewUserDTO>(initialState(type))
   const [errors, setErrors] = useState<NewUserErrors>(initialErrors())
-  const { inviteUser } = useContext(UserContext)
+  const { inviteUser,selectedUser } = useContext(UserContext)
 
   const handleDateStartChange = e => {
     setErrors(initialErrors())
@@ -77,10 +77,15 @@ const InviteModal: React.FC<InviteModalProps> = ({
       console.log('Validando email')
       isValid = false
     }
+
+
+  
+
     if (!moment(startedAt).isValid() || moment(startedAt).isAfter(finishedAt)) {
       newErrors.startedAt = `Debes seleccionar una fecha`
       isValid = false
     }
+
     if (
       !moment(finishedAt).isValid() ||
       moment(finishedAt).isBefore(startedAt)
@@ -167,7 +172,7 @@ const InviteModal: React.FC<InviteModalProps> = ({
       headerText = 'Invite new guest'
     }
     return (
-      <Box height='12%'  display="flex" alignItems="center" justifyContent="center" fontWeight='fontWeightBold' fontSize={32}  >
+      <Box height='12%' className='ITCAvantGardeStdBkBold' my={1}  display="flex" alignItems="center" justifyContent="center" fontWeight='fontWeightBold' fontSize={28}  >
           {headerText}
       </Box>
     )
@@ -184,11 +189,11 @@ const InviteModal: React.FC<InviteModalProps> = ({
         justifyContent='space-around'
         
       >
-        <Box mt={2} fontSize={16} fontWeight='fontWeightBold'>
+        <Box mt={2} fontSize={14} className="ITCAvantGardeStdBkBold" fontWeight='fontWeightBold'>
           Personal Information
         </Box>
         {type === COMPANIES && (
-          <Box my={2}>
+          <Box mb={2} mt={1}>
             <TextField
             size="small"
               helperText={errors.company}
@@ -247,79 +252,74 @@ const InviteModal: React.FC<InviteModalProps> = ({
         flexDirection='column'
         justifyContent='space-around'
       >
-        <Box my={2} fontSize={16} fontWeight='fontWeightBold'>
+        {type === COMPANIES && (
+          <>
+        <Box mt={2}  mb={1} fontSize={14} className="ITCAvantGardeStdBkBold" fontWeight='fontWeightBold'>
           Plan
         </Box>
-        {type === COMPANIES && (
           <Box mb={2}>
             <TextField
             size="small"
-              name='invitations'
-              variant='outlined'
-              helperText={errors.invitations}
-              onChange={onChangeInput}
-              error={errors.invitations !== null}
-              type='number'
-              required
-              placeholder='Number of invitations*'
-              value={dataNewUser.invitations}
-              fullWidth
+            name='invitations'
+            variant='outlined'
+            helperText={errors.invitations}
+            onChange={onChangeInput}
+            error={errors.invitations !== null}
+            type='number'
+            required
+            placeholder='Number of invitations*'
+            value={dataNewUser.invitations===0?null:dataNewUser.invitations}
+            fullWidth
             />
           </Box>
+            </>
         )}
-        <Box>
-          <TextField
-          size="small"
-            required
-            onChange={onChangeInput}
-            variant='outlined'
-            value={dataNewUser.cost}
-            error={errors.cost !== null}
-            name='cost'
-            helperText={errors.cost}
-            placeholder='Total cost'
-            fullWidth
-          />
-        </Box>
+       
       </Box>
       <Box
-        height='32%'
         display='flex'
         flexDirection='column'
         justifyContent='space-around'
         
       >
-        <Box my={2} fontSize={16} fontWeight='fontWeightBold'>
+        <Box mt={type === COMPANIES?0:2} mb={2} fontSize={14} className="ITCAvantGardeStdBkBold" fontWeight='fontWeightBold'>
           Period
         </Box>
-        <Box  mb={4} >
+        <Box  mb={2} >
           <MuiPickersUtilsProvider utils={MomentUtils}>
             <Box display='flex'>
               <Box width='100%' mr={2}>
                 <KeyboardDatePicker
+                  initialFocusedDate={new Date()}
                   size="small"
                   fullWidth={true}
                   autoOk
                   variant='inline'
                   inputVariant='outlined'
-                  label='With keyboard'
+                  label='Start'
                   helperText={errors.startedAt}
-                  format='MM/dd/yyyy'
+                  format='DD/MM/YYYY'
                   value={startedAt}
+                  disablePast
+                maxDate={new Date('2025-01-01')}
+                disableToolbar
                   InputAdornmentProps={{ position: 'start' }}
                   onChange={handleDateStartChange}
                 />
               </Box>
               <Box width='100%' ml={2}>
                 <KeyboardDatePicker
+                disablePast
                   fullWidth={true}
+                  disableToolbar
+                  maxDate={new Date('2025-01-01')}
                   autoOk
                   variant='inline'
                   size="small"
                   inputVariant='outlined'
-                  label='With keyboard'
+                  label='Finish'
                   helperText={errors.finishedAt}
-                  format='MM/dd/yyyy'
+                  format='DD/MM/YYYY'
                   value={finishedAt}
                   InputAdornmentProps={{ position: 'start' }}
                   onChange={handleDateEndChange}
@@ -328,6 +328,24 @@ const InviteModal: React.FC<InviteModalProps> = ({
             </Box>
           </MuiPickersUtilsProvider>
         </Box>
+        <Box mb={1} fontSize={14} className="ITCAvantGardeStdBkBold" fontWeight='fontWeightBold'>
+          Total cost
+        </Box>
+        <Box mb={4} width="46%">
+          <TextField
+          size="small"
+            required
+            onChange={onChangeInput}
+            variant='outlined'
+            value={dataNewUser.cost===0?null:dataNewUser.cost}
+            error={errors.cost !== null}
+            name='cost'
+            helperText={errors.cost}
+            placeholder='Total cost'
+            fullWidth
+          />
+        </Box>
+
         <Box display='flex' justifyContent='space-around'>
           <Box mr={2} width='100%'>
             <Button
@@ -368,6 +386,7 @@ const InviteModal: React.FC<InviteModalProps> = ({
           alignItems: 'center',
           
         }}
+        className="animate-fadein"
         aria-labelledby='simple-modal-title'
         aria-describedby='simple-modal-description'
       >

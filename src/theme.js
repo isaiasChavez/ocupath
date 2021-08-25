@@ -13,7 +13,7 @@ const theme = createMuiTheme({
       blue: "#45A0C5",
     },
     error: {
-      main: red.A400,
+      main: '#45A0C5',
     },
     borders: {
     },

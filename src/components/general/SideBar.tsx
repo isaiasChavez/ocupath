@@ -16,7 +16,7 @@ const FILES = 2
 
 const SideBar: React.FC<SideBarProps> = ({setCurrentTab,currentTab}) => {
  const classes = useStyles()
- const {logout} = useContext(SesionContext)
+ const {logout,loadingSesion} = useContext(SesionContext)
  const {profile} = useContext(UserContext)
   console.log({profile})
   const isAdmin =profile.type=== USERS_TYPES.ADMIN
@@ -71,7 +71,7 @@ const SideBar: React.FC<SideBarProps> = ({setCurrentTab,currentTab}) => {
 
   </List>
   <List>
-    <ListItem button >
+    <ListItem button  disabled={loadingSesion}>
       <ListItemIcon>
         <LayersIcon color="primary" />
       </ListItemIcon>

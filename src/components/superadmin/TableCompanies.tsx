@@ -1,30 +1,60 @@
-import { Chip, createStyles, Table, TableBody, TableCell, TableHead, TablePagination, TableRow, Theme, withStyles } from '@material-ui/core';
-import React, { useContext, useEffect, useState } from 'react'
+import { Box,Chip,createStyles,Switch,Table,TableBody,TableCell,TableHead,TablePagination,TableRow,Theme,withStyles } from '@material-ui/core';
+import React,{ useContext,useEffect,useState } from 'react'
 import { getStatus } from '../../config/utils';
 import AskModal from '../general/AskModal';
 import UserDetailModal from './UserDetailModal';
-import {USERS,USERS_TYPES} from '../../types'
+import { USERS,USERS_TYPES } from '../../types'
 import moment from 'moment'
 import UserContext from '../../context/user/user.context';
 import { User } from '../../context/user/user.reducer';
-
-
 export interface TableCompaniesProps {
 
 }
 
+export const getDataStatus = (status): { color: any,name: string } => {
+  console.log("==>",{ status })
+  if (status === 1) {
+    return {
+      color: "#8DC811",
+      name: "Active"
+    }
+  }
+  if (status === 2) {
+    return {
+      color: "#9A9A9A",
+      name: "Inactive"
+    }
+  }
+  if (status === 3) {
+    return {
+      color: "#E29583",
+      name: "Expired"
+    }
+  }
+  if (status === 4) {
+    return {
+      color: "#E2CA64",
+      name: "Paused"
+    }
+  }
+  return {
+    color: "default",
+    name: "Error"
+  }
+}
+
 const TableCompanies: React.FC<TableCompaniesProps> = () => {
 
-  const {childrens,selectUser,selectedUser,suspendUserAdm,deleteUserAdm,getAdminChildDetail} = useContext(UserContext)
-  const [rowsPerPage, setRowsPerPage] = useState(5)
-  const [page, setPage] = React.useState(0)
-  const [isOpenUserDetailModal, setIsOpenUserDetailModal] = useState<boolean>(
+  const { childrens,selectUser,selectedUser,suspendUserAdm,deleteUserAdm,getAdminChildDetail } = useContext(UserContext)
+  const [rowsPerPage,setRowsPerPage] = useState(5)
+  const [page,setPage] = React.useState(0)
+  const [isOpenUserDetailModal,setIsOpenUserDetailModal] = useState<boolean>(
     false
   )
-  const [isOpenDeleteUserModal, setIsOpenDeleteUserModal] = useState<boolean>(
+  const [isOpenDeleteUserModal,setIsOpenDeleteUserModal] = useState<boolean>(
     false
   )
-  const [isOpenSuspendUserModal, setIsOpenSuspendUserModal] = useState<boolean>(
+  const [isOpenSuspendUserModal,setIsOpenSuspendUserModal] = useState<boolean>(
     false
   )
   const rows = childrens.admins
@@ -38,96 +68,68 @@ const TableCompanies: React.FC<TableCompaniesProps> = () => {
     setIsOpenSuspendUserModal(!isOpenSuspendUserModal)
   }
 
-  const onSuspend = (dataUser:User)=>{
-    console.log({dataUser})
+  const onSuspend = (dataUser: User) => {
+    console.log({ dataUser })
     setIsOpenSuspendUserModal(true)
     selectUser(dataUser,USERS.ADMIN)
   }
-  const onDelete = (dataUser:User)=>{
+  const onDelete = (dataUser: User) => {
     toggleDeleteUserModal()
     selectUser(dataUser,USERS.ADMIN)
   }
-  const onEdit = (dataUser:User)=>{
-    console.log({dataUser})
+  const onEdit = (dataUser: User) => {
+    console.log({ dataUser })
     handleToggleDetailModal()
     selectUser(dataUser,USERS.ADMIN)
     getAdminChildDetail(dataUser.uuid)
   }
-  
-
-  const handleChangePage = (event: unknown, newPage: number) => {
+  const handleChangePage = (event: unknown,newPage: number) => {
     setPage(newPage)
   }
   const handleChangeRowsPerPage = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setRowsPerPage(parseInt(event.target.value, 10))
+    setRowsPerPage(parseInt(event.target.value,10))
     setPage(0)
   }
-
-
   useEffect(() => {
     console.log("====>",childrens)
-  }, [childrens])
+  },[childrens])
 
-  const getDataStatus = (status):{color:'default'|'primary'|'secondary',name:string}=>{
-
-    console.log("==>",{status})
-    if (status === 1) {
-        return {
-          color:"primary",
-          name:"ACTIVE"
-        }
-    }
-    if (status === 2) {
-      return {
-        color:"secondary",
-        name:"INACTIVE"
-      }
-  }
-  if (status === 3) {
-    return {
-      color:"secondary",
-      name:"EXPIRED"
-    }
-}
-    return {
-      color:"default",
-      name:"EXPIRED"
-    }
-  }
+  
 
   return (
     <>
       <UserDetailModal
         isOpen={ isOpenUserDetailModal }
         handleClose={ handleToggleDetailModal }
-        type={USERS_TYPES.ADMIN}
+        type={ USERS_TYPES.ADMIN }
       />
       <AskModal
         isOpen={ isOpenDeleteUserModal }
         handleClose={ toggleDeleteUserModal }
-        handleOk={()=>{
+        handleOk={ () => {
           toggleDeleteUserModal()
-          deleteUserAdm()}}
+          deleteUserAdm()
+        } }
         okText='Sure'
         cancelText='Cancel'
         title='Delete User'
-        subtitle={`Are you sure you want to delete ${selectedUser?selectedUser.name:'this user'} `}
+        subtitle={ `Are you sure you want to delete ${selectedUser ? selectedUser.name : 'this user'} ` }
       />
       <AskModal
         isOpen={ isOpenSuspendUserModal }
-        handleOk={()=>{
+        handleOk={ () => {
           suspendUserAdm()
           toggleSuspendUserModal()
-        }}
+        } }
         handleClose={ toggleSuspendUserModal }
         okText='Sure'
         cancelText='Cancel'
         title='Suspend User'
-        subtitle={`Are you sure you want to  ${selectedUser.isActive?'suspend':'activate'} ${selectedUser?'to '+selectedUser.name+'?':'this user?'}`}
+        subtitle={ `Are you sure you want to  ${selectedUser.isActive ? 'suspend' : 'activate'} ${selectedUser ? 'to ' + selectedUser.name + '?' : 'this user?'}` }
       />
-      <Table  aria-label='customized table'>
+      <Table size="medium">
         <TableHead
         >
           <TableRow
@@ -146,8 +148,8 @@ const TableCompanies: React.FC<TableCompaniesProps> = () => {
             <StyledTableCell align='center'>
               Registration Date
             </StyledTableCell>
-            <StyledTableCell align='center'>Edit</StyledTableCell>
             <StyledTableCell align='center'>Suspend</StyledTableCell>
+            <StyledTableCell align='center'>Edit</StyledTableCell>
             <StyledTableCell align='center'>Delete</StyledTableCell>
           </TableRow>
         </TableHead>
@@ -164,42 +166,47 @@ const TableCompanies: React.FC<TableCompaniesProps> = () => {
                 { user.lastSuscription.invitations }
               </StyledTableCell>
               <StyledTableCell align='center'>
-                { user.lastSuscription.cost}
+                <Box display='flex' justifyContent='space-between'>
+                  <div>
+                    $
+                  </div>
+                  { user.lastSuscription.cost }
+                </Box>
               </StyledTableCell>
               <StyledTableCell align='center'>
-                { moment().calendar(user.lastSuscription.startedAt) }|{ moment().calendar(user.lastSuscription.finishedAt) }
+                { `${moment(user.lastSuscription.startedAt).format('L')} to ${moment(user.lastSuscription.finishedAt).format('L')}` }
               </StyledTableCell>
               <StyledTableCell align='center'>
-                { moment(user.lastSuscription.finishedAt).from(moment())}
+                { moment(user.lastSuscription.finishedAt).from(moment()) }
               </StyledTableCell>
               <StyledTableCell align='center'>
-                <Chip
-                  size='small'
-                  label={ getDataStatus(user.status).name }
-                  clickable
-                 color={ getDataStatus(user.status).color }
-                />
+                <Box fontWeight="fontWeightBold" style={ {
+                  color: getDataStatus(user.status).color
+                } }>
+                  { getDataStatus(user.status).name }
+                </Box>
+
+                {/* color={ getDataStatus(user.status).color } */ }
               </StyledTableCell>
               <StyledTableCell align='center'>
-                { moment().calendar(user.lastSuscription.createdAt)}
+                { moment(user.lastSuscription.createdAt).format('L') }
               </StyledTableCell>
               <StyledTableCell align='right'>
-                { ' ' }
+                <Switch
+                  checked={ user.isActive }
+                  onChange={ () => onSuspend(user) }
+                  name="checkedA"
+                  color="secondary"
+                  inputProps={ { 'aria-label': 'secondary checkbox' } }
+                />
+              </StyledTableCell>
+              <StyledTableCell align='right'>
+
                 <Chip
                   size='small'
                   label='Edit'
-                  onClick={()=>onEdit(user)}
+                  onClick={ () => onEdit(user) }
                   clickable
-                  color='primary'
-                />{ ' ' }
-              </StyledTableCell>
-              <StyledTableCell align='right'>
-                { ' ' }
-                <Chip
-                  size='small'
-                  label={`${user.isActive?'suspend':'activate'}`}
-                  clickable
-                  onClick={ ()=> onSuspend(user) }
                   color='primary'
                 />{ ' ' }
               </StyledTableCell>
@@ -208,7 +215,7 @@ const TableCompanies: React.FC<TableCompaniesProps> = () => {
                 <Chip
                   size='small'
                   label='Delete'
-                  onClick={ ()=> onDelete(user) }
+                  onClick={ () => onDelete(user) }
                   clickable
                   color='secondary'
                 />{ ' ' }
@@ -216,14 +223,16 @@ const TableCompanies: React.FC<TableCompaniesProps> = () => {
             </StyledTableRow>
           )) }
         </TableBody>
-        <TablePagination
-          rowsPerPageOptions={ [5, 10, 25] }
+       {rows.length>8&& <TablePagination
+
+          align="center"
+          rowsPerPageOptions={ [5,10,25] }
           count={ rows.length }
           rowsPerPage={ rowsPerPage }
           page={ page }
           onChangePage={ handleChangePage }
           onChangeRowsPerPage={ handleChangeRowsPerPage }
-        />
+        />}
       </Table>
 
     </>
@@ -233,8 +242,7 @@ const TableCompanies: React.FC<TableCompaniesProps> = () => {
 export const StyledTableCell = withStyles((theme: Theme) =>
   createStyles({
     root: {
-      height:'1rem',
-      
+      height: '1rem',
     },
     head: {
       backgroundColor: theme.palette.common.black,

@@ -1,4 +1,4 @@
-import { useReducer, useState } from "react";
+import { useContext, useReducer, useState } from "react";
 import axios, { tokenAuth } from "../../config/axios";
 import { useRouter } from "next/router";
 import UserContext, {
@@ -22,17 +22,20 @@ import UserReducer, { Profile, User, UserStateType } from "./user.reducer";
 import { LoginDTO } from "../../types/types";
 import { validateResponse } from "../../config/utils";
 import { validateOrReject } from "class-validator";
+import NotificationsContext from "../notifications/notifications.context";
 
 const UserState = ({ children }) => {
   const router = useRouter();
 
-  const [loading, setLoading] = useState<boolean>(true)
+  const [loading, setLoading] = useState<boolean>(false)
   const [state, dispatch] = useReducer(UserReducer, initialState());
+  const {sendAlert} = useContext(NotificationsContext)
+
   const resetPass = async (resetPassword: ResetPassword) => {
     try {
       await validateOrReject(resetPassword);
       const { data } = await axios.post(URLS.recoverpass, resetPassword);
-      
+
       console.log({data})
       dispatch({
         type: LOG_A.RESET_PASS_SUCCESS,
@@ -53,8 +56,6 @@ const UserState = ({ children }) => {
       return data.status
     } catch (error) {
       setLoading(false)
-
-      console.error({ error });
       alert("Error en el servidor")
       return 1
     }
@@ -96,7 +97,6 @@ const UserState = ({ children }) => {
       const newInvite = new InviteUserDTO(inviteUserDTO)
       await validateOrReject(newInvite);
 
-      console.log({inviteUserDTO})
       const { data } = await axios.post(URLS.invite,inviteUserDTO);
       
 
@@ -132,33 +132,51 @@ const UserState = ({ children }) => {
       await validateOrReject(createUserAdmDTO);
       const { data } = await axios.post(URLS.createAdm, createUserAdmDTO);
       if (data.status ===0) {
-          alert("Registro exitoso")
+        sendAlert({
+          type:'success',
+          msg:'The invitation has been sent'
+        })
           router.push("/login");
       }
       if (data.status ===2) {
-          alert("El email ya existe")
+        sendAlert({
+          type:'warning',
+          msg:'This email is already registered'
+        })
       }
       if (data.status === 3) {
-        alert("Se ha enviado la invitación pero el correo no existe")
+        sendAlert({
+          type:'warning',
+          msg:'The invitation has been sent but the email does not exist'
+        })
       }
       dispatch({ type: AD_A.REGISTER_ADM_SUCCES, payload: data });
       return data.status
     } catch (error) {
+      sendAlert({
+        type:'error',
+        msg:'An error has occurred | code (u2)'
+      })
       console.error("** Error validating addUserAdm ** ", { error });
     }
   };
 
   const getUserDetail = async () => {
     try {
-      console.log("getUserDetail")
+      
       setLoading(true)
       const { data } = await axios.get(URLS.userDetail);
+
       setLoading(false)
       if (data.status ===0) {
         dispatch({ type: US_A.GET_USER_DETAIL, payload: data.profile });
       }
     } catch (error) {
       setLoading(false)
+      sendAlert({
+        type:'error',
+        msg:'An error has occurred code (u1)'
+      })
       console.error("** Error validating addUserAdm ** ", { error });
     }
   };
@@ -181,6 +199,10 @@ const UserState = ({ children }) => {
       }
 
     } catch (error) {
+      sendAlert({
+        type:'error',
+        msg:'An error has occurred code (u0)'
+      })
       setLoading(false)
       console.error("** Error validating getUserChildDetail ** ", { error });
     }
@@ -225,16 +247,27 @@ const UserState = ({ children }) => {
     try {
       const changeNameDTO = new ChangeName(name)
       await validateOrReject(changeNameDTO);
+      setLoading(true)
       const { data } = await axios.post(URLS.updateName, changeNameDTO);
+      setLoading(false)
       if (data.status ===0) {
         dispatch({
           type: US_A.UPDATE_SUCCESS,
           payload: name,
         });
+        sendAlert({
+          type:'success',
+          msg:'User have been updated'
+        })
         return {status:data.status,name}
       }
       return null
     } catch (error) {
+      setLoading(false)
+      sendAlert({
+        type:'error',
+        msg:error.message,
+      })
       console.error("** Error validating deleteUserAdm ** ", { error });
     }
   }
@@ -336,17 +369,28 @@ console.log({deleteUserDTO})
   
   const updateUser = async (updateUserDTO: UpdateUserDTO) => {
     try {
-
       await validateOrReject(updateUserDTO);
+      setLoading(true)
       const { data } = await axios.put(URLS.update, updateUserDTO);
-      console.log({data},US_A.UPDATE_SUCCESS)
+      setLoading(false)
+      
       if (data.status ===0) {
         dispatch({
           type: US_A.UPDATE_SUCCESS,
           payload: data,
         });
+        sendAlert({
+          type:'success',
+          msg:'User have been updated'
+        })
       }
+      return data.status
     } catch (error) {
+      sendAlert({
+        type:'error',
+        msg:error.message
+      })
+      setLoading(false)
       console.error("** Error validating updateUser ** ", { error });
     }
   };
@@ -357,13 +401,13 @@ console.log({deleteUserDTO})
 
       setLoading(true)
       await validateOrReject(addNewSuscriptionSuscriptionDTO);
+      setLoading(false)
       
       const { data } = await axios.put(URLS.addPeriod, addNewSuscriptionSuscriptionDTO);
       console.log("addNewPeriod:",{data})
       if (data.status ===0) {
         await getUserChildrens()
       }
-      setLoading(false)
     } catch (error) {
       setLoading(false)
       console.error("** Error validating updateUser ** ", { error });
@@ -374,8 +418,9 @@ console.log({deleteUserDTO})
   const logUser = async (loginDTO: LoginDTO) => {
     try {
       await validateOrReject(loginDTO);
+      setLoading(true)
       const {data} = await axios.post(URLS.login, loginDTO);
-      console.log({data})
+      setLoading(false)
       if (data.status === 0) {
         tokenAuth(data.profile.token);
         dispatch({
@@ -398,6 +443,7 @@ console.log({deleteUserDTO})
         return data
       }
     } catch (error) {
+      setLoading(false)
       alert("No se ha podido logguear");
     }
   };
@@ -443,6 +489,7 @@ const initialState = () => {
     selectedUser:{
       name:'',
       avatar:'',
+      thumbnail:'',
       email:'',
       isActive:false,
       lastSuscription:{

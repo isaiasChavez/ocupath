@@ -5,7 +5,7 @@ import {
   createStyles,
   makeStyles
 } from '@material-ui/core/styles'
-import {Paper,Button,TablePagination,Chip,Tabs,Tab,TableHead,TableRow,TableContainer,Table,TableBody,TableCell, CircularProgress} from '@material-ui/core'
+import {Paper,Button,TablePagination,Chip,Tabs,Tab,TableHead,TableRow,TableContainer,Table,TableBody,TableCell, CircularProgress, Box} from '@material-ui/core'
 import InviteModal from '../general/InviteModal'
 import { COLORS, COMPANIES, GUEST } from '../../types'
 import TableCompanies from './TableCompanies'
@@ -37,15 +37,16 @@ const TableSuperAdmin: React.FC<TableSuperAdminProps> = () => {
   const handleOpenInviteModal = () => {
     setIsOpenInviteModal(true)
   }
-
+  const classes = useStyles()
+  
   const currentButton = () => {
     if (currentTab === COMPANIES) {
       return (
         <Button
-          style={{ height: '80%', margin: 'auto' }}
+          className={classes.buttonNew}
           onClick={handleOpenInviteModal}
           variant='contained'
-          color='primary'
+          color='secondary'
         >
           New company
         </Button>
@@ -54,10 +55,10 @@ const TableSuperAdmin: React.FC<TableSuperAdminProps> = () => {
     if (currentTab === GUEST) {
       return (
         <Button
-          style={{ height: '80%', margin: 'auto' }}
+        className={classes.buttonNew}
           onClick={handleOpenInviteModal}
           variant='contained'
-          color='primary'
+          color='secondary'
         >
           New guest
         </Button>
@@ -65,18 +66,15 @@ const TableSuperAdmin: React.FC<TableSuperAdminProps> = () => {
     }
   }
 
-    const classes = useStyles()
   return (
-    <div className={classes.root}>
+    <Box display="flex" height="100%">
       {isOpenInviteModal && <InviteModal
         type={currentTab}
         isOpen={isOpenInviteModal}
         handleClose={handleCloseInviteModal}
         handleOpen={handleOpenInviteModal}
       />}
-     
-
-      <div className={classes.demo1}>
+      <Paper className={classes.demo1}>
         <AntTabs
           value={currentTab}
           onChange={handleChange}
@@ -84,20 +82,22 @@ const TableSuperAdmin: React.FC<TableSuperAdminProps> = () => {
         >
           <AntTab label='Companies' />
           <AntTab label='Guest' />
+          <Box width='100%' display="flex" alignItems="center" justifyContent='flex-end'>
           {currentButton()}
+          </Box>
         </AntTabs>
-        <TableContainer component={Paper}>
+        <TableContainer component={Paper} style={{
+          height:'92.4%'
+        }}>
           {currentTab === COMPANIES && (
             <TableCompanies/>
           )}
           {currentTab === GUEST && (
             <TableGuest/>
           )} 
-        </TableContainer>:
-       
-        
-      </div>
-    </div>
+        </TableContainer> 
+      </Paper>
+    </Box>
   )
 }
 
@@ -105,7 +105,11 @@ const AntTab = withStyles((theme: Theme) =>
   createStyles({
     root: {
       display: 'flex',
-    height: '100%',
+      height: '100%',
+      paddingTop: '1rem',
+      paddingBottom: '1rem',
+      textTransform: 'capitalize',
+      fontSize: '1rem'
     },
     selected: {}
   })
@@ -113,27 +117,22 @@ const AntTab = withStyles((theme: Theme) =>
 
 
 const useStyles = makeStyles((theme: Theme) => ({
-  root: {
-    display: 'flex',
-    height: '100%',
-  },
   demo1: {
-    position: 'relative',
-    backgroundColor: theme.palette.background.paper,
-    width: '100%',
     maxWidth: '100%',
     minWidth: '100%',
-    height: '100%',
   },
+  buttonNew:{
+    height: '55%', marginRight:'1rem',
+    minWidth: '10rem',
+    textTransform: 'capitalize',
+    color:'white'
+  }
 }))
 
 const AntTabs = withStyles({
-  root: {
-    borderBottom: '1px solid #e8e8e8',
-    display: 'flex'
-  },
   indicator: {
-    backgroundColor: '#1890ff'
+    backgroundColor: COLORS.blue_secondary,
+    paddingBottom:'4px'
   }
 })(Tabs)
 

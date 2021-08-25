@@ -5,7 +5,7 @@ import ArrowBack from '@material-ui/icons/ArrowBack';
 import FormEdit from './FormEdit';
 import { COLORS } from '../../types';
 import UserContext,{ UpdateUserDTO } from '../../context/user/user.context';
-import { Button,IconButton } from '@material-ui/core';
+import { Button,IconButton,Box, LinearProgress   } from '@material-ui/core';
 import AskModal from './AskModal';
 import axios from 'axios';
 const EditUser: React.FC<EditUserProps> = ({ type ,isEditingAvatar,setIsEditingAvatar}) => {
@@ -35,6 +35,7 @@ const EditAvatar = ({ toggleEditAvatar }) => {
   const classes = useStyles();
   const [isModalVisible,setIsModalVisible] = useState(false)
   const { updateUser } = useContext(UserContext)
+  const [loading, setloading] = useState(false)
   const [urlAvatar,setUrlAvatar] = useState<string>(null)
   const handleUrlAvatar = (event) => {
     if (iframeUrl.includes(event.origin)) {
@@ -47,17 +48,28 @@ const EditAvatar = ({ toggleEditAvatar }) => {
     setIsModalVisible(false)
   }
   const onSaveAvatar = async () => {
-    setIsModalVisible(false)
-    const { data } = await axios.post(thumbnailUrl,{
-      "model": urlAvatar,
-      "scene": "halfbody-portrait-v1"
-    })
-    const updateUserDto = new UpdateUserDTO({
-      avatar: urlAvatar,
-      name: null,
-      thumbnail: data.renders[0]
-    })
-    await updateUser(updateUserDto)
+    try {
+      setIsModalVisible(false)
+      setloading(true)
+      const { data } = await axios.post(thumbnailUrl,{
+        "model": urlAvatar,
+        "scene": "halfbody-portrait-v1"
+      })
+      const updateUserDto = new UpdateUserDTO({
+        avatar: urlAvatar,
+        name: null,
+        thumbnail: data.renders[0]
+      })
+      const status = await updateUser(updateUserDto)
+      setloading(false)
+      if(status===0){
+        toggleEditAvatar()
+      }
+      
+    } catch (error) {
+      setloading(false)
+      alert("Ah ocurrido un error al salvar tu avatar")  
+    }
 
   }
 
@@ -75,7 +87,7 @@ const EditAvatar = ({ toggleEditAvatar }) => {
         cancelText="Cancel"
         okText="Sure"
         isOpen={ isModalVisible }
-        title="SAVE AVATAR"
+        title="Save Avatar"
         handleClose={ onCancelAvatar }
         handleOk={ onSaveAvatar }
         subtitle="Are you sure you want to save these changes?"
@@ -86,13 +98,27 @@ const EditAvatar = ({ toggleEditAvatar }) => {
             <ArrowBack />
           </IconButton>
         </div>
-        <iframe className={ classes.iframe } src={ iframeUrl }>
+        <iframe
+         title="iframe Example 2"
+         
+        className={ classes.iframe } src={ iframeUrl }>
+        <p>Your browser does not support iframes.</p>
         </iframe>
-        <div className={ classes.button }>
-          { urlAvatar !== null && <Button onClick={ () => setIsModalVisible(true) } variant="contained" href="#contained-buttons">
+        {loading&&<Box className={ classes.iframeCover}/>}
+        {loading&&<LinearProgress />}
+
+        <Box className={ classes.button }>
+          { urlAvatar !== null && <Button
+          color="secondary"
+            style={{
+              color:'white',
+              textTransform: 'capitalize'
+            }}
+            disabled={loading}
+           onClick={ () => onSaveAvatar() } variant="contained" href="#contained-buttons">
             Save Changes
           </Button> }
-        </div>
+        </Box>
       </div>
     </>
   );
@@ -110,12 +136,20 @@ const useStyles = makeStyles((theme) => ({
   rootIframe: {
     display: 'flex',
     flex: 1,
+    position: 'relative',
     flexDirection: 'column',
     height: '100%',
   },
   iframe: {
     width: '100%',
     height: '82%',
+  },
+  iframeCover:{
+    backgroundColor: 'white',
+    opacity:'50%',
+    position:'absolute',
+    width: '100%',
+    height: '90%'
   },
   header: {
     height: '8%',

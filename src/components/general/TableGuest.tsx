@@ -1,9 +1,9 @@
-import { Chip, Table, TableBody, TableHead, TablePagination, TableRow } from '@material-ui/core';
+import { Box, Chip, Switch, Table, TableBody, TableHead, TablePagination, TableRow } from '@material-ui/core';
 import moment from 'moment';
 import React, { useContext, useEffect, useState } from 'react'
 import { getStatus } from '../../config/utils';
 import UserContext from '../../context/user/user.context';
-import { StyledTableCell, StyledTableRow } from '../superadmin/TableCompanies';
+import { getDataStatus, StyledTableCell, StyledTableRow } from '../superadmin/TableCompanies';
 import {USERS,USERS_TYPES} from '../../types/'
 import { User } from '../../context/user/user.reducer';
 import UserDetailModal from '../superadmin/UserDetailModal';
@@ -74,32 +74,7 @@ const TableGuest: React.FC<TableGuestProps> = () => {
     handleToggleDetailModal()
     await getUserChildDetail()
   }
-  const getDataStatus = (status):{color:'default'|'primary'|'secondary',name:string}=>{
 
-    console.log("==>",{status})
-    if (status === 1) {
-        return {
-          color:"primary",
-          name:"ACTIVE"
-        }
-    }
-    if (status === 2) {
-      return {
-        color:"secondary",
-        name:"INACTIVE"
-      }
-  }
-  if (status === 3) {
-    return {
-      color:"secondary",
-      name:"EXPIRED"
-    }
-}
-    return {
-      color:"default",
-      name:"EXPIRED"
-    }
-  }
  return (
    <>
    <UserDetailModal
@@ -139,8 +114,8 @@ const TableGuest: React.FC<TableGuestProps> = () => {
                   <StyledTableCell align='center'>
                     Registration Date
                   </StyledTableCell>
-                  <StyledTableCell align='center'>Edit</StyledTableCell>
                   <StyledTableCell align='center'>Suspend</StyledTableCell>
+                  <StyledTableCell align='center'>Edit</StyledTableCell>
                   <StyledTableCell align='center'>Delete</StyledTableCell>
                 </TableRow>
               </TableHead>
@@ -157,23 +132,31 @@ const TableGuest: React.FC<TableGuestProps> = () => {
                       {row.lastSuscription.cost}
                     </StyledTableCell>
                     <StyledTableCell align='center'>
-                        { moment().calendar(row.lastSuscription.startedAt) }|{ moment().calendar(row.lastSuscription.finishedAt) }
-                    </StyledTableCell>
+                { `${moment(row.lastSuscription.startedAt).format('L')} to ${moment(row.lastSuscription.finishedAt).format('L')}` }
+              </StyledTableCell>
                     <StyledTableCell align='center'>
                           { moment(row.lastSuscription.finishedAt).from(moment())}
                     </StyledTableCell>
                     <StyledTableCell align='center'>
-                    <Chip
-                  size='small'
-                  label={ getDataStatus(row.status).name }
-                  clickable
-                  color={ getDataStatus(row.status).color }
-                  />
+                    <Box fontWeight="fontWeightBold" style={ {
+                  color: getDataStatus(row.status).color
+                } }>
+                  { getDataStatus(row.status).name }
+                </Box>
                     </StyledTableCell>
                     <StyledTableCell align='center'>
-                                     { moment().calendar(row.lastSuscription.createdAt)}
-
-                    </StyledTableCell>
+                { moment(row.lastSuscription.createdAt).format('L') }
+              </StyledTableCell>
+              <StyledTableCell align='right'>
+                { ' ' }
+                <Switch
+                  checked={ row.isActive }
+                  onChange={ () => onSuspend(row) }
+                  name="checkedA"
+                  color="secondary"
+                  inputProps={ { 'aria-label': 'secondary checkbox' } }
+                />
+              </StyledTableCell>
                     <StyledTableCell align='right'>
                 { ' ' }
                 <Chip
@@ -181,16 +164,6 @@ const TableGuest: React.FC<TableGuestProps> = () => {
                   label='Edit'
                   onClick={()=>onEdit(row)}
                   clickable
-                  color='primary'
-                  />{ ' ' }
-              </StyledTableCell>
-              <StyledTableCell align='right'>
-                { ' ' }
-                <Chip
-                  size='small'
-                  label={`${row.isActive?'suspend':'activate'}`}
-                  clickable
-                  onClick={ ()=> onSuspend(row) }
                   color='primary'
                   />{ ' ' }
               </StyledTableCell>
@@ -207,14 +180,14 @@ const TableGuest: React.FC<TableGuestProps> = () => {
                   </StyledTableRow>
                 ))}
               </TableBody>
-              <TablePagination
+              {rows.length>8&&<TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
                 count={rows.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onChangePage={handleChangePage}
                 onChangeRowsPerPage={handleChangeRowsPerPage}
-                />
+                />}
             </Table>
                 </>
 

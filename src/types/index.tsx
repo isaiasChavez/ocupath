@@ -1,4 +1,5 @@
 const logo = 'https://ocupath.fra1.digitaloceanspaces.com/app/logo.png'
+const logo2x = 'https://ocupath.fra1.digitaloceanspaces.com/app/logo2x.svg'
 
 export enum LOG_A {
   RESET_PASS_SUCCESS = "RESET_PASS_SUCCESS",
@@ -36,6 +37,10 @@ export enum AS_A {
 }
 
 
+export const ROUTES = {
+  login: "/login",
+
+}
 
 
 export const URLS = {
@@ -122,4 +127,5 @@ export const COLORS = {
 
 export const Images = {
   logo,
+  logo2x,
 }

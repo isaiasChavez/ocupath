@@ -1,6 +1,6 @@
-import { makeStyles } from '@material-ui/core';
+import { Link, makeStyles } from '@material-ui/core';
 import React from 'react'
-import { COLORS } from '../../types';
+import { COLORS,ROUTES } from '../../types';
 
 
 export interface HeaderCustomProps {
@@ -20,7 +20,12 @@ const HeaderCustom: React.FC<HeaderCustomProps> = () => {
           </button>
           <button className={classes.headerItem}>PRICING</button>
           <button className={classes.headerItem}>ABOUT US</button>
-          <button className={classes.headerItem}>LOGIN</button>
+          
+          <button className={classes.headerItem}>
+          <Link href={ROUTES.login}>
+              <span >LOGIN</span>
+            </Link>
+            </button>
         </div>
     </div>
   );
