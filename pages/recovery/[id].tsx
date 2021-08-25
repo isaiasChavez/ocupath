@@ -106,11 +106,6 @@ const Recovery: React.FC<RecoveryProps> = () => {
     },
   }));
   const classes = useStyles();
-
-
-  if (loading) {
-    return <CircularProgress color="secondary" />
-  }
   if (!loading&&!canViewThis) {
       return <div>No puedes ver esto</div>
   }
@@ -128,19 +123,21 @@ const Recovery: React.FC<RecoveryProps> = () => {
           </Typography>
           <form onSubmit={onSubmit} className={classes.form}>
             <TextField
-              margin="normal"
-              required
-              fullWidth
-              onChange={onChange}
-              id="password"
-              label="password"
-              name="password"
-              autoComplete="password"
-              autoFocus
-              error={errors.password.length !== 0}
-              helperText={errors.password}
+            disabled={loading}
+            margin="normal"
+            required
+            fullWidth
+            onChange={onChange}
+            id="password"
+            label="password"
+            name="password"
+            autoComplete="password"
+            autoFocus
+            error={errors.password.length !== 0}
+            helperText={errors.password}
             />
             <Button
+            disabled={loading}
               type="submit"
               fullWidth
               variant="contained"

@@ -12,7 +12,6 @@ export interface TableCompaniesProps {
 }
 
 export const getDataStatus = (status): { color: any,name: string } => {
-  console.log("==>",{ status })
   if (status === 1) {
     return {
       color: "#8DC811",

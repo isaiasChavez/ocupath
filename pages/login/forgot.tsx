@@ -14,13 +14,13 @@ import UserContext, {
   ResetPassword,
 } from "../../src/context/user/user.context";
 import HeaderCustom from "../../src/components/general/HeaderCustom";
-import { Box } from "@material-ui/core";
+import { Box, LinearProgress } from "@material-ui/core";
 import { COLORS } from "../../src/types";
 import { CustomInput } from ".";
 export interface ForgotProps {}
 
 const Forgot: React.FC<ForgotProps> = () => {
-  const { passRecover } = useContext(UserContext);
+  const { passRecover ,loading} = useContext(UserContext);
   const [loginState, setloginState] = useState({
     email: "",
   });
@@ -29,11 +29,17 @@ const Forgot: React.FC<ForgotProps> = () => {
   });
   const { email } = loginState;
 
-  const onSubmit = (e) => {
+  const onSubmit = async(e) => {
     e.preventDefault();
     if (validateFields()) {
       let dto = new ResetPassword(loginState.email);
-      passRecover(dto);
+      const status =await passRecover(dto);
+      console.log({status})
+      if (status===0) {
+        setloginState({
+          email:""
+        })
+      }
     }
   };
   const onChange = (e) => {
@@ -84,6 +90,8 @@ const Forgot: React.FC<ForgotProps> = () => {
   const classes = useStyles();
 
   return (
+    <>
+    
     <div style={ {
       height: '100vh',
       display: 'flex',
@@ -122,6 +130,7 @@ const Forgot: React.FC<ForgotProps> = () => {
               }
               }}
             size="small"
+            value={loginState.email}
               margin="normal"
               required
               fullWidth
@@ -143,6 +152,7 @@ const Forgot: React.FC<ForgotProps> = () => {
           }}>
 
             <Button
+            disabled={loading}
               type="submit"
               size="small"
               variant="contained"
@@ -157,7 +167,15 @@ const Forgot: React.FC<ForgotProps> = () => {
                 </div>
           </form>
               </div>
+
+             { loading&&<LinearProgress style={{
+                position: 'fixed',
+                bottom: 0,
+                width: '100%',
+              }} color="secondary"/>}
     </div>
+              </>
+
   );
 };
 

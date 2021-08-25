@@ -34,16 +34,68 @@ const UserState = ({ children }) => {
   const resetPass = async (resetPassword: ResetPassword) => {
     try {
       await validateOrReject(resetPassword);
-      const { data } = await axios.post(URLS.recoverpass, resetPassword);
-
+      setLoading(true)
+      const { data } = await axios.put(URLS.recoverpass, resetPassword);
       console.log({data})
-      dispatch({
-        type: LOG_A.RESET_PASS_SUCCESS,
-        payload: data,
-      });
+      setLoading(false)
+      if (data.status ===0) {
+        sendAlert({
+          type:'success',
+          msg:"Your password has been reset"
+        })
+        
+      }
+      
     } catch (error) {
+      sendAlert({
+        type:'error',
+        msg:error.message,
+      })
+      setLoading(false)
       console.error("** Error validating passRecover ** ", { error });
       console.error({ error });
+    }
+  };
+  const passRecover = async (passwordRecovery: ResetPassword) => {
+    try {
+      await validateOrReject(passwordRecovery);
+      setLoading(true)
+      const response = await axios.post(
+        `${URLS.reset}${passwordRecovery.email}`
+        );
+        setLoading(false)
+        if (validateResponse(response, LOG_A.RECOVER_PASS_SUCCESS)) {
+          if (response.data.status ===0) {
+            sendAlert({
+              type:'success',
+              msg:"An email has been sent with the data to restore your password"
+            })
+            dispatch({
+              type: LOG_A.RECOVER_PASS_SUCCESS,
+              payload: response.data,
+            });
+          }
+          if (response.data.status ===1) {
+            sendAlert({
+              type:'success',
+              msg:"User does not exist"
+            })
+          }
+          if (response.data.status ===2) {
+            sendAlert({
+              type:'warning',
+              msg:"We have not been able to contact this email"
+            })
+          }
+          return response.data.status
+        }
+      } catch (error) {
+        sendAlert({
+          type:'error',
+          msg:error.message
+        })
+      setLoading(false)
+      console.error("** Error validating passRecover ** ", { error });
     }
   };
   const validateToken = async (token: string) => {
@@ -74,37 +126,51 @@ const UserState = ({ children }) => {
     }
   };
 
-  const passRecover = async (passwordRecovery: ResetPassword) => {
-    try {
-      await validateOrReject(passwordRecovery);
-      console.log({ passwordRecovery });
-      const response = await axios.post(
-        `${URLS.reset}${passwordRecovery.email}`
-      );
-      if (validateResponse(response, LOG_A.RECOVER_PASS_SUCCESS)) {
-        dispatch({
-          type: LOG_A.RECOVER_PASS_SUCCESS,
-          payload: response.data,
-        });
-      }
-    } catch (error) {
-      console.error("** Error validating passRecover ** ", { error });
-    }
-  };
+ 
 
   const inviteUser = async (inviteUserDTO: InviteUserDTO) => {
     try {
+
       const newInvite = new InviteUserDTO(inviteUserDTO)
       await validateOrReject(newInvite);
-
+      setLoading(true)
       const { data } = await axios.post(URLS.invite,inviteUserDTO);
-      
-
-      dispatch({
-        type: LOG_A.INVITE_USER_SUCCESS,
-        payload: data,
-      });
+      setLoading(false)
+      if (data.status===0) {
+        sendAlert({
+          type:'success',
+          msg:"The invitation has been sent successfully"
+        })
+        dispatch({
+          type: LOG_A.INVITE_USER_SUCCESS,
+          payload: data,
+        });
+      }
+      if (data.status===5) {
+        sendAlert({
+          type:'error',
+          msg:"User does not exist"
+        })
+      }
+      if (data.status===3) {
+        sendAlert({
+          type:'warning',
+          msg:"There is not a email whith this address"
+        })
+      }
+      if (data.status===9) {
+        sendAlert({
+          type:'warning',
+          msg:"User already exists"
+        })
+      }
     } catch (error) {
+      setLoading(false)
+      sendAlert({
+        type:'error',
+        msg:error.message
+      })
+
       console.error("** Error validating inviteUser ** ", { error });
     }
   };
@@ -115,14 +181,19 @@ const UserState = ({ children }) => {
       console.log({data})
       setLoading(false)
       if (data.status ===0) {
+       
         dispatch({
           type: US_A.CHILDRENS,
           payload: data,
         });
-        
       }
+      return data.status
     } catch (error) {
       setLoading(false)
+      sendAlert({
+        type:'error',
+        msg:error.message
+      })
       console.error("** Error geting user childrens ** ", { error });
     }
   };

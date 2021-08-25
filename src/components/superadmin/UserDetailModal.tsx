@@ -448,13 +448,9 @@ const DataNewPeriod = ({ typeToUpdate,setHasNewPeriod,handleClose,onClickNewPeri
     setErrors(initialErrors())
 
     if (typeToUpdate === USERS_TYPES.ADMIN && !validateCompany() || !isCommondFieldsValid()) {
-      console.log(errors)
-      alert('Invalid!')
       return
     }
     if (typeToUpdate === USERS_TYPES.GUEST && !isCommondFieldsValid()) {
-      alert('Invalid!')
-      console.log(errors)
       return
     }
 

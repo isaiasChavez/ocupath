@@ -116,7 +116,6 @@ export const validateResponse = (res: AxiosResponse, type: string): boolean => {
   const { status } = data;
   if (status === 0) {
     isValid = true;
-    alert("Todo ok");
   } else {
     switch (type) {
       case LOG_A.RECOVER_PASS_SUCCESS:

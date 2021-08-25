@@ -147,6 +147,7 @@ const InviteModal: React.FC<InviteModalProps> = ({
   }
 
   const handleSend = async () => {
+    
     const userToValid = type === COMPANIES ? validateCompany : validateGuest
     if (isCommondFieldsValid() && userToValid()) {
       setErrors(initialErrors())
