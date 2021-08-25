@@ -43,9 +43,14 @@ const UserState = ({ children }) => {
           type:'success',
           msg:"Your password has been reset"
         })
-        
+        router.push("/login")
       }
-      
+      if (data.status ===5||data.status ==10) {
+        sendAlert({
+          type:'error',
+          msg:"Token error"
+        })
+      }
     } catch (error) {
       sendAlert({
         type:'error',

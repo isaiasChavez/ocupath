@@ -52,7 +52,7 @@ const Recovery: React.FC<RecoveryProps> = () => {
     e.preventDefault();
     if (validateFields()) {
       let dto = new PasswordRecovery(loginState.password, token);      
-      resetPass(dto);
+       resetPass(dto);
     }
   };
 
