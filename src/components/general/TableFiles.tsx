@@ -1,16 +1,16 @@
-import React,{ useContext, useEffect,useState } from 'react';
+import React,{ useContext,useEffect,useState } from 'react';
 import { withStyles,Theme,createStyles,makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
-import { COLORS, FILES, URLS,FILES_TYPES } from '../../types'
+import { COLORS,FILES,URLS,FILES_TYPES } from '../../types'
 import Grid from "@material-ui/core/Grid";
-import { Box,Button, Card } from '@material-ui/core';
+import { Box,Button,Card,CircularProgress,LinearProgress } from '@material-ui/core';
 import clienteAxios from '../../config/axios';
 import UserContext from '../../context/user/user.context';
-import AssetsContext, { Asset } from '../../context/assets/assets.context';
+import AssetsContext,{ Asset } from '../../context/assets/assets.context';
 import NotificationsContext from '../../context/notifications/notifications.context';
 interface StyledTabProps {
   label: string;
@@ -28,23 +28,29 @@ const TableFiles: React.FC<TableFilesProps> = () => {
   useEffect(() => {
     getAssetsUser()
   },[currentTab])
-  const {getAssetsUser} = useContext(AssetsContext)
-  const {sendAlert} = useContext(NotificationsContext)
+  const { getAssetsUser } = useContext(AssetsContext)
+
+  const [loading,setLoading] = useState(false)
+
   return (
     <Grid container className={ classes.root } >
       <Grid item xs={ 12 }>
         <Paper className={ classes.paper }>
           <AntTabs value={ currentTab } onChange={ handleChange } aria-label="ant example">
-            <AntTab label="Images" />
-            <AntTab label="360 Images" />
-            <AntTab label="Video" />
-            <AntTab label="360 Videos" />
+            <AntTab disabled={ loading } label="Images" />
+            <AntTab disabled={ loading } label="360 Images" />
+            <AntTab disabled={ loading } label="Video" />
+            <AntTab disabled={ loading } label="360 Videos" />
           </AntTabs>
-          { currentTab === FILES.IMG && <Img /> }
-          { currentTab === FILES.IMG_360 && <Img360 /> }
-          { currentTab === FILES.VIDEO && <Video /> }
-          { currentTab === FILES.VIDEO_360 && <Video360 /> }
+          <Box width="100%" height="100%" position="relative">
+
+            { currentTab === FILES.IMG && <Img loading={ loading } setLoading={ setLoading } /> }
+            { currentTab === FILES.IMG_360 && <Img360 loading={ loading } setLoading={ setLoading } /> }
+            { currentTab === FILES.VIDEO && <Video loading={ loading } setLoading={ setLoading } /> }
+            { currentTab === FILES.VIDEO_360 && <Video360 loading={ loading } setLoading={ setLoading } /> }
+          </Box>
         </Paper>
+
       </Grid>
     </Grid>
 
@@ -55,10 +61,10 @@ export default TableFiles;
 
 
 
-const Img: React.FC<ImgProps> = () => {
-  const {assets,successCreate} = useContext(AssetsContext)  
+const Img: React.FC<ImgProps> = ({ loading,setLoading }) => {
+  const { assets,successCreate } = useContext(AssetsContext)
   const classes = useStyles();
-  const {sendAlert} = useContext(NotificationsContext)
+  const { sendAlert } = useContext(NotificationsContext)
   const [files,setFiles] = useState([])
   useEffect(() => {
     if (files.length !== 0) {
@@ -73,41 +79,51 @@ const Img: React.FC<ImgProps> = () => {
       const selectedFile = files[0];
       const formData = new FormData()
       formData.append("upload",selectedFile)
+      setLoading(true)
       const response = await clienteAxios.post(URLS.urlUploadImage,formData)
       const DTO = {
-        "url":response.data,
-        "typeAsset":FILES_TYPES.IMG
+        "url": response.data,
+        "typeAsset": FILES_TYPES.IMG
       }
+
       const responseUploadUser = await clienteAxios.post(URLS.createAsset,DTO)
-      if (responseUploadUser.data.status ===0) {
+      setLoading(false)
+      if (responseUploadUser.data.status === 0) {
         sendAlert({
-          type:'success',
-          msg:"Your image has been uploaded successfully"
+          type: 'success',
+          msg: "Your image has been uploaded successfully"
         })
+        setFiles([])
         successCreate(responseUploadUser.data.asset)
       }
     } catch (error) {
+      setLoading(false)
       console.log({ error })
       sendAlert({
-        type:'error',
-        msg:"An error occurred while uploading the images"
+        type: 'error',
+        msg: "An error occurred while uploading the images"
       })
     }
   }
   return (
     <>
       <GridList cellHeight={ 100 } className={ classes.gridList } cols={ 7 }>
-        { assets.images.map((asset:Asset,i) => (
+        { assets.images.map((asset: Asset,i) => (
           <GridListTile key={ i } cols={ 1 } style={ { height: 180 } }>
-            <img src={ asset.url } alt={ "Imagen normal" } />
+            <img className='animate-fadein' src={ asset.url } alt={ "Imagen normal" } />
           </GridListTile>
         )) }
       </GridList>
+      { loading && <Box position="absolute" display="flex" justifyContent="center" alignItems="center" top={ 0 } left={ 0 } right={ 0 } bottom={ 0 } style={ {
+        background: 'rgba(0, 13, 52, 0.1)'
+      } }>
+        <CircularProgress color="secondary" size="2rem" />
+      </Box> }
       <Paper>
         <Box display="flex" justifyContent="flex-end" alignItems="center" className={ classes.containerUpload }>
           <input onChange={ (e) => uploadImage(e.target.files) } multiple accept="image/*" id="upload" type="file" />
           <label htmlFor="upload">
-            <Button variant="contained" color="primary" className={ classes.uploadButton } component="span">
+            <Button disabled={ loading } variant="contained" color="primary" className={ classes.uploadButton } component="span">
               Upload
             </Button>
           </label>
@@ -118,14 +134,15 @@ const Img: React.FC<ImgProps> = () => {
 }
 
 export interface Img360Props {
-
+  loading: boolean,
+  setLoading: Function
 }
 
-const Img360: React.FC<Img360Props> = () => {
+const Img360: React.FC<Img360Props> = ({ loading,setLoading }) => {
 
   const [files,setFiles] = useState([])
-  const {assets,successCreate} = useContext(AssetsContext)
-  const {sendAlert} = useContext(NotificationsContext)
+  const { assets,successCreate } = useContext(AssetsContext)
+  const { sendAlert } = useContext(NotificationsContext)
 
   useEffect(() => {
     if (files.length !== 0) {
@@ -142,39 +159,44 @@ const Img360: React.FC<Img360Props> = () => {
       const selectedFile = files[0];
       const formData = new FormData()
       formData.append("upload",selectedFile)
+      setLoading(true)
+
       const response = await clienteAxios.post(URLS.urlUploadImage360,formData)
+      setLoading(false)
       const DTO = {
-        "url":response.data,
-        "typeAsset":FILES_TYPES.IMG_360
+        "url": response.data,
+        "typeAsset": FILES_TYPES.IMG_360
       }
-      const {data} = await clienteAxios.post(URLS.createAsset,DTO)
-      if (data.status ===0) {
+      const { data } = await clienteAxios.post(URLS.createAsset,DTO)
+      if (data.status === 0) {
         successCreate(data.asset)
+        setFiles([])
         sendAlert({
-          type:'success',
-          msg:"Your image has been uploaded successfully"
+          type: 'success',
+          msg: "Your image has been uploaded successfully"
         })
       }
     } catch (error) {
+      setLoading(false)
       console.log({ error })
       sendAlert({
-        type:'error',
-        msg:"An error occurred while uploading the image"
+        type: 'error',
+        msg: "An error occurred while uploading the image"
       })
     }
   }
 
   return (
-<>
+    <>
 
       <GridList cellHeight={ 100 } className={ classes.gridList } cols={ 7 }>
-        { assets.images360.map((asset:Asset) => (
-          
+        { assets.images360.map((asset: Asset) => (
+
           <GridListTile key={ asset.url } cols={ 1 } style={ { height: 180 } }>
             <img src={ asset.url } alt="Imagen 360" />
           </GridListTile>
         ))
-      }
+        }
       </GridList>
       <Paper>
         <Box display="flex" justifyContent="flex-end" alignItems="center" className={ classes.containerUpload }>
@@ -186,20 +208,21 @@ const Img360: React.FC<Img360Props> = () => {
           </label>
         </Box>
       </Paper>
-      </>
+    </>
   );
 }
 
 
 export interface Video360Props {
-
+  loading: boolean,
+  setLoading: Function
 }
 
-const Video360: React.FC<Video360Props> = () => {
+const Video360: React.FC<Video360Props> = ({ loading,setLoading }) => {
   const classes = useStyles();
-  const {assets,successCreate} = useContext(AssetsContext)  
+  const { assets,successCreate } = useContext(AssetsContext)
   const [files,setFiles] = useState([])
-  const {sendAlert} = useContext(NotificationsContext)
+  const { sendAlert } = useContext(NotificationsContext)
 
   useEffect(() => {
     if (files.length !== 0) {
@@ -212,40 +235,44 @@ const Video360: React.FC<Video360Props> = () => {
   const setVideo360 = async () => {
     try {
       const selectedFile = files[0];
-      console.log({selectedFile})
+      console.log({ selectedFile })
       const formData = new FormData()
       formData.append("upload",selectedFile)
+      setLoading(true)
       const response = await clienteAxios.post(URLS.urlUploadVideo360,formData)
-      console.log({response})
+      console.log({ response })
       const DTO = {
-        "url":response.data,
-        "typeAsset":FILES_TYPES.VIDEO_360
+        "url": response.data,
+        "typeAsset": FILES_TYPES.VIDEO_360
       }
-      const {data} = await clienteAxios.post(URLS.createAsset,DTO)
-      console.log({data})
-      if (data.status ===0) {
+      const { data } = await clienteAxios.post(URLS.createAsset,DTO)
+      setLoading(false)
+      console.log({ data })
+      if (data.status === 0) {
         sendAlert({
-          type:'success',
-          msg:"Your video has been uploaded successfully"
+          type: 'success',
+          msg: "Your video has been uploaded successfully"
         })
+        setFiles([])
         successCreate(data.asset)
       }
     } catch (error) {
+      setLoading(false)
       console.log({ error })
       sendAlert({
-        type:'error',
-        msg:"An error occurred while uploading the video"
+        type: 'error',
+        msg: "An error occurred while uploading the video"
       })
     }
   }
-  
+
 
   return (
     <>
       <GridList cellHeight={ 100 } className={ classes.gridList } cols={ 7 }>
-        { assets.videos360.map((asset:Asset,i) => (
+        { assets.videos360.map((asset: Asset,i) => (
           <GridListTile key={ i } cols={ 1 } style={ { height: 180 } }>
-            <img src={ asset.thumbnail }  />
+            <img src={ asset.thumbnail } />
           </GridListTile>
         )) }
       </GridList>
@@ -264,41 +291,80 @@ const Video360: React.FC<Video360Props> = () => {
 }
 
 export interface VideoProps {
-
+  loading: boolean,
+  setLoading: Function
 }
 
-const Video: React.FC<VideoProps> = () => {
-  const {assets,successCreate} = useContext(AssetsContext)
+const Video: React.FC<VideoProps> = ({ loading,setLoading }) => {
+  const { assets,successCreate } = useContext(AssetsContext)
   const [files,setFiles] = useState([])
-  const [urlVideo, setUrlVideo] = useState<string>("")
-  const [urlThumbNail, setUrlThumbNail] = useState<string>("")
-  const {sendAlert} = useContext(NotificationsContext)
-
+  const [urlVideo,setUrlVideo] = useState<string>("")
+  const [urlThumbNail,setUrlThumbNail] = useState<string>(null)
+  const { sendAlert } = useContext(NotificationsContext)
   useEffect(() => {
     if (files.length !== 0) {
       setVideo()
     }
-  },[files])
+   },[files])
+
   const uploadVideo = (filesUploaded) => {
     const url = URL.createObjectURL(filesUploaded[0])
     setUrlVideo(url)
     setFiles(filesUploaded)
 
-  } 
+  }
 
-  const onLoadMetadata= ()=>{
+  const onLoadMetadata = () => {
+
     const _VIDEO = document.querySelector("#video-element") as HTMLVideoElement
     const _CANVAS = document.querySelector("#canvas-element") as HTMLCanvasElement
     _CANVAS.width = _VIDEO.videoWidth;
     _CANVAS.height = _VIDEO.videoHeight;
   }
-  const onTimeUpdate = () => {
-    const _VIDEO = document.querySelector("#video-element") as HTMLVideoElement
-    const _CANVAS = document.querySelector("#canvas-element") as HTMLCanvasElement
-    const _CANVAS_CTX = _CANVAS.getContext("2d")  
-    _CANVAS_CTX.drawImage(_VIDEO, 0, 0, _VIDEO.videoWidth, _VIDEO.videoHeight);
-    _VIDEO.currentTime = 3
-    setUrlThumbNail(_CANVAS.toDataURL())
+
+  useEffect(() => {
+
+    const upload = async()=>{
+      const _CANVAS = document.querySelector("#canvas-element") as HTMLCanvasElement
+
+      _CANVAS.toBlob(async function(blob) {
+        try {
+          
+          const formData = new FormData();
+          formData.append('upload', blob, 'filename.png');
+          console.log({formData})
+          const response = await clienteAxios.post(URLS.urlUploadImage,formData)
+          console.log({response})
+        } catch (error) {
+          console.log({error})
+          
+        }
+      });
+
+    }
+    console.log({urlThumbNail})
+    if (urlThumbNail===null) {
+      upload()
+    }
+
+  }, [urlThumbNail])
+
+  const onTimeUpdate = async() => {
+    console.log("Update")
+        
+        const _VIDEO = document.querySelector("#video-element") as HTMLVideoElement
+        const _CANVAS = document.querySelector("#canvas-element") as HTMLCanvasElement
+        const _CANVAS_CTX = _CANVAS.getContext("2d")
+        _CANVAS_CTX.drawImage(_VIDEO,0,0,_VIDEO.videoWidth,_VIDEO.videoHeight);
+        console.log("Updating")
+        if (files.length===0) {
+          _VIDEO.currentTime = 3
+        }
+      
+        setUrlThumbNail(_CANVAS.toDataURL())
+            
+        console.log(_CANVAS.toDataURL())
+
   }
 
   const setVideo = async () => {
@@ -306,26 +372,30 @@ const Video: React.FC<VideoProps> = () => {
       const selectedFile = files[0];
       const formData = new FormData()
       formData.append("upload",selectedFile)
+      setLoading(true)
       const response = await clienteAxios.post(URLS.urlUploadVideo,formData)
       const DTO = {
-        "url":response.data,
-        "typeAsset":FILES_TYPES.VIDEO
+        "url": response.data,
+        "typeAsset": FILES_TYPES.VIDEO
       }
-      const {data} = await clienteAxios.post(URLS.createAsset,DTO)
-      console.log({data})
-      if (data.status ===0) {
-        sendAlert({
-          type:'success',
-          msg:"Your video has been uploaded successfully"
-        })
-        successCreate(data.asset)
-      }
+      // const { data } = await clienteAxios.post(URLS.createAsset,DTO)
+      // setLoading(false)
+      // console.log({ data })
+      // if (data.status === 0) {
+      //   setFiles([])
+      //   sendAlert({
+      //     type: 'success',
+      //     msg: "Your video has been uploaded successfully"
+      //   })
+      //   successCreate(data.asset)
+      // }
 
     } catch (error) {
+      setLoading(false)
       console.log({ error })
       sendAlert({
-        type:'error',
-        msg:"An error occurred while uploading the video"
+        type: 'error',
+        msg: "An error occurred while uploading the video"
       })
     }
   }
@@ -340,31 +410,31 @@ const Video: React.FC<VideoProps> = () => {
         )) }
       </GridList>
       <Paper>
-        <Box display="flex" flexDirection="column" justifyContent="flex-end" alignItems="center" className={ classes.containerUpload }>
+        <Box  display="flex" flexDirection="column" justifyContent="flex-end" alignItems="center" className={ classes.containerUpload }>
           <input onChange={ (e) => uploadVideo(e.target.files) } accept="video/*" id="video_uploader" type="file" />
           <label htmlFor="video_uploader">
             <Button variant="contained" color="primary" className={ classes.uploadButton } component="span">
               Upload video
             </Button>
           </label>
-          {/* <video style={{ 
-            
-            height:'200px',width:'200px',
-      backgroundColor:'red',
-      display: 'hidden',
-      visibility: 'hidden'
-    }}  onTimeUpdate={onTimeUpdate} onLoadedMetadata={onLoadMetadata} id="video-element" src={urlVideo} controls>
-        <source src={urlVideo} type="video/mp4"/>
-    </video>
-    <canvas 
-    style={{ 
-      backgroundColor:'red',
-      display: 'hidden',
-      visibility: 'hidden'
-    }}  id="canvas-element"></canvas>
-    <div id="thumbnail-container">
-         Seek to <select id="set-video-seconds"></select> seconds <a id="download-link" href="#">Download Thumbnail</a>
-    </div> */}
+          <video style={ {
+            height: '200px',width: '200px',
+            backgroundColor: 'red',
+            display: 'hidden',
+            visibility: 'hidden'
+          } } onTimeUpdate={ onTimeUpdate } onLoadedMetadata={ onLoadMetadata }  id="video-element" src={ urlVideo } controls>
+            <source src={ urlVideo } type="video/mp4" />
+          </video>
+          <img  src={urlThumbNail} alt="thumbnail" />
+          <canvas
+            style={ {
+              backgroundColor: 'red',
+              display: 'hidden',
+              visibility: 'hidden'
+            } } id="canvas-element"></canvas>
+          <div id="thumbnail-container">
+            Seek to <select id="set-video-seconds"></select> seconds <a id="download-link" href="#">Download Thumbnail</a>
+          </div>
         </Box>
       </Paper>
     </>
@@ -373,7 +443,8 @@ const Video: React.FC<VideoProps> = () => {
 
 
 export interface ImgProps {
-
+  loading: boolean,
+  setLoading: Function
 }
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
