@@ -132,7 +132,7 @@ const UserState = ({ children }) => {
 
  
 
-  const inviteUser = async (inviteUserDTO: InviteUserDTO) => {
+  const inviteUser = async (inviteUserDTO: InviteUserDTO): Promise<number>  => {
     try {
 
       const newInvite = new InviteUserDTO(inviteUserDTO)
@@ -154,7 +154,7 @@ const UserState = ({ children }) => {
       if (data.status===5) {
         sendAlert({
           type:'error',
-          msg:"User does not exist"
+          msg:"Operation not allowed"
         })
       }
       if (data.status===3) {
@@ -163,12 +163,24 @@ const UserState = ({ children }) => {
           msg:"There is not a email whith this address"
         })
       }
+      if (data.status===8) {
+        sendAlert({
+          type:'warning',
+          msg:"The invitation already existed, the previous invitation has been resent",
+          stop:true
+        })
+        sendAlert({
+          type:'success',
+          msg:"The invitation has been sent successfully"
+        })
+      }
       if (data.status===9) {
         sendAlert({
           type:'warning',
           msg:"User already exists"
         })
       }
+      return data.status
     } catch (error) {
       setLoading(false)
       sendAlert({
@@ -398,10 +410,18 @@ console.log({deleteUserDTO})
       
       const { data } = await axios.put(URLS.suspendAdm, pauseUserAdminDTO);
       setLoading(false)
-      dispatch({
-        type: AD_A.SUSPEND_ADM_SUCCESS,
-        payload: data,
-      });
+      if (data.status===0) {
+        dispatch({
+          type: AD_A.SUSPEND_ADM_SUCCESS,
+          payload: data,
+        });
+      }
+      if (data.status===2) {
+        sendAlert({
+          type:'warning',
+          msg:'User not found'
+        })
+      }
     } catch (error) {
       setLoading(false)
       console.error("** Error validating suspendUserAdm ** ", { error });
@@ -415,7 +435,6 @@ console.log({deleteUserDTO})
       setLoading(true)
       const { data } = await axios.put(URLS.suspendUser, suspendUserDTO);
       setLoading(false)
-      console.log({data})
       if (data.status===0) {
         dispatch({
           type: US_A.PAUSE_SUCCESS,

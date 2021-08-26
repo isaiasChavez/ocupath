@@ -1,4 +1,4 @@
-import { Box, Chip, Switch, Table, TableBody, TableHead, TablePagination, TableRow } from '@material-ui/core';
+import { Box, Button, Chip, Switch, Table, TableBody, TableHead, TablePagination, TableRow } from '@material-ui/core';
 import moment from 'moment';
 import React, { useContext, useEffect, useState } from 'react'
 import { getStatus } from '../../config/utils';
@@ -165,24 +165,32 @@ const TableGuest: React.FC<TableGuestProps> = () => {
                 />
               </StyledTableCell>
                     <StyledTableCell align='right'>
-                { ' ' }
-                <Chip
+                <Button
+                disabled={ !row.isActive||loading }
                   size='small'
-                  label='Edit'
-                  onClick={()=>onEdit(row)}
-                  clickable
+                  onClick={()=>{
+                    if (row.isActive) {
+                      onEdit(row)
+                    }
+                  }}
+                  variant="outlined"
                   color='primary'
-                  />{ ' ' }
+                  >
+                    Edit
+                  </Button>
               </StyledTableCell>
               <StyledTableCell align='right'>
                 { ' ' }
-                <Chip
+                <Button
+                disabled={loading}
+                variant="outlined"
+
                   size='small'
-                  label='Delete'
                   onClick={ ()=> onDelete(row) }
-                  clickable
                   color='secondary'
-                  />{ ' ' }
+                  >
+                    Delete
+                  </Button>
               </StyledTableCell>
                   </StyledTableRow>
                 ))}

@@ -182,7 +182,6 @@ const Login: React.FC<LoginProps> = () => {
           <CustomInput
             disabled={loading}
             margin="normal"
-            required
             fullWidth
             onChange={ onChange }
             id="email"

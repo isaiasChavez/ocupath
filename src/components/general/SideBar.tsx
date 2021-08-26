@@ -18,7 +18,6 @@ const SideBar: React.FC<SideBarProps> = ({setCurrentTab,currentTab}) => {
  const classes = useStyles()
  const {logout,loadingSesion} = useContext(SesionContext)
  const {profile} = useContext(UserContext)
-  console.log({profile})
   const isAdmin =profile.type=== USERS_TYPES.ADMIN
   const isSuperAdmin = profile.type=== USERS_TYPES.SUPER_ADMIN
   const isGuest =profile.type=== USERS_TYPES.GUEST

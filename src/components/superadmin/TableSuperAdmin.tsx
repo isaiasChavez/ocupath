@@ -43,6 +43,7 @@ const TableSuperAdmin: React.FC<TableSuperAdminProps> = () => {
     if (currentTab === COMPANIES) {
       return (
         <Button
+          disabled={loading}
           className={classes.buttonNew}
           onClick={handleOpenInviteModal}
           variant='contained'
@@ -55,6 +56,7 @@ const TableSuperAdmin: React.FC<TableSuperAdminProps> = () => {
     if (currentTab === GUEST) {
       return (
         <Button
+        disabled={loading}
         className={classes.buttonNew}
           onClick={handleOpenInviteModal}
           variant='contained'

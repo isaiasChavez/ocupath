@@ -130,7 +130,6 @@ const userReducer = (state: UserStateType,action: Actions): UserStateType => {
           ...payload
         },
       };
-      console.log({ newState })
       return newState
     case US_A.CHILDRENS:
       

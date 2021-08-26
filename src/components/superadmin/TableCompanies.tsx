@@ -1,4 +1,4 @@
-import { Box,Chip,createStyles,Switch,Table,TableBody,TableCell,TableHead,TablePagination,TableRow,Theme,withStyles } from '@material-ui/core';
+import { Box,Button,Chip,createStyles,Switch,Table,TableBody,TableCell,TableHead,TablePagination,TableRow,Theme,useRadioGroup,withStyles } from '@material-ui/core';
 import React,{ useContext,useEffect,useState } from 'react'
 import { getStatus } from '../../config/utils';
 import AskModal from '../general/AskModal';
@@ -68,7 +68,6 @@ const TableCompanies: React.FC<TableCompaniesProps> = () => {
   }
 
   const onSuspend = (dataUser: User) => {
-    console.log({ dataUser })
     setIsOpenSuspendUserModal(true)
     selectUser(dataUser,USERS.ADMIN)
   }
@@ -77,7 +76,6 @@ const TableCompanies: React.FC<TableCompaniesProps> = () => {
     selectUser(dataUser,USERS.ADMIN)
   }
   const onEdit = (dataUser: User) => {
-    console.log({ dataUser })
     handleToggleDetailModal()
     selectUser(dataUser,USERS.ADMIN)
     getAdminChildDetail(dataUser.uuid)
@@ -91,9 +89,6 @@ const TableCompanies: React.FC<TableCompaniesProps> = () => {
     setRowsPerPage(parseInt(event.target.value,10))
     setPage(0)
   }
-  useEffect(() => {
-    console.log("====>",childrens)
-  },[childrens])
 
   
 
@@ -201,24 +196,31 @@ const TableCompanies: React.FC<TableCompaniesProps> = () => {
                 />
               </StyledTableCell>
               <StyledTableCell align='right'>
-
-                <Chip
+                <Button
+                  disabled={!user.isActive||loading}
                   size='small'
-                  label='Edit'
-                  onClick={ () => onEdit(user) }
-                  clickable
+                  onClick={ () => {
+                    if (user.isActive) {
+                      onEdit(user)
+                    }
+                  } }
                   color='primary'
-                />{ ' ' }
+                  variant="outlined"
+                >
+                  Edit
+                </Button>
               </StyledTableCell>
               <StyledTableCell align='right'>
                 { ' ' }
-                <Chip
+                <Button
+                  disabled={loading}
+                  variant="outlined"
                   size='small'
-                  label='Delete'
                   onClick={ () => onDelete(user) }
-                  clickable
                   color='secondary'
-                />{ ' ' }
+                >
+                  Delete
+                </Button>
               </StyledTableCell>
             </StyledTableRow>
           )) }

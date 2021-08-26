@@ -11,8 +11,9 @@ import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import Modal from '@material-ui/core/Modal'
 import { NewUserDTO, NewUserErrors } from '../../types/types'
 import { verifyEmail } from '../../config/utils'
-import UserContext from '../../context/user/user.context'
+import UserContext, { InviteUserDTO } from '../../context/user/user.context'
 import NotificationsContext from '../../context/notifications/notifications.context'
+import { validateOrReject } from 'class-validator'
 
 export interface InviteModalProps {
   handleOpen: MouseEventHandler
@@ -75,15 +76,12 @@ const InviteModal: React.FC<InviteModalProps> = ({
 
   const isCommondFieldsValid = (): boolean => {
     let isValid = true
-    console.log('Validando comunes')
+
     let newErrors: NewUserErrors = { ...errors }
     if (!verifyEmail(dataNewUser.email)) {
       newErrors.email = 'Please enter a valid value'
       isValid = false
     }
-
-
-  
 
     if (!moment(startedAt).isValid() || moment(startedAt).isAfter(finishedAt)) {
       newErrors.startedAt = `You must select a date`
@@ -107,6 +105,7 @@ const InviteModal: React.FC<InviteModalProps> = ({
       isValid = false
     }
     if (!isValid) {
+      console.log("isCommondFieldsValid:",{newErrors})
       setErrors(newErrors)
     }
     return isValid
@@ -131,8 +130,8 @@ const InviteModal: React.FC<InviteModalProps> = ({
       newErrors.invitations = `You can only choose up to ${MAX_INVITATIONS} invitations.`
       isValid = false
     }
-    console.log('validateCompany:', { newErrors })
     if (!isValid) {
+      console.log({newErrors})
       setErrors(newErrors)
     }
     return isValid
@@ -154,15 +153,32 @@ const InviteModal: React.FC<InviteModalProps> = ({
     const userToValid = type === COMPANIES ? validateCompany : validateGuest
 
     if (isCommondFieldsValid() && userToValid()) {
-      console.log("Se ha validado correctamente")
       setErrors(initialErrors())
-      const inviteDTO = {
-        ...dataNewUser,
-        startedAt,
-        finishedAt
-      }      
-      await inviteUser(inviteDTO)
-      setDataNewUser({...initialState(type)})
+      try {
+        
+        const inviteDTO = {
+          ...dataNewUser,
+          startedAt,
+          finishedAt
+        }      
+        const newInvite = new InviteUserDTO(inviteDTO)
+        
+        await validateOrReject(newInvite);
+        
+      const response = await inviteUser(newInvite)
+      if (response ===0||response ===8) {
+        setDataNewUser({...initialState(type)})
+        handleClose()
+      }
+
+      } catch (error) {
+        console.log({error})
+        sendAlert({
+          type:'error',
+          msg:'Error validating fields'
+        })
+      }
+
     } else {
       sendAlert({
         type:'error',

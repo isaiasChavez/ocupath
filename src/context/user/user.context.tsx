@@ -43,7 +43,7 @@ export class ChangeName {
 export class InviteUserDTO {
   constructor({ email, typeToInvite,company,name,invitations,cost,startedAt,finishedAt }) {
     console.log({startedAt,finishedAt})
-    this.email = email;
+    this.email = email.trim();
     this.typeToInvite = typeToInvite  ;
     this.company = company
     this.invitations = parseInt(invitations)
@@ -75,7 +75,6 @@ export class InviteUserDTO {
   cost: number;
 
   @IsDateString()
-  @IsString()
   @IsNotEmpty()
   startedAt: string;
 
