@@ -44,7 +44,7 @@ export const getDataStatus = (status): { color: any,name: string } => {
 
 const TableCompanies: React.FC<TableCompaniesProps> = () => {
 
-  const { childrens,selectUser,selectedUser,suspendUserAdm,deleteUserAdm,getAdminChildDetail } = useContext(UserContext)
+  const { childrens,selectUser,selectedUser,suspendUserAdm,deleteUserAdm,getAdminChildDetail,loading } = useContext(UserContext)
   const [rowsPerPage,setRowsPerPage] = useState(5)
   const [page,setPage] = React.useState(0)
   const [isOpenUserDetailModal,setIsOpenUserDetailModal] = useState<boolean>(
@@ -143,7 +143,7 @@ const TableCompanies: React.FC<TableCompaniesProps> = () => {
             <StyledTableCell align='center'>
               Time Remaining
             </StyledTableCell>
-            <StyledTableCell align='center'>Estatus</StyledTableCell>
+            <StyledTableCell align='center'>Status</StyledTableCell>
             <StyledTableCell align='center'>
               Registration Date
             </StyledTableCell>
@@ -192,6 +192,7 @@ const TableCompanies: React.FC<TableCompaniesProps> = () => {
               </StyledTableCell>
               <StyledTableCell align='right'>
                 <Switch
+                disabled={loading}
                   checked={ user.isActive }
                   onChange={ () => onSuspend(user) }
                   name="checkedA"

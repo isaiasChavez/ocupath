@@ -1,4 +1,4 @@
-import React, { MouseEventHandler, useContext, useState } from 'react'
+import React, { MouseEventHandler, useContext, useEffect, useState } from 'react'
 import { Button,  TextField,  Box } from '@material-ui/core'
 import MomentUtils from '@date-io/moment'
 import { COMPANIES, GUEST } from '../../types'
@@ -12,10 +12,11 @@ import Modal from '@material-ui/core/Modal'
 import { NewUserDTO, NewUserErrors } from '../../types/types'
 import { verifyEmail } from '../../config/utils'
 import UserContext from '../../context/user/user.context'
+import NotificationsContext from '../../context/notifications/notifications.context'
 
 export interface InviteModalProps {
   handleOpen: MouseEventHandler
-  handleClose: MouseEventHandler
+  handleClose: Function
   isOpen: boolean
   type: number
 }
@@ -27,32 +28,37 @@ const InviteModal: React.FC<InviteModalProps> = ({
   type
 }) => {
   const MIN_INVITATIONS = 1
-  const MAX_INVITATIONS = 4
+  const MAX_INVITATIONS = 1000
 
   const [startedAt, setStartDate] = useState(new Date())
   const [finishedAt, setFinishDate] = useState(new Date())
   const [dataNewUser, setDataNewUser] = useState<NewUserDTO>(initialState(type))
   const [errors, setErrors] = useState<NewUserErrors>(initialErrors())
-  const { inviteUser,selectedUser } = useContext(UserContext)
-
+  const { inviteUser,selectedUser,loading } = useContext(UserContext)
+  const {sendAlert} = useContext(NotificationsContext)
   const handleDateStartChange = e => {
     setErrors(initialErrors())
     if (moment(e.format()).isAfter(finishedAt)) {
       setErrors({
         ...errors,
-        startedAt: `La fecha debe ser anterior a la final.`
+        startedAt: `The date must be before the final.`
       })
     } else {
       setStartDate(e.format())
     }
   }
+  useEffect(() => {
+    console.log({dataNewUser})
+  }, [dataNewUser])
+
+
   const handleDateEndChange = e => {
     setErrors(initialErrors())
     console.log({ e }, e.format())
     if (moment(e.format()).isBefore(startedAt)) {
       setErrors({
         ...errors,
-        finishedAt: `La fecha debe ser después al inicio.`
+        finishedAt: `The date must be after the start.`
       })
     } else {
       setFinishDate(e.format())
@@ -72,9 +78,7 @@ const InviteModal: React.FC<InviteModalProps> = ({
     console.log('Validando comunes')
     let newErrors: NewUserErrors = { ...errors }
     if (!verifyEmail(dataNewUser.email)) {
-      console.log('No es válido')
-      newErrors.email = 'Ingrese un valor válido'
-      console.log('Validando email')
+      newErrors.email = 'Please enter a valid value'
       isValid = false
     }
 
@@ -82,7 +86,7 @@ const InviteModal: React.FC<InviteModalProps> = ({
   
 
     if (!moment(startedAt).isValid() || moment(startedAt).isAfter(finishedAt)) {
-      newErrors.startedAt = `Debes seleccionar una fecha`
+      newErrors.startedAt = `You must select a date`
       isValid = false
     }
 
@@ -90,16 +94,16 @@ const InviteModal: React.FC<InviteModalProps> = ({
       !moment(finishedAt).isValid() ||
       moment(finishedAt).isBefore(startedAt)
     ) {
-      newErrors.finishedAt = `Debes seleccionar una fecha`
+      newErrors.finishedAt = `You must select a date`
       isValid = false
     }
     if (moment(finishedAt).isSame(startedAt)) {
-      newErrors.finishedAt = `Las fechas deben ser distintas`
-      newErrors.startedAt = `Las fechas deben ser distintas`
+      newErrors.finishedAt = `The dates must be different`
+      newErrors.startedAt = `The dates must be different`
       isValid = false
     }
     if (dataNewUser.cost <= 0) {
-      newErrors.cost = `No puedes colocar este valor`
+      newErrors.cost = `You cannot put this value`
       isValid = false
     }
     if (!isValid) {
@@ -110,22 +114,21 @@ const InviteModal: React.FC<InviteModalProps> = ({
 
   const validateCompany = (): boolean => {
     let isValid = true
-    console.log('Validando compañyu')
     const newErrors: NewUserErrors = {
       ...errors
     }
     if (dataNewUser.company.trim().length === 0) {
-      newErrors.company = 'Ingrese un valor válido'
+      newErrors.company = 'Please enter a valid value'
       isValid = false
     }
     if (dataNewUser.invitations <= MIN_INVITATIONS) {
-      newErrors.invitations = `Ingrese un mínimo de ${MIN_INVITATIONS} ${
-        MIN_INVITATIONS === 1 ? 'invitación.' : 'invitaciones.'
+      newErrors.invitations = `Enter a minimum of ${MIN_INVITATIONS} ${
+        MIN_INVITATIONS === 1 ? 'invitation.' : 'invitations.'
       }`
       isValid = false
     }
     if (dataNewUser.invitations > MAX_INVITATIONS) {
-      newErrors.invitations = `Solo puedes escoger hasta ${MAX_INVITATIONS} invitaciones.`
+      newErrors.invitations = `You can only choose up to ${MAX_INVITATIONS} invitations.`
       isValid = false
     }
     console.log('validateCompany:', { newErrors })
@@ -138,7 +141,7 @@ const InviteModal: React.FC<InviteModalProps> = ({
   const validateGuest = (): boolean => {
     let isValid = true
     if (dataNewUser.name.trim().length === 0) {
-      setErrors({ ...errors, name: 'Ingrese un valor válido' })
+      setErrors({ ...errors, name: 'Please enter a valid value' })
       isValid = false
     }
     console.log('validateGuest:', { isValid })
@@ -149,23 +152,29 @@ const InviteModal: React.FC<InviteModalProps> = ({
   const handleSend = async () => {
     
     const userToValid = type === COMPANIES ? validateCompany : validateGuest
+
     if (isCommondFieldsValid() && userToValid()) {
+      console.log("Se ha validado correctamente")
       setErrors(initialErrors())
       const inviteDTO = {
         ...dataNewUser,
         startedAt,
         finishedAt
-      }
+      }      
       await inviteUser(inviteDTO)
-      setDataNewUser(initialState(type))
+      setDataNewUser({...initialState(type)})
     } else {
-      alert('Invalid!')
+      sendAlert({
+        type:'error',
+        msg:'Error validating fields'
+      })
+
     }
   }
   const classes = useStyles()
 
   const Header = () => {
-    let headerText: string = 'Invitación'
+    let headerText: string = 'Invitation'
     if (type === COMPANIES) {
       headerText = 'Invite new company'
     }
@@ -206,6 +215,7 @@ const InviteModal: React.FC<InviteModalProps> = ({
               name='company'
               id='company'
               label='Company'
+              disabled={loading}
               fullWidth
               value={dataNewUser.company}
             />
@@ -228,6 +238,7 @@ const InviteModal: React.FC<InviteModalProps> = ({
               value={dataNewUser.name}
               fullWidth
               autoComplete='name'
+              disabled={loading}
             />
           </Box>
         )}
@@ -245,6 +256,7 @@ const InviteModal: React.FC<InviteModalProps> = ({
             label='Email'
             fullWidth
             value={dataNewUser.email}
+            disabled={loading}
           />
         </Box>
       </Box>
@@ -263,14 +275,17 @@ const InviteModal: React.FC<InviteModalProps> = ({
             size="small"
             name='invitations'
             variant='outlined'
+            disabled={loading}
             helperText={errors.invitations}
             onChange={onChangeInput}
             error={errors.invitations !== null}
             type='number'
             required
             placeholder='Number of invitations*'
-            value={dataNewUser.invitations===0?null:dataNewUser.invitations}
+            value={dataNewUser.invitations?dataNewUser.invitations:null}
             fullWidth
+
+            
             />
           </Box>
             </>
@@ -302,6 +317,7 @@ const InviteModal: React.FC<InviteModalProps> = ({
                   format='DD/MM/YYYY'
                   value={startedAt}
                   disablePast
+                  disabled={loading}
                 maxDate={new Date('2025-01-01')}
                 disableToolbar
                   InputAdornmentProps={{ position: 'start' }}
@@ -311,6 +327,8 @@ const InviteModal: React.FC<InviteModalProps> = ({
               <Box width='100%' ml={2}>
                 <KeyboardDatePicker
                 disablePast
+                disabled={loading}
+
                   fullWidth={true}
                   disableToolbar
                   maxDate={new Date('2025-01-01')}
@@ -338,12 +356,13 @@ const InviteModal: React.FC<InviteModalProps> = ({
             required
             onChange={onChangeInput}
             variant='outlined'
-            value={dataNewUser.cost===0?null:dataNewUser.cost}
+            value={dataNewUser.cost}
             error={errors.cost !== null}
             name='cost'
             helperText={errors.cost}
             placeholder='Total cost'
             fullWidth
+            disabled={loading}
           />
         </Box>
 
@@ -352,10 +371,15 @@ const InviteModal: React.FC<InviteModalProps> = ({
             <Button
               fullWidth={true}
               size='large'
-              onClick={handleClose}
+              onClick={()=>{
+                if (!loading) {
+                  handleClose()
+                }
+              }}
               className={classes.buttons}
               color='secondary'
               variant='outlined'
+              disabled={loading}
             >
               Cancel
             </Button>
@@ -367,6 +391,7 @@ const InviteModal: React.FC<InviteModalProps> = ({
               size='large'
               color='secondary'
               variant='contained'
+              disabled={loading}
             >
               Sure
             </Button>
@@ -380,7 +405,11 @@ const InviteModal: React.FC<InviteModalProps> = ({
     <>
       <Modal
         open={isOpen}
-        onClose={handleClose}
+        onClose={()=>{
+          if (!loading) {
+            handleClose()  
+          }
+          }}
         style={{
           display: 'flex',
           justifyContent: 'center',
@@ -392,6 +421,7 @@ const InviteModal: React.FC<InviteModalProps> = ({
         aria-describedby='simple-modal-description'
       >
         {body}
+
       </Modal>
     </>
   )
@@ -426,11 +456,11 @@ const initialState = (type: number): NewUserDTO => {
   return {
     company: '',
     name: '',
-    cost: 0,
+    cost: null,
     email: '',
     finishedAt: '',
     startedAt: '',
-    invitations: 0,
+    invitations: null,
     typeToInvite
   }
 }

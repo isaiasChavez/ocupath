@@ -20,7 +20,9 @@ const NotificationState = ({ children }) => {
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
+            toastId:msg.replace(/ /g, "")
             });
+            return 
         }
         if (type==='error') {
           toast.error(msg, {
@@ -31,7 +33,9 @@ const NotificationState = ({ children }) => {
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
+            toastId:msg.replace(/ /g, "")
             });
+            return 
         }
         if (type==='error') {
           toast.error(msg, {
@@ -42,7 +46,9 @@ const NotificationState = ({ children }) => {
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
+            toastId:msg.replace(/ /g, "")
             });
+            return 
         }
         if (type==='warning') {
           toast.warn(msg, {
@@ -53,8 +59,20 @@ const NotificationState = ({ children }) => {
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
+            toastId:msg.replace(/ /g, "")
             });
+            return 
         }
+        toast(msg, {
+          position: "bottom-center",
+          autoClose:stop?false:5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          toastId:msg.replace(/ /g, "")
+          });
         
     
 

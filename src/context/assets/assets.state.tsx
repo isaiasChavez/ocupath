@@ -7,16 +7,12 @@ import AssetsContext, {
 } from "./assets.context";
 import { AS_A, URLS } from "../../types/index";
 import AssetsReducer, { AssetsStateType } from "./assets.reducer";
-import { validateResponse } from "../../config/utils";
 
 const UserState = ({ children }) => {
   const [state, dispatch] = useReducer(AssetsReducer, initialState());
-
-
   const getAssetsUser = async (createAssetDTO: CreateAssetDTO) => {
     try {
       const { data } = await axios.get(URLS.assets);
-      console.log({data})
       dispatch({
         type: AS_A.GET_ASSETS,
         payload: data.assets,
@@ -29,6 +25,7 @@ const UserState = ({ children }) => {
 
   const successCreate = async (asset:Asset) => {
     try {
+  
       dispatch({
         type: AS_A.CREATE_SUCCESS,
         payload: asset,

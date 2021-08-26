@@ -113,7 +113,6 @@ const UserState = ({ children }) => {
       return data.status
     } catch (error) {
       setLoading(false)
-      alert("Error en el servidor")
       return 1
     }
   };
@@ -141,6 +140,7 @@ const UserState = ({ children }) => {
       setLoading(true)
       const { data } = await axios.post(URLS.invite,inviteUserDTO);
       setLoading(false)
+      console.log({data})
       if (data.status===0) {
         sendAlert({
           type:'success',
@@ -259,8 +259,6 @@ const UserState = ({ children }) => {
   
   const getUserChildDetail = async () => {
     try {
-      console.log("==================================")
-      console.log(state.selectedUser,"<===")
       const dto = new GetUserDetailDTO(state.selectedUser.uuid)
       await validateOrReject(dto);
       setLoading(true)
@@ -271,7 +269,10 @@ const UserState = ({ children }) => {
         dispatch({ type: AD_A.USER_CHILD_DETAIL, payload: data });
       }
       if (data.status ===2) {
-        alert("El email ya existe")
+        sendAlert({
+          type:'warning',
+          msg:'An error has occurred'
+        })
       }
 
     } catch (error) {
@@ -284,6 +285,10 @@ const UserState = ({ children }) => {
     }
   };
   const getAdminChildDetail = async (uuid) => {
+    sendAlert({
+      type:'success',
+      msg:'Prueba para ver color de notificación success'
+    })
     try {
       const dto = new GetAdminDetailDTO(uuid)
       console.log({dto})
@@ -291,13 +296,6 @@ const UserState = ({ children }) => {
       const { data } = await axios.post(URLS.adminChildDetail, dto);
       console.log({data},AD_A.ADMIN_CHILD_DETAIL)
       dispatch({ type: AD_A.ADMIN_CHILD_DETAIL, payload: data });
-      // if (data.status ===0) {
-      //     alert("Registro exitoso")
-      // }
-      // if (data.status ===2) {
-      //     alert("El email ya existe")
-      // }
-      // return data.status
 
 
     } catch (error) {
@@ -396,12 +394,16 @@ console.log({deleteUserDTO})
     try {
       const pauseUserAdminDTO = new DeleteOrSuspendAdminUserDTO(state.selectedUser.uuid,!state.selectedUser.isActive)
       await validateOrReject(pauseUserAdminDTO);
+      setLoading(true)
+      
       const { data } = await axios.put(URLS.suspendAdm, pauseUserAdminDTO);
+      setLoading(false)
       dispatch({
         type: AD_A.SUSPEND_ADM_SUCCESS,
         payload: data,
       });
     } catch (error) {
+      setLoading(false)
       console.error("** Error validating suspendUserAdm ** ", { error });
     }
   };
@@ -410,14 +412,24 @@ console.log({deleteUserDTO})
     try {
       const suspendUserDTO = new DeleteOrSuspendUserDTO(state.selectedUser.uuid,!state.selectedUser.isActive)
       await validateOrReject(suspendUserDTO);
-      console.log({suspendUserDTO})
+      setLoading(true)
       const { data } = await axios.put(URLS.suspendUser, suspendUserDTO);
+      setLoading(false)
       console.log({data})
-      dispatch({
-        type: US_A.PAUSE_SUCCESS,
-        payload: data,
-      });
+      if (data.status===0) {
+        dispatch({
+          type: US_A.PAUSE_SUCCESS,
+          payload: data,
+        });
+      }
+      if (data.status===2) {
+        sendAlert({
+          type:'warning',
+          msg:'User not found'
+        })
+      }
     } catch (error) {
+      setLoading(false)
       console.error("** Error validating suspendUser ** ", { error });
     }
   };
@@ -427,14 +439,20 @@ console.log({deleteUserDTO})
       await validateOrReject(createUserDTO);
       const { data } = await axios.post(URLS.create, createUserDTO);
       if (data.status ===0) {
-          alert("Registro exitoso")
+          sendAlert({
+            type:'success',
+            msg:'Successful registration'
+          })
           dispatch({
             type: US_A.REGISTER_SUCCES,
             payload: data,
           });
       }
       if (data.status ===2) {
-          alert("El email ya existe")
+        sendAlert({
+          type:'warning',
+          msg:"The email already exists"
+        })
       } 
         
     } catch (error) {
@@ -520,7 +538,10 @@ console.log({deleteUserDTO})
       }
     } catch (error) {
       setLoading(false)
-      alert("No se ha podido logguear");
+      sendAlert({
+        type:'warning',
+        msg:"Could not log in"
+      })
     }
   };
 

@@ -45,15 +45,15 @@ const FormEdit: React.FC<FormEditProps> = ({ type, toggleEditAvatar }) => {
     let isValid = true
     if (!name || name.trim().length === 0 || name.trim().length >= 100) {
       setHasError(true)
-      setError('Ingrese un nombre válido')
+      setError('Please enter a valid name')
       isValid = false
     } else if (name.trim().includes(' ')) {
       setHasError(true)
-      setError('No puedes incluir espacios')
+      setError('You cannot include spaces')
       isValid = false
     } else if (name.trim().length < 5) {
       setHasError(true)
-      setError('Deben ser al menos 5 caracteres.')
+      setError('They must be at least 5 characters.')
       isValid = false
     }
     return isValid

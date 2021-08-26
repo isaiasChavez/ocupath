@@ -6,6 +6,7 @@ import TextField from '@material-ui/core/TextField'
 import MomentUtils from '@date-io/moment'
 import { MIN_INVITATIONS,MAX_INVITATIONS } from '../../config'
 import Skeleton from 'react-loading-skeleton';
+import NumberFormat from 'react-number-format';
 
 import { COLORS,USERS_TYPES } from '../../types/'
 import {
@@ -23,6 +24,34 @@ export interface UserDetailModalProps {
   handleClose: Function,
   isOpen: boolean,
   type: USERS_TYPES
+}
+
+interface NumberFormatCustomProps {
+  inputRef: (instance: NumberFormat | null) => void;
+  onChange: (event: { target: { name: string; value: string } }) => void;
+  name: string;
+}
+
+function NumberFormatCustom(props: NumberFormatCustomProps) {
+  const { inputRef, onChange, ...other } = props;
+
+  return (
+    <NumberFormat
+      {...other}
+      getInputRef={inputRef}
+      onValueChange={(values) => {
+        onChange({
+          target: {
+            name: props.name,
+            value: values.value,
+          },
+        });
+      }}
+      thousandSeparator
+      isNumericString
+      prefix="$"
+    />
+  );
 }
 
 const UserDetailModal: React.FC<UserDetailModalProps> = ({
@@ -62,16 +91,20 @@ const UserDetailModal: React.FC<UserDetailModalProps> = ({
             style={ {
               maxHeight: "100vh",
               minHeight: "30rem",
+              height: "auto",
               overflowY: 'auto',
               borderRadius: '10px',
+              position: 'relative'
             } }
           >
-            <Box width="100%" height="100%" p={ 3 }>
-              { loading ? <Box width="100%" height="100%" display="flex" justifyContent="center" alignItems="center">
+            <Box width="100%"  height="100%" p={ 3 }>
+              { loading ? <Box width="100%" position="absolute" top={0} left={0} right={0} bottom={0}  height="100%" display="flex" justifyContent="center" alignItems="center">
                 <CircularProgress color="secondary" />
               </Box> :
                   <>
-
+    <Box fontSize={ 24 } mb={ 2 } className="ITCAvantGardeStdBkBold" fontWeight="fontWeightBold">
+          {type === USERS_TYPES.ADMIN?'Company detail':'Guest detail'}
+        </Box>
                 <DataAdmin hasNewPeriod={ hasNewPeriod } onClickNewPeriod={ onClickNewPeriod }>
                   <DataNewPeriod onClickNewPeriod={ onClickNewPeriod } typeToUpdate={ type } setHasNewPeriod={ setHasNewPeriod } handleClose={ handleClose } />
                 </DataAdmin>
@@ -117,9 +150,7 @@ const DataAdmin: React.FC<DataAdminProps> = ({ hasNewPeriod,children,onClickNewP
   return (
     <>
       <Box width="100%" position="relative">
-        <Box fontSize={ 24 } mb={ 2 } className="ITCAvantGardeStdBkBold" fontWeight="fontWeightBold">
-          Company detail
-        </Box>
+      
         <Box display="flex" width="100%">
 
           <Box width="50%"  style={ { borderRightColor: COLORS.gray_primary } } borderRight={ 2 } pb={ 4 }  pr={ 2 }>
@@ -262,6 +293,9 @@ const DataAdmin: React.FC<DataAdminProps> = ({ hasNewPeriod,children,onClickNewP
                   id='totalCost'
                   name='totalCost'
                   label='Total Cost'
+                  InputProps={{
+                    inputComponent: NumberFormatCustom as any,
+                  }}
                 />
               </Box>
 
@@ -396,16 +430,15 @@ const DataNewPeriod = ({ typeToUpdate,setHasNewPeriod,handleClose,onClickNewPeri
 
   const validateCompany = (): boolean => {
     let isValid = true
-    console.log("Validando compañyu")
     const newErrors = {
       ...errors
     }
     if (dataNewUser.invitations <= MIN_INVITATIONS) {
-      newErrors.invitations = `Ingrese un mínimo de ${MIN_INVITATIONS} ${MIN_INVITATIONS === 1 ? 'invitación.' : 'invitaciones.'}`
+      newErrors.invitations = `Enter a minimum of ${MIN_INVITATIONS} ${MIN_INVITATIONS === 1 ? 'invitation.' : 'invitations.'}`
       isValid = false
     }
     if (dataNewUser.invitations > MAX_INVITATIONS) {
-      newErrors.invitations = `Solo puedes escoger hasta ${MAX_INVITATIONS} invitaciones.`
+      newErrors.invitations = `You can only choose up to ${MAX_INVITATIONS} invitations.`
       isValid = false
     }
     if (!isValid) {
@@ -418,24 +451,24 @@ const DataNewPeriod = ({ typeToUpdate,setHasNewPeriod,handleClose,onClickNewPeri
     let newErrors = { ...errors }
 
     if (!moment(startedAt).isValid() || moment(startedAt).isAfter(finishedAt)) {
-      newErrors.startedAt = `Debes seleccionar una fecha`
+      newErrors.startedAt = `You must select a date`
       isValid = false
     }
     if (moment(startedAt).isBetween(selectedUser.lastSuscription.startedAt,selectedUser.lastSuscription.finishedAt)) {
-      newErrors.startedAt = `Las fechas no se pueden sobrelapar`
+      newErrors.startedAt = `The date cannot be overlapped with the previous subscription.`
       isValid = false
     }
     if (!moment(finishedAt).isValid() || moment(finishedAt).isBefore(startedAt)) {
-      newErrors.finishedAt = `Debes seleccionar una fecha`
+      newErrors.finishedAt = `You must select a date`
       isValid = false
     }
     if (moment(finishedAt).isSame(startedAt)) {
-      newErrors.finishedAt = `Las fechas deben ser distintas`
-      newErrors.startedAt = `Las fechas deben ser distintas`
+      newErrors.finishedAt = `The dates must be different`
+      newErrors.startedAt = `The dates must be different`
       isValid = false
     }
     if (dataNewUser.cost <= 0) {
-      newErrors.cost = `No puedes colocar este valor`
+      newErrors.cost = `You cannot put this value`
       isValid = false
     }
     if (!isValid) {

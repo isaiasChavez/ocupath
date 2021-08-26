@@ -69,15 +69,15 @@ const Register: React.FC<RegisterProps> = () => {
     console.log("Validando comunes")
     let newErrors = { ...errors }
     if (dataUsuario.name.trim().length === 0) {
-      setErrors({ ...errors, name: "Ingrese un valor válido" });
+      setErrors({ ...errors, name: "Enter a value válido" });
       isValid = false
     }
     if (dataUsuario.lastname.trim().length === 0) {
-      setErrors({ ...errors, name: "Ingrese un valor válido" });
+      setErrors({ ...errors, name: "Enter a value válido" });
       isValid = false
     }
     if (dataUsuario.password.trim().length === 0) {
-      setErrors({ ...errors, name: "Ingrese un valor válido" });
+      setErrors({ ...errors, name: "Enter a value válido" });
       isValid = false
     }
     if (dataUsuario.confirmPassword!==dataUsuario.password ) {

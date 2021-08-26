@@ -68,7 +68,6 @@ const EditAvatar = ({ toggleEditAvatar }) => {
       
     } catch (error) {
       setloading(false)
-      alert("Ah ocurrido un error al salvar tu avatar")  
     }
 
   }

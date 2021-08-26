@@ -68,7 +68,7 @@ const Recovery: React.FC<RecoveryProps> = () => {
       password: "",
     };
     if (password.trim() === "") {
-      newErrors.password = "Ingrese un valor";
+      newErrors.password = "Enter a value";
       isValid = false;
     }
     // if (!verifyPassword(password)) {

@@ -11,15 +11,13 @@ import { Box,Button, Card } from '@material-ui/core';
 import clienteAxios from '../../config/axios';
 import UserContext from '../../context/user/user.context';
 import AssetsContext, { Asset } from '../../context/assets/assets.context';
+import NotificationsContext from '../../context/notifications/notifications.context';
 interface StyledTabProps {
   label: string;
 }
 export interface TableFilesProps {
 
 }
-const img_uno = 'https://images.unsplash.com/photo-1623835255306-868c63d9335e?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80'
-const img_dos = 'https://images.unsplash.com/photo-1624548955817-e2d68f404137?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=670&q=80'
-const img_tres = 'https://images.unsplash.com/photo-1624541478061-2a3b39b3d725?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80'
 
 const TableFiles: React.FC<TableFilesProps> = () => {
   const [currentTab,setCurrentTab] = useState(0);
@@ -31,6 +29,7 @@ const TableFiles: React.FC<TableFilesProps> = () => {
     getAssetsUser()
   },[currentTab])
   const {getAssetsUser} = useContext(AssetsContext)
+  const {sendAlert} = useContext(NotificationsContext)
   return (
     <Grid container className={ classes.root } >
       <Grid item xs={ 12 }>
@@ -59,7 +58,7 @@ export default TableFiles;
 const Img: React.FC<ImgProps> = () => {
   const {assets,successCreate} = useContext(AssetsContext)  
   const classes = useStyles();
-
+  const {sendAlert} = useContext(NotificationsContext)
   const [files,setFiles] = useState([])
   useEffect(() => {
     if (files.length !== 0) {
@@ -80,13 +79,19 @@ const Img: React.FC<ImgProps> = () => {
         "typeAsset":FILES_TYPES.IMG
       }
       const responseUploadUser = await clienteAxios.post(URLS.createAsset,DTO)
-      console.log({responseUploadUser})
       if (responseUploadUser.data.status ===0) {
+        sendAlert({
+          type:'success',
+          msg:"Your image has been uploaded successfully"
+        })
         successCreate(responseUploadUser.data.asset)
       }
     } catch (error) {
       console.log({ error })
-      alert("Ha ocurrido un error al subir las imagenes")
+      sendAlert({
+        type:'error',
+        msg:"An error occurred while uploading the images"
+      })
     }
   }
   return (
@@ -120,6 +125,7 @@ const Img360: React.FC<Img360Props> = () => {
 
   const [files,setFiles] = useState([])
   const {assets,successCreate} = useContext(AssetsContext)
+  const {sendAlert} = useContext(NotificationsContext)
 
   useEffect(() => {
     if (files.length !== 0) {
@@ -144,10 +150,17 @@ const Img360: React.FC<Img360Props> = () => {
       const {data} = await clienteAxios.post(URLS.createAsset,DTO)
       if (data.status ===0) {
         successCreate(data.asset)
+        sendAlert({
+          type:'success',
+          msg:"Your image has been uploaded successfully"
+        })
       }
     } catch (error) {
       console.log({ error })
-      alert("Ha ocurrido un error al subir las imagenes")
+      sendAlert({
+        type:'error',
+        msg:"An error occurred while uploading the image"
+      })
     }
   }
 
@@ -186,6 +199,7 @@ const Video360: React.FC<Video360Props> = () => {
   const classes = useStyles();
   const {assets,successCreate} = useContext(AssetsContext)  
   const [files,setFiles] = useState([])
+  const {sendAlert} = useContext(NotificationsContext)
 
   useEffect(() => {
     if (files.length !== 0) {
@@ -210,11 +224,18 @@ const Video360: React.FC<Video360Props> = () => {
       const {data} = await clienteAxios.post(URLS.createAsset,DTO)
       console.log({data})
       if (data.status ===0) {
+        sendAlert({
+          type:'success',
+          msg:"Your video has been uploaded successfully"
+        })
         successCreate(data.asset)
       }
     } catch (error) {
       console.log({ error })
-      alert("Ha ocurrido un error al subir las imagenes")
+      sendAlert({
+        type:'error',
+        msg:"An error occurred while uploading the video"
+      })
     }
   }
   
@@ -251,6 +272,7 @@ const Video: React.FC<VideoProps> = () => {
   const [files,setFiles] = useState([])
   const [urlVideo, setUrlVideo] = useState<string>("")
   const [urlThumbNail, setUrlThumbNail] = useState<string>("")
+  const {sendAlert} = useContext(NotificationsContext)
 
   useEffect(() => {
     if (files.length !== 0) {
@@ -292,12 +314,19 @@ const Video: React.FC<VideoProps> = () => {
       const {data} = await clienteAxios.post(URLS.createAsset,DTO)
       console.log({data})
       if (data.status ===0) {
+        sendAlert({
+          type:'success',
+          msg:"Your video has been uploaded successfully"
+        })
         successCreate(data.asset)
       }
 
     } catch (error) {
       console.log({ error })
-      alert("Ha ocurrido un error al subir las imagenes")
+      sendAlert({
+        type:'error',
+        msg:"An error occurred while uploading the video"
+      })
     }
   }
   const classes = useStyles();

@@ -27,7 +27,7 @@ const TableGuest: React.FC<TableGuestProps> = () => {
     const [rowsPerPage, setRowsPerPage] = useState(5)
     const [page, setPage] = React.useState(0)
     
-    const {childrens,selectUser,getUserChildDetail,selectedUser,deleteUser,suspendUser} = useContext(UserContext)
+    const {childrens,selectUser,getUserChildDetail,selectedUser,deleteUser,suspendUser,loading} = useContext(UserContext)
     const rows = childrens.users
 
     useEffect(() => {
@@ -61,9 +61,10 @@ const TableGuest: React.FC<TableGuestProps> = () => {
   }
 
   const onSuspend = (dataUser:User)=>{
-    console.log({dataUser})
+    
     setIsOpenSuspendUserModal(true)
     selectUser(dataUser,USERS.ADMIN)
+
   }
   const onDelete = (dataUser:User)=>{
     toggleDeleteUserModal()
@@ -93,7 +94,10 @@ const TableGuest: React.FC<TableGuestProps> = () => {
       />
       <AskModal
         isOpen={ isOpenSuspendUserModal }
-        handleOk={()=>suspendUser()}
+        handleOk={()=>{
+          setIsOpenSuspendUserModal(false)
+          suspendUser()
+        }}
         handleClose={ toggleSuspendUserModal }
         okText='Sure'
         cancelText='Cancel'
@@ -110,7 +114,7 @@ const TableGuest: React.FC<TableGuestProps> = () => {
                   <StyledTableCell align='center'>
                     Time Remaining
                   </StyledTableCell>
-                  <StyledTableCell align='center'>Estatus</StyledTableCell>
+                  <StyledTableCell align='center'>Status</StyledTableCell>
                   <StyledTableCell align='center'>
                     Registration Date
                   </StyledTableCell>
@@ -151,7 +155,10 @@ const TableGuest: React.FC<TableGuestProps> = () => {
                 { ' ' }
                 <Switch
                   checked={ row.isActive }
-                  onChange={ () => onSuspend(row) }
+                  disabled={loading}
+                  onChange={ () => {
+                    onSuspend(row) 
+                  }}
                   name="checkedA"
                   color="secondary"
                   inputProps={ { 'aria-label': 'secondary checkbox' } }

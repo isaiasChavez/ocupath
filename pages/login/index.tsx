@@ -127,14 +127,14 @@ const Login: React.FC<LoginProps> = () => {
     };
 
     if (!email || email.trim() === "") {
-      newErrors.email = "Ingrese un valor";
+      newErrors.email = "Enter a value";
       isValid = false;
     }
     if (!password) {
-      newErrors.password = "Ingrese un valor";
+      newErrors.password = "Enter a value";
     }
     if (!verifyEmail(email)) {
-      newErrors.email = "Ingrese un correo válido";
+      newErrors.email = "Enter a valid email";
       isValid = false;
     }
     console.log({ newErrors })
@@ -272,13 +272,11 @@ const Login: React.FC<LoginProps> = () => {
               className={ classes.submit }
               disableElevation
             >
-              <Link href="/superadmin">
                 <span className="ITCAvantGardeStdBkSemiBold" style={{
                   color:'white',
                   textTransform: 'capitalize',
                   
                 }}>Login</span>
-              </Link>
             </Button>
           </div>
 

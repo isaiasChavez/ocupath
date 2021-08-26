@@ -25,7 +25,7 @@ uuid:string,
     tokenAuth(token)
     return {status:true,jwtDecoded}
   } catch (error) {
-    alert("Error al validar el token")
+    alert("The token is no longer valid")
     console.log({error})
     return {status:false,jwtDecoded:null}
   }
@@ -37,7 +37,7 @@ export const decifreToken = (token: string) => {
     console.log({jwtDecoded})
     return {status:true,jwtDecoded}
   } catch (error) {
-    alert("Error al validar el token")
+    alert("Error validating the token")
     console.log({error})
     return {status:false,jwtDecoded:null}
   }
@@ -121,10 +121,10 @@ export const validateResponse = (res: AxiosResponse, type: string): boolean => {
       case LOG_A.RECOVER_PASS_SUCCESS:
         switch (status) {
           case NOT_FOUND:
-            alert("No se ha encontrado el usuario solicitado");
+            alert("The requested user was not found");
             break;
           case 5:
-            alert("Operación no permitida");
+            alert("Operation not allowed");
             break;
           default:
             break;

@@ -78,3 +78,8 @@
 
 }
 
+
+
+.Toastify__toast--success {
+  background-color: #459A33 !important;
+}

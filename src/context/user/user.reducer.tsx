@@ -108,7 +108,6 @@ const userReducer = (state: UserStateType,action: Actions): UserStateType => {
     case LOG_A.INVITE_USER_SUCCESS:
       console.log(LOG_A.INVITE_USER_SUCCESS,{ payload });
       if (payload.status === 0) {
-        alert("Se ha registrado correctamente")
       }
       return {
         ...state,

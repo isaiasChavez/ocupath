@@ -54,12 +54,12 @@ const Forgot: React.FC<ForgotProps> = () => {
       email: "",
     };
     if (email.trim() === "") {
-      newErrors.email = "Ingrese un valor";
+      newErrors.email = "Enter a value";
       isValid = false;
     }
     if (!verifyEmail(email)) {
       isValid = false;
-      newErrors.email = "Ingrese un correo válido";
+      newErrors.email = "Enter a valid email";
     }
     if (!isValid) {
       setErrors(newErrors);
