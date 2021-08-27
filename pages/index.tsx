@@ -38,10 +38,7 @@ export default function Home() {
 
 
   return (
-    <div style={{ 
-      backgroundColor:'green',
-      height:'100vh'
-    }}>
+    <Box height="100vh" bgcolor="primary.main">
     <AppBar position="fixed">
       <Toolbar>
         <div className={classes.title}>
@@ -82,19 +79,9 @@ export default function Home() {
       </Toolbar>
     </AppBar>
 
-    <Box  height="100%" pt={10} bgcolor="primary.secondary" color="primary.main" display="flex">
-          <Box>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque asperiores amet officiis ullam esse, dolore architecto hic deserunt dolorum quia.
-          </Box>
-          <Box>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque asperiores amet officiis ullam esse, dolore architecto hic deserunt dolorum quia.
-          </Box>
-          <Box>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque asperiores amet officiis ullam esse, dolore architecto hic deserunt dolorum quia.
-          </Box>
-    </Box>
+  
      
-    </div>
+    </Box>
   );
 }
 

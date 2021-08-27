@@ -11,7 +11,6 @@ import SesionState from "../src/context/sesion/sesion.state";
 import NotificationState from "../src/context/notifications/notifications.state";
 import { ToastContainer,toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { LinearProgress } from "@material-ui/core";
 export default function MyApp(props) {
   const { Component,pageProps } = props;
 
@@ -26,9 +25,7 @@ export default function MyApp(props) {
   return (
     <>
       <NotificationState>
-
         <SesionState>
-
           <UserState>
             <AssetsState>
               <Head>

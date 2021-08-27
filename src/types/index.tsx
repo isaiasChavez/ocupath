@@ -1,5 +1,6 @@
 const logo = 'https://ocupath.fra1.digitaloceanspaces.com/app/logo.png'
 const logo2x = 'https://ocupath.fra1.digitaloceanspaces.com/app/logo2x.svg'
+const upload = 'https://ocupath.fra1.digitaloceanspaces.com/app/Group%20348.svg'
 
 export enum LOG_A {
   RESET_PASS_SUCCESS = "RESET_PASS_SUCCESS",
@@ -128,4 +129,5 @@ export const COLORS = {
 export const Images = {
   logo,
   logo2x,
+  upload
 }

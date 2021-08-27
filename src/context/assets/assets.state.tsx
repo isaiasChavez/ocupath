@@ -9,6 +9,7 @@ import { AS_A, URLS } from "../../types/index";
 import AssetsReducer, { AssetsStateType } from "./assets.reducer";
 
 const UserState = ({ children }) => {
+  
   const [state, dispatch] = useReducer(AssetsReducer, initialState());
   const getAssetsUser = async (createAssetDTO: CreateAssetDTO) => {
     try {
