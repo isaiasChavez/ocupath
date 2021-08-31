@@ -1,17 +1,17 @@
-import React,{ useCallback, useContext,useEffect,useState } from 'react';
+import React,{ useCallback,useContext,useEffect,useState } from 'react';
 import { withStyles,Theme,createStyles,makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
-import { COLORS,FILES,URLS,FILES_TYPES, Images } from '../../types'
+import { COLORS,FILES,URLS,FILES_TYPES,Images } from '../../types'
 import Grid from "@material-ui/core/Grid";
 import { Box,Button,Card,CircularProgress } from '@material-ui/core';
 import clienteAxios from '../../config/axios';
-import AssetsContext,{ Asset, CreateAssetDTO } from '../../context/assets/assets.context';
+import AssetsContext,{ Asset,CreateAssetDTO } from '../../context/assets/assets.context';
 import NotificationsContext from '../../context/notifications/notifications.context';
-import {useDropzone} from 'react-dropzone'
+import { useDropzone } from 'react-dropzone'
 import { Config } from '../../config';
 
 interface StyledTabProps {
@@ -20,8 +20,8 @@ interface StyledTabProps {
 export interface TableFilesProps {
 
 }
-const nameLengthValidator=(file)=> {
-  console.log({file})
+const nameLengthValidator = (file) => {
+  console.log({ file })
 
   if (file.name.length > Config.MAX_LENGTH_NAME_SIZE) {
     return {
@@ -51,18 +51,18 @@ const TableFiles: React.FC<TableFilesProps> = () => {
       <Grid item xs={ 12 }>
         <Paper className={ classes.paper }>
           <AntTabs value={ currentTab } onChange={ handleChange } aria-label="ant example">
-            <AntTab  label="Images" />
-            <AntTab  label="360 Images" />
-            <AntTab  label="Video" />
-            <AntTab  label="360 Videos" />
+            <AntTab label="Images" />
+            <AntTab label="360 Images" />
+            <AntTab label="Video" />
+            <AntTab label="360 Videos" />
           </AntTabs>
-          
 
-            { currentTab === FILES.IMG && <Img loading={ loading } setLoading={ setLoading } /> }
-            { currentTab === FILES.IMG_360 && <Img360 loading={ loading } setLoading={ setLoading } /> }
-            { currentTab === FILES.VIDEO && <Video loading={ loading } setLoading={ setLoading } /> }
-            { currentTab === FILES.VIDEO_360 && <Video360 loading={ loading } setLoading={ setLoading } /> }
-          
+
+          { currentTab === FILES.IMG && <Img loading={ loading } setLoading={ setLoading } /> }
+          { currentTab === FILES.IMG_360 && <Img360 loading={ loading } setLoading={ setLoading } /> }
+          { currentTab === FILES.VIDEO && <Video loading={ loading } setLoading={ setLoading } /> }
+          { currentTab === FILES.VIDEO_360 && <Video360 loading={ loading } setLoading={ setLoading } /> }
+
         </Paper>
 
       </Grid>
@@ -78,41 +78,41 @@ export interface DropZoneProps {
   isDragActive: boolean,
   loading: boolean,
   isEmpty: boolean,
-  text:string
+  text: string
 }
- 
-const DropZone: React.FC<DropZoneProps> = ({isDragActive,isEmpty,loading,text}) => {
-  return ( 
+
+const DropZone: React.FC<DropZoneProps> = ({ isDragActive,isEmpty,loading,text }) => {
+  return (
     <>
-    {
-      isDragActive&&
-      <Box className="animate-fadein" position="absolute" zIndex={40} display="flex" justifyContent="center" alignItems="center" mb={1.3} top={0}left={0}right={0}bottom={0} style={{
-        backgroundColor: 'rgba(255,255,255,0.4)'
-      }}>
-          <Box display="flex" flexDirection="column">
-          <img style={{ opacity:'0.5'}} src={Images.upload} alt="Upload your image" />
-            <Box mt={2} fontSize={12}>{text} </Box>
-          </Box>
-        </Box>}
-        {
-      isEmpty&&!loading&&
-      <Box className="animate-fadein" position="absolute" zIndex={40} display="flex" justifyContent="center" alignItems="center" mb={10} top={0}left={0}right={0}bottom={0} style={{
-        backgroundColor: 'rgba(255,255,255,0.4)'
-      }}>
-          <Box display="flex" flexDirection="column">
-          <img style={{ opacity:'0.5'}} src={Images.upload} alt="Upload your image" />
-            <Box mt={2} fontSize={12}>Drop files to instantly upload them </Box>
-          </Box>
-        </Box>}
-        { loading && <Box position="absolute" display="flex" zIndex={30} justifyContent="center" alignItems="center" top={ 0 } left={ 0 } right={ 0 } bottom={ 0 } style={ {
-          background: 'rgba(0, 13, 52, 0.1)'
+      {
+        isDragActive &&
+        <Box className="animate-fadein" position="absolute" zIndex={ 40 } display="flex" justifyContent="center" alignItems="center" mb={ 1.3 } top={ 0 } left={ 0 } right={ 0 } bottom={ 0 } style={ {
+          backgroundColor: 'rgba(255,255,255,0.4)'
         } }>
-          <CircularProgress color="secondary" size="2rem" />
+          <Box display="flex" flexDirection="column">
+            <img style={ { opacity: '0.5' } } src={ Images.upload } alt="Upload your image" />
+            <Box mt={ 2 } fontSize={ 12 }>{ text } </Box>
+          </Box>
         </Box> }
+      {
+        isEmpty && !loading &&
+        <Box className="animate-fadein" position="absolute" zIndex={ 40 } display="flex" justifyContent="center" alignItems="center" mb={ 10 } top={ 0 } left={ 0 } right={ 0 } bottom={ 0 } style={ {
+          backgroundColor: 'rgba(255,255,255,0.4)'
+        } }>
+          <Box display="flex" flexDirection="column">
+            <img style={ { opacity: '0.5' } } src={ Images.upload } alt="Upload your image" />
+            <Box mt={ 2 } fontSize={ 12 }>Drop files to instantly upload them </Box>
+          </Box>
+        </Box> }
+      { loading && <Box position="absolute" display="flex" zIndex={ 30 } justifyContent="center" alignItems="center" top={ 0 } left={ 0 } right={ 0 } bottom={ 0 } style={ {
+        background: 'rgba(0, 13, 52, 0.1)'
+      } }>
+        <CircularProgress color="secondary" size="2rem" />
+      </Box> }
     </>
-   );
+  );
 }
- 
+
 
 
 
@@ -123,7 +123,7 @@ const Img: React.FC<ImgProps> = ({ loading,setLoading }) => {
   const { sendAlert } = useContext(NotificationsContext)
   const [files,setFiles] = useState([])
   useEffect(() => {
-    if (files&&files.length !== 0) {
+    if (files && files.length !== 0) {
       setImage()
     }
   },[files])
@@ -132,27 +132,28 @@ const Img: React.FC<ImgProps> = ({ loading,setLoading }) => {
     setFiles(data)
   }
   const onDrop = useCallback((acceptedFiles,errors) => {
-    errors.map(error=>{
+    errors.map(error => {
       sendAlert({
         type: 'warning',
         msg: error.errors[0].message
-      }) 
+      })
     })
     if (errors.length > 0) {
-      return 
+      return
     }
     setFiles(acceptedFiles)
-  }, [])
- 
-  const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop,
+  },[])
+
+  const { getRootProps,getInputProps,isDragActive } = useDropzone({
+    onDrop,
     accept: 'image/jpeg, image/png',
-    maxFiles:1,
-    maxSize:Config.MAX_IMAGE_SIZE,
-    noClick:true,
+    maxFiles: 1,
+    maxSize: Config.MAX_IMAGE_SIZE,
+    noClick: true,
     validator: nameLengthValidator,
-    multiple:false,
+    multiple: false,
     noKeyboard: true,
-    disabled:loading
+    disabled: loading
   })
 
 
@@ -187,21 +188,21 @@ const Img: React.FC<ImgProps> = ({ loading,setLoading }) => {
       })
     }
   }
-  const isEmpty =assets.images.length==0
+  const isEmpty = assets.images.length == 0
 
   return (
-    <Box {...getRootProps()} width="100%" height="100%" position="relative">
-      <GridList  cellHeight={ 100 } className={ classes.gridList } cols={ 7 }>
+    <Box { ...getRootProps() } width="100%" height="100%" position="relative">
+      <GridList cellHeight={ 100 } className={ classes.gridList } cols={ 7 }>
         { assets.images.map((asset: Asset,i) => (
           <GridListTile key={ i } cols={ 1 } style={ { height: 180 } }>
             <img className='animate-fadein' src={ asset.url } alt={ "Imagen normal" } />
           </GridListTile>
         )) }
-      <DropZone isEmpty={isEmpty} text="Drop your files here png/jpg" isDragActive={isDragActive} loading={loading}/>
+        <DropZone isEmpty={ isEmpty } text="Drop your files here png/jpg" isDragActive={ isDragActive } loading={ loading } />
       </GridList>
       <Paper>
         <Box display="flex" justifyContent="flex-end" alignItems="center" className={ classes.containerUpload }>
-          <input {...getInputProps()} onChange={ (e) => uploadImage(e.target.files) } multiple accept="image/*" id="upload" type="file" />
+          <input { ...getInputProps() } onChange={ (e) => uploadImage(e.target.files) } multiple accept="image/*" id="upload" type="file" />
           <label htmlFor="upload">
             <Button disabled={ loading } variant="contained" color="primary" className={ classes.uploadButton } component="span">
               Upload
@@ -235,29 +236,30 @@ const Img360: React.FC<Img360Props> = ({ loading,setLoading }) => {
     setFiles(data)
   }
   const onDrop = useCallback((acceptedFiles,errors) => {
-    errors.map(error=>{
+    errors.map(error => {
       sendAlert({
         type: 'warning',
         msg: error.errors[0].message
-      }) 
+      })
     })
     if (errors.length > 0) {
-      return 
+      return
     }
     setFiles(acceptedFiles)
-  }, [])
+  },[])
 
 
 
-  const {getRootProps, getInputProps, isDragActive,fileRejections} = useDropzone({onDrop,
+  const { getRootProps,getInputProps,isDragActive,fileRejections } = useDropzone({
+    onDrop,
     accept: 'image/jpeg, image/png',
-    maxFiles:1,
-    maxSize:Config.MAX_IMAGE_SIZE,
-    noClick:true,
+    maxFiles: 1,
+    maxSize: Config.MAX_IMAGE_SIZE,
+    noClick: true,
     validator: nameLengthValidator,
-    multiple:false,
+    multiple: false,
     noKeyboard: true,
-    disabled:loading
+    disabled: loading
   })
 
 
@@ -292,30 +294,30 @@ const Img360: React.FC<Img360Props> = ({ loading,setLoading }) => {
       })
     }
   }
-  const isEmpty =assets.images360.length==0
+  const isEmpty = assets.images360.length == 0
   return (
     <>
-    <Box {...getRootProps()} width="100%" height="100%" position="relative">
-      <GridList cellHeight={ 100 } className={ classes.gridList } cols={ 7 }>
-        { assets.images360.map((asset: Asset) => (
-          
-          <GridListTile key={ asset.url } cols={ 1 } style={ { height: 180 } }>
-            <img className='animate-fadein' src={ asset.url } alt="Imagen 360" />
-          </GridListTile>
-        ))
-      }
-      </GridList>
-      <DropZone isEmpty={isEmpty} text="Drop your 360 images here | png/jpg" isDragActive={isDragActive} loading={loading}/>
-      <Paper>
-        <Box display="flex" justifyContent="flex-end" alignItems="center" className={ classes.containerUpload }>
-          <input {...getInputProps()} onChange={ (e) => uploadImage(e.target.files) } accept="image/*" id="image360_uploader" type="file" />
-          <label htmlFor="image360_uploader">
-            <Button variant="contained" color="primary" className={ classes.uploadButton } disabled={loading} component="span">
-              Upload img 360
-            </Button>
-          </label>
-        </Box>
-      </Paper>
+      <Box { ...getRootProps() } width="100%" height="100%" position="relative">
+        <GridList cellHeight={ 100 } className={ classes.gridList } cols={ 7 }>
+          { assets.images360.map((asset: Asset) => (
+
+            <GridListTile key={ asset.url } cols={ 1 } style={ { height: 180 } }>
+              <img className='animate-fadein' src={ asset.url } alt="Imagen 360" />
+            </GridListTile>
+          ))
+          }
+        </GridList>
+        <DropZone isEmpty={ isEmpty } text="Drop your 360 images here | png/jpg" isDragActive={ isDragActive } loading={ loading } />
+        <Paper>
+          <Box display="flex" justifyContent="flex-end" alignItems="center" className={ classes.containerUpload }>
+            <input { ...getInputProps() } onChange={ (e) => uploadImage(e.target.files) } accept="image/*" id="image360_uploader" type="file" />
+            <label htmlFor="image360_uploader">
+              <Button variant="contained" color="primary" className={ classes.uploadButton } disabled={ loading } component="span">
+                Upload img 360
+              </Button>
+            </label>
+          </Box>
+        </Paper>
       </Box>
     </>
   );
@@ -327,53 +329,54 @@ const Video: React.FC<VideoProps> = ({ loading,setLoading }) => {
   const [files,setFiles] = useState<FileList>(null)
   const [urlVideo,setUrlVideo] = useState<string>("")
   const { sendAlert } = useContext(NotificationsContext)
-  const [urlThumnail, seturlThumnail] = useState<string>(null)
+  const [urlThumnail,seturlThumnail] = useState<string>(null)
 
- 
+
 
   const onDrop = useCallback((acceptedFiles,errors) => {
-    errors.map(error=>{
+    errors.map(error => {
       sendAlert({
         type: 'warning',
         msg: error.errors[0].message
-      }) 
+      })
     })
     if (errors.length > 0) {
-      return 
+      return
     }
-    console.log("OK FILES",{acceptedFiles})
+    console.log("OK FILES",{ acceptedFiles })
     setFiles(acceptedFiles)
     uploadVideo(acceptedFiles)
-  }, [])
+  },[])
 
 
-  const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop,
+  const { getRootProps,getInputProps,isDragActive } = useDropzone({
+    onDrop,
     accept: 'video/mp4',
-    maxFiles:1,
-    maxSize:Config.MAX_VIDEO_SIZE,
-    noClick:true,
+    maxFiles: 1,
+    maxSize: Config.MAX_VIDEO_SIZE,
+    noClick: true,
     validator: nameLengthValidator,
-    multiple:false,
+    multiple: false,
     noKeyboard: true,
-    disabled:loading
+    disabled: loading
   })
-  const uploadVideo = (filesUploaded:FileList) => {
+  const uploadVideo = (filesUploaded: FileList) => {
     const url = URL.createObjectURL(filesUploaded[0])
     setUrlVideo(url)
     setFiles(filesUploaded)
   }
-  const uploadThumbnail = async()=>{
+  const uploadThumbnail = async () => {
     const _CANVAS = document.querySelector("#canvas-element") as HTMLCanvasElement
-    _CANVAS.toBlob(async function(blob) {
+    _CANVAS.toBlob(async function (blob) {
       try {
         setLoading(true)
         const formData = new FormData();
-        formData.append('upload', blob, 'filename.png');
-        const {data:urlThumnail} = await clienteAxios.post(URLS.urlUploadImage,formData)        
+        formData.append('upload',blob,'filename.png');
+        const { data: urlThumnail } = await clienteAxios.post(URLS.urlUploadImage,formData)
         setVideo(urlThumnail)
       } catch (error) {
         setLoading(false)
-        console.log({error})
+        console.log({ error })
       }
     });
 
@@ -385,7 +388,7 @@ const Video: React.FC<VideoProps> = ({ loading,setLoading }) => {
     _CANVAS.height = _VIDEO.videoHeight;
     _VIDEO.currentTime = 3
   }
-  const onTimeVideoIsUpdated = async() => {
+  const onTimeVideoIsUpdated = async () => {
     const _VIDEO = document.querySelector("#video-element") as HTMLVideoElement
     const _CANVAS = document.querySelector("#canvas-element") as HTMLCanvasElement
     const _CANVAS_CTX = _CANVAS.getContext("2d")
@@ -395,13 +398,13 @@ const Video: React.FC<VideoProps> = ({ loading,setLoading }) => {
     if (_CANVAS.height == 720) {
       await uploadThumbnail()
     }
-}
+  }
 
 
 
-  
 
-  const setVideo = async (thumbnail:string) => {
+
+  const setVideo = async (thumbnail: string) => {
     try {
       const selectedFile = files[0];
       const formData = new FormData()
@@ -417,7 +420,7 @@ const Video: React.FC<VideoProps> = ({ loading,setLoading }) => {
       }
       const { data } = await clienteAxios.post(URLS.createAsset,DTO)
       setLoading(false)
-      console.log({data})
+      console.log({ data })
 
       if (data.status === 0) {
         setFiles(null)
@@ -440,51 +443,51 @@ const Video: React.FC<VideoProps> = ({ loading,setLoading }) => {
     }
   }
   const classes = useStyles();
-  const isEmpty =assets.videos.length==0
+  const isEmpty = assets.videos.length == 0
   return (
     <>
-        <Box {...getRootProps()} width="100%" height="100%" position="relative">
+      <Box { ...getRootProps() } width="100%" height="100%" position="relative">
 
 
-      <GridList cellHeight={ 100 } className={ classes.gridList } cols={ 7 }>
-        { assets.videos.map((video,i) => (
-          <GridListTile key={ i } cols={ 1 } style={ { height: 180 } }>
-            <img src={ video.thumbnail } alt={ `Video ${i}` } />
-          </GridListTile>
-        )) }
-      </GridList>
+        <GridList cellHeight={ 100 } className={ classes.gridList } cols={ 7 }>
+          { assets.videos.map((video,i) => (
+            <GridListTile key={ i } cols={ 1 } style={ { height: 180 } }>
+              <img src={ video.thumbnail } alt={ `Video ${i}` } />
+            </GridListTile>
+          )) }
+        </GridList>
 
-      <DropZone isEmpty={isEmpty} text="Drop your video here | mp4" isDragActive={isDragActive} loading={loading}/>
+        <DropZone isEmpty={ isEmpty } text="Drop your video here | mp4" isDragActive={ isDragActive } loading={ loading } />
 
-      <Paper>
-        <Box  display="flex" flexDirection="column" justifyContent="flex-end" alignItems="flex-end" className={ classes.containerUpload }>
-          <input {...getInputProps()} onChange={ (e) => uploadVideo(e.target.files) } accept="video/*" id="video_uploader" type="file" />
-          <label htmlFor="video_uploader">
-            <Button variant="contained" color="primary" className={ classes.uploadButton } component="span">
-              Upload video
-            </Button>
-          </label>
-          <video style={ {
-            height: '200px',width: '200px',
-            position:'fixed',
-            left:'-1000%',
-            backgroundColor: 'red',
-            display: 'hidden',
-            visibility: 'hidden'
-          } } onTimeUpdate={ onTimeVideoIsUpdated } onLoadedMetadata={ onLoadMetadata }  id="video-element" src={ urlVideo } controls>
-            <source src={ urlVideo } type="video/mp4" />
-          </video>
-          <canvas
-            style={ {
-              position:'fixed',
-              left:'-1000%',
+        <Paper>
+          <Box display="flex" flexDirection="column" justifyContent="flex-end" alignItems="flex-end" className={ classes.containerUpload }>
+            <input { ...getInputProps() } onChange={ (e) => uploadVideo(e.target.files) } accept="video/*" id="video_uploader" type="file" />
+            <label htmlFor="video_uploader">
+              <Button variant="contained" color="primary" className={ classes.uploadButton } component="span">
+                Upload video
+              </Button>
+            </label>
+            <video style={ {
+              height: '200px',width: '200px',
+              position: 'fixed',
+              left: '-1000%',
               backgroundColor: 'red',
               display: 'hidden',
               visibility: 'hidden'
-            } } id="canvas-element"></canvas>
-        </Box>
-      </Paper>
-</Box>
+            } } onTimeUpdate={ onTimeVideoIsUpdated } onLoadedMetadata={ onLoadMetadata } id="video-element" src={ urlVideo } controls>
+              <source src={ urlVideo } type="video/mp4" />
+            </video>
+            <canvas
+              style={ {
+                position: 'fixed',
+                left: '-1000%',
+                backgroundColor: 'red',
+                display: 'hidden',
+                visibility: 'hidden'
+              } } id="canvas-element"></canvas>
+          </Box>
+        </Paper>
+      </Box>
     </>
   );
 }
@@ -503,40 +506,40 @@ const Video360: React.FC<Video360Props> = ({ loading,setLoading }) => {
   const { sendAlert } = useContext(NotificationsContext)
   const [urlVideo,setUrlVideo] = useState<string>("")
 
- 
 
-  const uploadVideo360 = (filesUploaded:FileList) => {
+
+  const uploadVideo360 = (filesUploaded: FileList) => {
     const url = URL.createObjectURL(filesUploaded[0])
     setUrlVideo(url)
     setFiles(filesUploaded)
   }
 
   const onDrop = useCallback((acceptedFiles,errors) => {
-    errors.map(error=>{
+    errors.map(error => {
       sendAlert({
         type: 'warning',
         msg: error.errors[0].message
-      }) 
+      })
     })
     if (errors.length > 0) {
-      return 
+      return
     }
-    console.log("OK FILES",{acceptedFiles})
+    console.log("OK FILES",{ acceptedFiles })
     setFiles(acceptedFiles)
     uploadVideo360(acceptedFiles)
-  }, [])
-  const uploadThumbnail = async()=>{
+  },[])
+  const uploadThumbnail = async () => {
     const _CANVAS = document.querySelector("#canvas-element") as HTMLCanvasElement
-    _CANVAS.toBlob(async function(blob) {
+    _CANVAS.toBlob(async function (blob) {
       try {
         setLoading(true)
         const formData = new FormData();
-        formData.append('upload', blob, 'filename.png');
-        const {data:urlThumnail} = await clienteAxios.post(URLS.urlUploadImage,formData)        
+        formData.append('upload',blob,'filename.png');
+        const { data: urlThumnail } = await clienteAxios.post(URLS.urlUploadImage,formData)
         setVideo360(urlThumnail)
       } catch (error) {
         setLoading(false)
-        console.log({error})
+        console.log({ error })
       }
     });
 
@@ -548,7 +551,7 @@ const Video360: React.FC<Video360Props> = ({ loading,setLoading }) => {
     _CANVAS.height = _VIDEO.videoHeight;
     _VIDEO.currentTime = 3
   }
-  const onTimeVideoIsUpdated = async() => {
+  const onTimeVideoIsUpdated = async () => {
     const _VIDEO = document.querySelector("#video-element") as HTMLVideoElement
     const _CANVAS = document.querySelector("#canvas-element") as HTMLCanvasElement
     const _CANVAS_CTX = _CANVAS.getContext("2d")
@@ -558,21 +561,22 @@ const Video360: React.FC<Video360Props> = ({ loading,setLoading }) => {
     if (_CANVAS.height == 720) {
       await uploadThumbnail()
     }
-}
+  }
 
 
-  const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop,
+  const { getRootProps,getInputProps,isDragActive } = useDropzone({
+    onDrop,
     accept: 'video/mp4',
-    maxFiles:1,
-    maxSize:Config.MAX_VIDEO_360_SIZE,
-    noClick:true,
+    maxFiles: 1,
+    maxSize: Config.MAX_VIDEO_360_SIZE,
+    noClick: true,
     validator: nameLengthValidator,
-    multiple:false,
+    multiple: false,
     noKeyboard: true,
-    disabled:loading
+    disabled: loading
   })
 
-  const setVideo360 = async (thumbnail:string) => {
+  const setVideo360 = async (thumbnail: string) => {
     try {
       const selectedFile = files[0];
       const formData = new FormData()
@@ -608,52 +612,52 @@ const Video360: React.FC<Video360Props> = ({ loading,setLoading }) => {
     }
   }
 
-  const isEmpty =assets.videos360.length==0
+  const isEmpty = assets.videos360.length == 0
 
 
 
   return (
     <>
-            <Box {...getRootProps()} width="100%" height="100%" position="relative">
+      <Box { ...getRootProps() } width="100%" height="100%" position="relative">
 
-      <GridList cellHeight={ 100 } className={ classes.gridList } cols={ 7 }>
-        { assets.videos360.map((asset: Asset,i) => (
-          <GridListTile key={ i } cols={ 1 } style={ { height: 180 } }>
-            <img src={ asset.thumbnail } />
-          </GridListTile>
-        )) }
-      </GridList>
-      <DropZone isEmpty={isEmpty} text="Drop your video here | mp4" isDragActive={isDragActive} loading={loading}/>
+        <GridList cellHeight={ 100 } className={ classes.gridList } cols={ 7 }>
+          { assets.videos360.map((asset: Asset,i) => (
+            <GridListTile key={ i } cols={ 1 } style={ { height: 180 } }>
+              <img src={ asset.thumbnail } />
+            </GridListTile>
+          )) }
+        </GridList>
+        <DropZone isEmpty={ isEmpty } text="Drop your video here | mp4" isDragActive={ isDragActive } loading={ loading } />
 
-      <Paper>
-        <Box display="flex" justifyContent="flex-end" alignItems="center" className={ classes.containerUpload }>
-        <input {...getInputProps()} onChange={ (e) => uploadVideo360(e.target.files) } accept="video/*" id="upload" type="file" />
-          <label htmlFor="upload">
-            <Button variant="contained" color="primary" className={ classes.uploadButton } component="span">
-              Upload video 360
-            </Button>
-          </label>
-          <video style={ {
-            height: '200px',width: '200px',
-            position:'fixed',
-            left:'-1000%',
-            backgroundColor: 'red',
-            display: 'hidden',
-            visibility: 'hidden'
-          } } onTimeUpdate={ onTimeVideoIsUpdated } onLoadedMetadata={ onLoadMetadata }  id="video-element" src={ urlVideo } controls>
-            <source src={ urlVideo } type="video/mp4" />
-          </video>
-          <canvas
-            style={ {
-              position:'fixed',
-              left:'-1000%',
+        <Paper>
+          <Box display="flex" justifyContent="flex-end" alignItems="center" className={ classes.containerUpload }>
+            <input { ...getInputProps() } onChange={ (e) => uploadVideo360(e.target.files) } accept="video/*" id="upload" type="file" />
+            <label htmlFor="upload">
+              <Button variant="contained" color="primary" className={ classes.uploadButton } component="span">
+                Upload video 360
+              </Button>
+            </label>
+            <video style={ {
+              height: '200px',width: '200px',
+              position: 'fixed',
+              left: '-1000%',
               backgroundColor: 'red',
               display: 'hidden',
               visibility: 'hidden'
-            } } id="canvas-element"></canvas>
-        </Box>
-      </Paper>
-            </Box>
+            } } onTimeUpdate={ onTimeVideoIsUpdated } onLoadedMetadata={ onLoadMetadata } id="video-element" src={ urlVideo } controls>
+              <source src={ urlVideo } type="video/mp4" />
+            </video>
+            <canvas
+              style={ {
+                position: 'fixed',
+                left: '-1000%',
+                backgroundColor: 'red',
+                display: 'hidden',
+                visibility: 'hidden'
+              } } id="canvas-element"></canvas>
+          </Box>
+        </Paper>
+      </Box>
     </>
   );
 }
@@ -733,7 +737,7 @@ const AntTab = withStyles((theme: Theme) =>
         color: '#40a9ff',
       },
     },
-    selected: {},
+    selected: { },
   }),
 )((props: StyledTabProps) => <Tab disableRipple { ...props } />);
 
