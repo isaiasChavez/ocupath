@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import Head from "next/head";
 import '../styles/globals.css'
+import 'antd/dist/antd.css'; // or 'antd/dist/antd.less'
 import { ThemeProvider } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import theme from "../src/theme";

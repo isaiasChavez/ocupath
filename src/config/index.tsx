@@ -3,7 +3,7 @@ export class Config {
   static TOKEN_NAME_HEADER = "x-auth-token";
   static MAX_IMAGE_SIZE = 900000;
   static MAX_VIDEO_SIZE = 6000000;
-  static MAX_VIDEO_360_SIZE = 10000000 bytes;
+  static MAX_VIDEO_360_SIZE = 10000000;
   static MAX_LENGTH_NAME_SIZE = 30;
 
 

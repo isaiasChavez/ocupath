@@ -1,85 +1,119 @@
 .animate-fadein {
- animation: fadeIn ease 0.5s;
- -webkit-animation: fadeIn ease 0.5s;
- -moz-animation: fadeIn ease 0.5s;
- -o-animation: fadeIn ease 0.5s;
- -ms-animation: fadeIn ease 0.5s;
+     animation: fadeIn ease 0.5s;
+     -webkit-animation: fadeIn ease 0.5s;
+     -moz-animation: fadeIn ease 0.5s;
+     -o-animation: fadeIn ease 0.5s;
+     -ms-animation: fadeIn ease 0.5s;
 }
 
-@keyframes fadeIn{
- 0% {
-   opacity:0;
- }
- 100% {
-   opacity:1;
- }
+@font-face {
+     font-family: 'font1';
+     /*a name to be used later*/
+     src: url('/assets/itc-avant-garde-gothic-std-bold.otf');
+     /*URL to font*/
+}
+
+@font-face {
+     font-family: 'font2';
+     /*a name to be used later*/
+     src: url('/assets/itc-avant-garde-gothic-std-book.otf');
+     /*URL to font*/
+}
+
+@font-face {
+     font-family: 'font3';
+     /*a name to be used later*/
+     src: url('/assets/itc-avant-garde-gothic-std-demi.otf');
+     /*URL to font*/
+}
+
+.font1 {
+     font-family: font1;
+}
+
+.font2 {
+     font-family: font2;
+}
+
+.font3 {
+     font-family: font3;
+}
+
+@keyframes fadeIn {
+     0% {
+          opacity: 0;
+     }
+     100% {
+          opacity: 1;
+     }
 }
 
 @-moz-keyframes fadeIn {
- 0% {
-   opacity:0;
- }
- 100% {
-   opacity:1;
- }
+     0% {
+          opacity: 0;
+     }
+     100% {
+          opacity: 1;
+     }
 }
 
 @-webkit-keyframes fadeIn {
- 0% {
-   opacity:0;
- }
- 100% {
-   opacity:1;
- }
+     0% {
+          opacity: 0;
+     }
+     100% {
+          opacity: 1;
+     }
 }
 
 @-o-keyframes fadeIn {
- 0% {
-   opacity:0;
- }
- 100% {
-   opacity:1;
- }
+     0% {
+          opacity: 0;
+     }
+     100% {
+          opacity: 1;
+     }
 }
 
 @-ms-keyframes fadeIn {
- 0% {
-   opacity:0;
- }
- 100% {
-   opacity:1;
- }
+     0% {
+          opacity: 0;
+     }
+     100% {
+          opacity: 1;
+     }
 }
+
 
 /* Tipografías  */
 
 @font-face {
-  font-family: "ITCAvantGardeStdBk";
-  src: url("https://ocupath.fra1.digitaloceanspaces.com/app/ITCAvantGardeStdBk.otf");
+     font-family: "ITCAvantGardeStdBk";
+     src: url("https://ocupath.fra1.digitaloceanspaces.com/app/ITCAvantGardeStdBk.otf");
 }
 
 @font-face {
-  font-family: "ITCAvantGardeStdBkBold";
-  src: url("https://ocupath.fra1.digitaloceanspaces.com/app/ITCAvantGardeStdBold.otf");
+     font-family: "ITCAvantGardeStdBkBold";
+     src: url("https://ocupath.fra1.digitaloceanspaces.com/app/ITCAvantGardeStdBold.otf");
 }
 
 @font-face {
-  font-family: "ITCAvantGardeStdBkSemiBold";
-  src: url("https://ocupath.fra1.digitaloceanspaces.com/app/ITCAvantGardeStdDemi.otf");
+     font-family: "ITCAvantGardeStdBkSemiBold";
+     src: url("https://ocupath.fra1.digitaloceanspaces.com/app/ITCAvantGardeStdDemi.otf");
 }
+
 * {
-  font-family: "ITCAvantGardeStdBk";
-}
-.ITCAvantGardeStdBkBold{
-  font-family: "ITCAvantGardeStdBkBold"
-}
-.ITCAvantGardeStdBkSemiBold{
-  font-family: "ITCAvantGardeStdBkSemiBold"
-
+     font-family: "ITCAvantGardeStdBk" font1;
 }
 
+.ITCAvantGardeStdBkBold {
+     font-family: "ITCAvantGardeStdBkBold"
+}
 
+.ITCAvantGardeStdBkSemiBold {
+     font-family: "ITCAvantGardeStdBkSemiBold"
+}
 
 .Toastify__toast--success {
-  background-color: #459A33 !important;
+     background-color: #459A33 !important;
 }

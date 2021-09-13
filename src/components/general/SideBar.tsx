@@ -91,6 +91,7 @@ const useStyles = makeStyles(theme => ({
    
  },
  drawerPaper: {
+  zIndex: 0,
   position: 'relative',
   width: drawerWidth,
   height: '100%',

@@ -1,6 +1,16 @@
 const logo = 'https://ocupath.fra1.digitaloceanspaces.com/app/logo.png'
 const logo2x = 'https://ocupath.fra1.digitaloceanspaces.com/app/logo2x.svg'
 const upload = 'https://ocupath.fra1.digitaloceanspaces.com/app/Group%20348.svg'
+const landing1 = 'https://ocupath.fra1.digitaloceanspaces.com/app/landing1.png'
+const landing2 = 'https://ocupath.fra1.digitaloceanspaces.com/app/landing2.png'
+const landing3 = 'https://ocupath.fra1.digitaloceanspaces.com/app/landing3.png'
+const landing4 = 'https://ocupath.fra1.digitaloceanspaces.com/app/landing.png'
+const godown = 'https://ocupath.fra1.digitaloceanspaces.com/app/godown.png'
+const sidequest = 'https://ocupath.fra1.digitaloceanspaces.com/app/sidequest.png'
+const steam = 'https://ocupath.fra1.digitaloceanspaces.com/app/steam.png'
+const logichiquito = 'https://ocupath.fra1.digitaloceanspaces.com/app/logochiquito.png'
+const powered = 'https://ocupath.fra1.digitaloceanspaces.com/app/powered.png'
+
 
 export enum LOG_A {
   RESET_PASS_SUCCESS = "RESET_PASS_SUCCESS",
@@ -129,5 +139,14 @@ export const COLORS = {
 export const Images = {
   logo,
   logo2x,
-  upload
+  upload,
+  landing1,
+  landing2,
+  landing3,
+  landing4,
+  godown,
+  sidequest,
+  steam,
+  logichiquito,
+  powered
 }
