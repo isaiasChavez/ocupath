@@ -94,7 +94,7 @@ export default function Home () {
             </Box>
             <Box
             fontFamily="font2"
-              fontSize='1rem'
+              fontSize='0.875rem'
               color='white'
 
               lineHeight='1.8rem'

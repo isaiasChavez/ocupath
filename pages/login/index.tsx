@@ -189,7 +189,7 @@ const Login: React.FC<LoginProps> = () => {
         </Box>
         <form className={classes.form} onSubmit={onSubmit}>
           <Typography component='h3' style={{ textAlign: 'center' }}>
-            <Box color="white" fontSize="1.25rem" fontWeight='fontWeightSemiBold'  m={1}>
+            <Box color="white" fontSize="1.25rem"   m={1}>
               Fill the information below to enter your profile{' '}
             </Box>
           </Typography>
@@ -280,7 +280,9 @@ const Login: React.FC<LoginProps> = () => {
                 width: '100%',
                 textAlign: 'center',
                 color: COLORS.blue_secondary,
-                textDecoration: 'underline'
+                textDecoration: 'underline',
+                fontFamily: 'font2'
+
               }}
               href='login/forgot'
               >
@@ -300,8 +302,9 @@ const Login: React.FC<LoginProps> = () => {
               <span
                 style={{
                   color: 'white',
-                  fontSize:'1.2rem',
-                  textTransform: 'capitalize'
+                  fontSize:'1rem',
+                  textTransform: 'capitalize',
+                  fontFamily: 'font2'
                 }}
               >
                 Login
