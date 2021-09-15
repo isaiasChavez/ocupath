@@ -48,7 +48,7 @@ interface AssetsContextInterface {
   previewIsImage:boolean,
   isPreviewerOpened:boolean,
   currentAssets:Asset[],
-  
+  loading:boolean
 
 }
 

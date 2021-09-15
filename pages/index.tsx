@@ -52,7 +52,15 @@ export default function Home () {
               alignItems='center'
               justifyContent='flex-end'
             >
+              <LinkScroll
+      activeClass='active'
+      to="plans"
+      spy={true}
+      smooth={true}
+      duration={500}
+    >
               <button className={classes.buttonSingUp}>Sing up</button>
+    </LinkScroll>
             </Box>
           </Box>
           <BottomArrow next='about' />
@@ -409,6 +417,8 @@ const useStyles = makeStyles(theme => ({
     border: '0.15rem solid white',
     padding: ' 0.2rem 1.7rem',
     fontSize: '1.2rem',
+    color:'white',
+    cursor: 'pointer',
     borderRadius: '40pt',
     backgroundColor: 'transparent'
   },

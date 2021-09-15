@@ -1,4 +1,4 @@
-import { Box } from '@material-ui/core'
+import { Box, LinearProgress } from '@material-ui/core'
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined'
 import FullscreenIcon from '@material-ui/icons/Fullscreen'
 import SkipNextOutlinedIcon from '@material-ui/icons/SkipNextOutlined'
@@ -16,7 +16,9 @@ const Previwer: React.FC<PreviewProps> = () => {
     currentAsset,
     currentAssets,
     previewIsImage,
-    closePreviewer
+    closePreviewer,
+    deleteAsset,
+    loading
   } = useContext(AssetsContext)
 
   const nameImage = () => {
@@ -39,7 +41,14 @@ const Previwer: React.FC<PreviewProps> = () => {
     }
     return newName
   }
+   const onDeleteAsset =()=>{
+    deleteAsset(currentAsset.uuid)
+  }
   console.log({ currentAsset, previewIsImage })
+
+  if(currentAssets.length===0){
+     closePreviewer()
+  }
 
   return (
     <>
@@ -59,6 +68,7 @@ const Previwer: React.FC<PreviewProps> = () => {
           backgroundColor: 'rgba(0,0,0,0.6)'
         }}
       >
+
         <Box
           minWidth='80vw'
           width='80vw'
@@ -78,9 +88,14 @@ const Previwer: React.FC<PreviewProps> = () => {
                 style={{
                   color: '#FFF',
                   cursor: 'pointer',
-                  marginRight: '1rem'
+                  marginRight: '1rem',
+                  opacity:loading?0.5:1
                 }}
-                onClick={() => {}}
+                onClick={() => {
+                  if (!loading) {
+                  onDeleteAsset()  
+                  }
+                  }}
               />
               <CloseIcon
                 onClick={() => closePreviewer()}
@@ -109,7 +124,8 @@ const Previwer: React.FC<PreviewProps> = () => {
                       }
                       style={{
                         objectFit: 'contain',
-                        height: '100%'
+                        height: '100%',
+                        opacity:loading?0.5:1
                       }}
                       alt=''
                     />
@@ -134,7 +150,9 @@ const Previwer: React.FC<PreviewProps> = () => {
               ))}
             </Box>
           </Box>
-          <Box width='100%' height='10%'></Box>
+          <Box width='100%' height='10%'>
+
+          </Box>
         </Box>
       </Box>
     </>
@@ -142,7 +160,7 @@ const Previwer: React.FC<PreviewProps> = () => {
 }
 
 const BottomImage = ({ asset }: { asset: Asset }) => {
-  const { selectAsset, previewIsImage, currentAsset } = useContext(
+  const { selectAsset, previewIsImage, currentAsset,loading } = useContext(
     AssetsContext
   )
 
@@ -150,7 +168,11 @@ const BottomImage = ({ asset }: { asset: Asset }) => {
 
   return (
     <Box
-      onClick={() => selectAsset(asset)}
+      onClick={() => {
+        if (!loading) {  
+          selectAsset(asset)}
+        }
+        }
       width='15%'
       maxHeight='8rem'
       maxWidth='8rem'
@@ -160,7 +182,7 @@ const BottomImage = ({ asset }: { asset: Asset }) => {
       overflow='hidden'
       style={{
         border: isTheCurrent ? '1px solid white' : 'none',
-        cursor: 'pointer'
+        cursor: loading?'default':'pointer'
       }}
       className='animate-elevate'
     >
@@ -169,7 +191,8 @@ const BottomImage = ({ asset }: { asset: Asset }) => {
         style={{
           objectFit: 'cover',
           width: '100%',
-          height: '100%'
+          height: '100%',
+          opacity:loading?0.5:1
         }}
         alt=''
       />
@@ -178,7 +201,7 @@ const BottomImage = ({ asset }: { asset: Asset }) => {
 }
 
 function BottomControls () {
-  const { prevPreview, nextPreview, currentAsset, currentAssets } = useContext(
+  const { prevPreview, nextPreview, currentAsset, currentAssets,loading } = useContext(
     AssetsContext
   )
 
@@ -190,7 +213,9 @@ function BottomControls () {
     setisMaxViewerVisible(false)
   }
   const openMaxViewer=()=>{
-    setisMaxViewerVisible(true)
+    if (!loading) {
+      setisMaxViewerVisible(true)
+    }
   }
     
   const isTheFirst = indiceCurrent === 0
@@ -224,7 +249,7 @@ function BottomControls () {
         <Box>
           <SkipPreviousOutlinedIcon
             onClick={() => {
-              if (!isTheFirst) {
+              if (!isTheFirst&&!loading) {
                 prevPreview()
               }
             }}
@@ -236,7 +261,7 @@ function BottomControls () {
           />
           <SkipNextOutlinedIcon
             onClick={() => {
-              if (!isTheLast) {
+              if (!isTheLast&&!loading) {
                 nextPreview()
               }
             }}

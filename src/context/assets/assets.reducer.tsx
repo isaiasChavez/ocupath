@@ -74,6 +74,46 @@ const userReducer = (
             ...state
           }
       }
+      
+    case AS_A.DELETE_SUCCESS:
+      let newImages =  state.assets.images
+      let newImages360 =  state.assets.images360
+      let newVideos =  state.assets.videos
+      let newVideos360 =  state.assets.videos360
+      
+      const isImage = payload.asset.typeAsset.id === FILES_TYPES.IMG
+      const isImage360 = payload.asset.typeAsset.id === FILES_TYPES.IMG_360
+      const isVideo = payload.asset.typeAsset.id === FILES_TYPES.VIDEO
+      const isVideo360 = payload.asset.typeAsset.id === FILES_TYPES.VIDEO_360
+
+      if (isImage) newImages = state.assets.images.filter((asset:Asset)=>asset.uuid!==payload.asset.uuid)
+      if (isImage360) newImages360 = state.assets.images360.filter((asset:Asset)=>asset.uuid!==payload.asset.uuid)
+      if (isVideo) newVideos = state.assets.videos.filter((asset:Asset)=>asset.uuid!==payload.asset.uuid)
+      if (isVideo360) newVideos360 = state.assets.videos360.filter((asset:Asset)=>asset.uuid!==payload.asset.uuid)
+      const newCurrentImages =  state.currentAssets.filter((asset:Asset)=>asset.uuid!==payload.asset.uuid)
+
+      let newCurrentAsset:Asset ={
+        thumbnail:'',
+        typeAsset:{
+          id:0,name:''
+        },
+        url:'',
+        uuid:''
+      }
+      if (newCurrentImages.length>0) {
+        newCurrentAsset =  newCurrentImages[0]
+      }
+      return{
+        ...state,
+        assets:{
+          images:newImages, 
+          images360:newImages360,
+          videos:newVideos,
+          videos360:newVideos360
+        },
+        currentAssets:newCurrentImages,
+        currentAsset:newCurrentAsset
+      }
     case MIS.OPEN_PREVIEWER:
       const previewIsImage = payload.currentAsset.typeAsset.id === FILES_TYPES.IMG||payload.currentAsset.typeAsset.id === FILES_TYPES.IMG_360
       return {

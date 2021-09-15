@@ -1,4 +1,4 @@
-import { useReducer } from "react";
+import { useReducer, useState } from "react";
 import axios from "../../config/axios";
 import AssetsContext, {
   Asset,
@@ -13,6 +13,7 @@ import { validateOrReject } from 'class-validator'
 const UserState = ({ children }) => {
   
   const [state, dispatch] = useReducer(AssetsReducer, initialState());
+  const [loading, setLoading] = useState<boolean>(false)
 
   const getAssetsUser = async (createAssetDTO: CreateAssetDTO) => {
     try {
@@ -75,27 +76,30 @@ const UserState = ({ children }) => {
     const deleteAssetDto = new DeleteAssetDto(uuid)
 
     try {
-      
-      await validateOrReject(deleteAssetDto);
-        
-      const { data } = await axios.put(URLS.deleteAsset, deleteAssetDto);
-      
+setLoading(true)   
+await validateOrReject(deleteAssetDto);
 
-        console.log({data})
-        /* dispatch({
+const { data } = await axios.put(URLS.deleteAsset, deleteAssetDto);
+setLoading(false)   
+
+
+console.log({data})
+dispatch({
           type: AS_A.DELETE_SUCCESS,
         payload: data,
-      }); */
+      });
     } catch (error) {
+      setLoading(false)   
       alert("ha ocurrido un error")
       console.error({ error });
     }
   };
-
+  
   return (
     <AssetsContext.Provider
       value={{
         ...state,
+        loading,
         successCreate,
         nextPreview,
         prevPreview,
