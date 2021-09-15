@@ -6,6 +6,14 @@
      -ms-animation: fadeIn ease 0.5s;
 }
 
+.animate-fadein-03s {
+     animation: fadeIn ease 0.3s;
+     -webkit-animation: fadeIn ease 0.3s;
+     -moz-animation: fadeIn ease 0.3s;
+     -o-animation: fadeIn ease 0.3s;
+     -ms-animation: fadeIn ease 0.3s;
+}
+
 .animate-fadein-1s {
      animation: fadeIn ease 1s;
      -webkit-animation: fadeIn ease 1s;

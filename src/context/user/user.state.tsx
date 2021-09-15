@@ -13,6 +13,7 @@ import UserContext, {
   GetUserDetailDTO,
   InviteUserDTO,
   ResetPassword,
+  SendEmailInfo,
   UpdateUserAdminDTO,
   UpdateUserDTO,
 } from "./user.context";
@@ -480,7 +481,7 @@ console.log({deleteUserDTO})
   };
   
   
-  const updateUser = async (updateUserDTO: UpdateUserDTO) => {
+   const updateUser = async (updateUserDTO: UpdateUserDTO) => {
     try {
       await validateOrReject(updateUserDTO);
       setLoading(true)
@@ -563,6 +564,21 @@ console.log({deleteUserDTO})
       })
     }
   };
+  const sendInformationForm = async (sendInformationDTO: SendEmailInfo):Promise<number>=> {
+    try {
+      await validateOrReject(sendInformationDTO);
+      setLoading(true)
+      const {data} = await axios.post(URLS.urlSendInformation, sendInformationDTO);
+      setLoading(false)
+      return data.status
+    } catch (error) {
+      setLoading(false)
+      sendAlert({
+        type:'warning',
+        msg:"Could send email"
+      })
+    }
+  };
 
 
 
@@ -587,6 +603,7 @@ console.log({deleteUserDTO})
         passRecover,
         suspendUser,
         updateName,
+        sendInformationForm,
         logUser,
         selectUser,
         getUserChildrens,
@@ -633,6 +650,7 @@ const initialState = () => {
       id: "",
       token: "",
       name: "",
+      roomImage:'',
       lastname: "",
       thumbnail:"",
       email: "",

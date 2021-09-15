@@ -106,6 +106,9 @@ export const URLS = {
   urlUploadImage360:'api/upload/2',
   urlUploadVideo:'api/upload/3',
   urlUploadVideo360:'api/upload/4',
+  urlUploadRoom:'api/upload/6',
+  //emails
+  urlSendInformation:'api/sesion/info'
 };
 
 export const COMPANIES =0

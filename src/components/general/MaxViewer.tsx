@@ -24,6 +24,7 @@ const MaxViewer: React.FC<MaxViewerProps> = ({closeMaxViewer}) => {
         style={{
           backgroundColor: 'rgba(0,0,0,0.6)'
         }}
+        className="animate-fadein-03s"
         onClick={()=>{if (!isHoveringImage)closeMaxViewer()}}
       >
         <Box height="90%" width="90%" display="flex" justifyContent="center" >

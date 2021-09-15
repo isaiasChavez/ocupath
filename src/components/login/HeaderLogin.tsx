@@ -3,6 +3,7 @@ import {
   Button,
   Container,
   IconButton,
+  LinearProgress,
   makeStyles,
   Toolbar,
   Typography
@@ -18,15 +19,24 @@ import {
 } from 'react-scroll'
 import { Images } from '../../types'
 import Link from 'next/link'
+import UserContext from '../../context/user/user.context'
+import { useContext } from 'react'
 
 interface HeaderLoginProps {}
 
 const HeaderLogin: React.FC<HeaderLoginProps> = () => {
   const classes = useStyles()
-
+  const {loading} = useContext(UserContext)
   return (
     <>
       <Toolbar className={classes.appbar}>
+       {loading&& <LinearProgress style={{
+          position:'absolute',
+          top:0,
+          left:0,
+          right:0
+        }} color="primary" />}
+
         <div className={classes.title}>
           <img src={Images.logichiquito} alt='' />
         </div>

@@ -7,6 +7,7 @@ import {
   scrollSpy,
   scroller
 } from 'react-scroll'
+import { notification } from 'antd'
 
 import { makeStyles, Box, Grid, TextField } from '@material-ui/core'
 import MenuIcon from '@material-ui/icons/Menu'
@@ -15,6 +16,11 @@ import HeaderLogin from '../src/components/login/HeaderLogin'
 import { Images } from '../src/types'
 import { Button } from 'antd'
 import { CustomInput } from './login'
+import { useContext, useState } from 'react'
+import UserContext, {
+  SendEmailInfoProps
+} from '../src/context/user/user.context'
+import { verifyEmail } from '../src/config/utils'
 /* import ScrollReveal from 'scrollreveal'
  */
 export interface NavigationProps {
@@ -41,7 +47,10 @@ export default function Home () {
               Make all your meetings possible no matter <br /> where your team
               is located.
             </Box>
-            <Box style={{fontFamily:'font2',lineHeight:'24px'}}  fontSize='1rem'>
+            <Box
+              style={{ fontFamily: 'font2', lineHeight: '24px' }}
+              fontSize='1rem'
+            >
               Improve the experience of your online meetings. Interact agilely
               in real time, share <br /> and display content to meeting
               participants.
@@ -53,14 +62,14 @@ export default function Home () {
               justifyContent='flex-end'
             >
               <LinkScroll
-      activeClass='active'
-      to="plans"
-      spy={true}
-      smooth={true}
-      duration={500}
-    >
-              <button className={classes.buttonSingUp}>Sing up</button>
-    </LinkScroll>
+                activeClass='active'
+                to='plans'
+                spy={true}
+                smooth={true}
+                duration={500}
+              >
+                <button className={classes.buttonSingUp}>Sing up</button>
+              </LinkScroll>
             </Box>
           </Box>
           <BottomArrow next='about' />
@@ -80,10 +89,15 @@ export default function Home () {
               About Us
             </Box>
             <Box mb={2} fontSize='1.125rem' color='white'>
-              Lorem ipsum dolor sit amet consectetur   adipisicing elit.
-              Dignissimos ea accusantium  doloribus omnis
+              Lorem ipsum dolor sit amet consectetur adipisicing elit.
+              Dignissimos ea accusantium doloribus omnis
             </Box>
-            <Box fontSize='1rem' color='white' lineHeight='1.8rem' fontWeight="fontWeightLight">
+            <Box
+              fontSize='1rem'
+              color='white'
+              lineHeight='1.8rem'
+              fontWeight='fontWeightLight'
+            >
               Lorem ipsum dolor sit amet consectetur adipisicing elit.
               Dignissimos ea accusantium doloribus omnis Lorem ipsum dolo
               consectetur adipisicing elit. Dignissimos ea accusantium doloribus
@@ -103,12 +117,7 @@ export default function Home () {
         >
           <Box flex='1' height='100%'></Box>
           <Box flex='1' display='flex' justifyContent='center'>
-            <Box
-              
-              height='100%'
-              className={classes.form}
-              color='white'
-            >
+            <Box height='100%' className={classes.form} color='white'>
               <Box fontSize='1.5rem' mb={2}>
                 Know Our Plans
               </Box>
@@ -139,16 +148,16 @@ export default function Home () {
         >
           <Box
             flex='1'
-              display='flex'
+            display='flex'
             justifyContent='space-around'
             alignItems='flex-start'
-            position="relative"
+            position='relative'
           >
-            <Box color="white">
+            <Box color='white'>
               <Box fontSize='2rem'>Download</Box>
-              <Box fontSize='1.125rem' fontWeight="fontWeightLight" >
-                Download our app from one of these stores <br /> with the following
-                available devices
+              <Box fontSize='1.125rem' fontWeight='fontWeightLight'>
+                Download our app from one of these stores <br /> with the
+                following available devices
               </Box>
             </Box>
             <Box display='flex' justifyContent='center'>
@@ -160,7 +169,7 @@ export default function Home () {
                 pt={6}
                 height='auto'
               >
-                <Box mb={4} display="flex" justifyContent="center">
+                <Box mb={4} display='flex' justifyContent='center'>
                   <img src={Images.steam} alt='' />
                 </Box>
                 <Box component='h2' className={classes.text2} mb={2}>
@@ -175,21 +184,20 @@ export default function Home () {
                 <Box component='h3' className={classes.text1}>
                   HTC Vive
                 </Box>
-                <Box component='div' my={3}>
-                </Box>
-                <Box display="flex" justifyContent="center" mb={-1} pt={2}>
+                <Box component='div' my={3}></Box>
+                <Box display='flex' justifyContent='center' mb={-1} pt={2}>
                   <a className={classes.linkGo}>Go to Oculus Store</a>
                 </Box>
               </Box>
 
               <Box className={classes.banner} p={4} ml={3} pt={6}>
-                <Box mb={5} display="flex" justifyContent="center">
+                <Box mb={5} display='flex' justifyContent='center'>
                   <img src={Images.sidequest} alt='' />
                 </Box>
                 <Box component='h2' className={classes.text2} mb={2}>
                   Standalone headset
                 </Box>
-                <Box component='h3' className={classes.text1} >
+                <Box component='h3' className={classes.text1}>
                   Oculus Quest 1
                 </Box>
                 <Box component='h3' className={classes.text1}>
@@ -198,32 +206,65 @@ export default function Home () {
                 <Box component='h3' className={classes.text1}>
                   HTC Vive
                 </Box>
-                <Box component='div' my={3}>
-                </Box>
-                <Box display="flex" justifyContent="center" mb={-1} pt={2}>
+                <Box component='div' my={3}></Box>
+                <Box display='flex' justifyContent='center' mb={-1} pt={2}>
                   <a className={classes.linkGo}>Go to Side Quest</a>
                 </Box>
               </Box>
             </Box>
-            <Box mb={-7} position="absolute" bottom={0} fontSize="1rem" textAlign="center"  color="white" > If you already have an account or an access code, you can download Multivrsity by choosing one of the options above, otherwise make sure to sign up first</Box>
-            
-
+            <Box
+              mb={-7}
+              position='absolute'
+              bottom={0}
+              fontSize='1rem'
+              textAlign='center'
+              color='white'
+            >
+              {' '}
+              If you already have an account or an access code, you can download
+              Multivrsity by choosing one of the options above, otherwise make
+              sure to sign up first
+            </Box>
           </Box>
-          
         </Box>
       </Element>
-      <Box height="5.625rem" display="flex" className={classes.footer} pr={10}>
-          <Box flex="1.5" display="flex" color="white" justifyContent="flex-end" alignItems="center">
-            <Box mx={4}>
-              <a href="" style={{color:'white',fontSize:"1rem", fontFamily:'font2'}}  >Privacy Policy</a>
-            </Box>
-            <Box mx={4}>
-              <a href="" style={{color:'white',fontSize:"1rem", fontFamily:'font2'  }} >Terms of service</a>
-            </Box>
+      <Box height='5.625rem' display='flex' className={classes.footer} pr={10}>
+        <Box
+          flex='1.5'
+          display='flex'
+          color='white'
+          justifyContent='flex-end'
+          alignItems='center'
+        >
+          <Box mx={4}>
+            <a
+              href=''
+              style={{ color: 'white', fontSize: '1rem', fontFamily: 'font2' }}
+            >
+              Privacy Policy
+            </a>
           </Box>
-          <Box flex="1" display="flex" justifyContent="flex-end" alignItems="center">
-              <img src={Images.powered} alt="Powered by inmersys" title="Powered by inmersys" />
+          <Box mx={4}>
+            <a
+              href=''
+              style={{ color: 'white', fontSize: '1rem', fontFamily: 'font2' }}
+            >
+              Terms of service
+            </a>
           </Box>
+        </Box>
+        <Box
+          flex='1'
+          display='flex'
+          justifyContent='flex-end'
+          alignItems='center'
+        >
+          <img
+            src={Images.powered}
+            alt='Powered by inmersys'
+            title='Powered by inmersys'
+          />
+        </Box>
       </Box>
     </Box>
   )
@@ -231,6 +272,84 @@ export default function Home () {
 
 function FormInformation () {
   const classes = useStyles()
+
+  const { sendInformationForm } = useContext(UserContext)
+  const initialValues = {
+    company: null,
+    name: null,
+    email: null,
+    phone: null,
+    surname: null
+  }
+  const [formInformation, setFormInformation] = useState<SendEmailInfoProps>(
+    {...initialValues}
+  )
+  const [errors, setErrors] = useState<SendEmailInfoProps>({...initialValues})
+  useContext
+  const onChange = e => {
+    e.preventDefault()
+    setFormInformation({
+      ...formInformation,
+      [e.target.name]: e.target.value
+    })
+  }
+  const validateForm = (): boolean => {
+    const { name, surname, company, email, phone } = formInformation
+    console.log({ formInformation })
+    const newErrors: SendEmailInfoProps = { ...initialValues }
+    let isValid = true
+    if (!name || name.trim().length === 0) {
+      newErrors.name = 'Please enter a valid value'
+      isValid = false
+    }
+
+    if (!surname || surname.trim().length === 0) {
+      newErrors.surname = 'Please enter a valid value'
+      isValid = false
+    }
+    if (!company || company.trim().length === 0) {
+      newErrors.company = 'Please enter a valid value'
+      isValid = false
+    }
+    if (!phone || phone.trim().length === 0) {
+      newErrors.phone = 'Please enter a valid value'
+      isValid = false
+    }
+    if (phone && phone.trim().length < 10) {
+      newErrors.phone = 'At least 10 digits'
+      isValid = false
+    }
+    console.log(!email)
+    if (!email || email.trim().length === 0) {
+      console.log('SI!')
+      newErrors.email = 'Please enter a valid value'
+      isValid = false
+    }
+    if (!verifyEmail(email)) {
+      newErrors.email = 'Please valid email'
+    }
+    console.log({ newErrors })
+    setErrors(newErrors)
+    return isValid
+  }
+
+  const onSendEmail = async e => {
+    console.log({ e })
+    e.preventDefault()
+    if (validateForm()) {
+      const status = await sendInformationForm(formInformation)
+      console.log({status})
+      if (status === 0) {
+        notification.open({
+          message: '¡Mail Sent Successfully!',
+          description: 'We will contact you to follow up on your request'
+        })
+        setErrors(initialValues)
+        setFormInformation(initialValues)
+      }
+    }
+  }
+
   const SylesInputLabel = {
     style: {
       color: 'white'
@@ -241,8 +360,10 @@ function FormInformation () {
       <Grid container spacing={2}>
         <Grid item xs={12} sm={6}>
           <CustomInput
+            error={errors.name !== null}
+            helperText={errors.name}
             autoComplete='fname'
-            name='firstName'
+            name='name'
             size='small'
             variant='outlined'
             required
@@ -250,19 +371,23 @@ function FormInformation () {
             id='firstName'
             label='Name'
             autoFocus
+            onChange={onChange}
             InputLabelProps={SylesInputLabel}
             InputProps={SylesInputLabel}
           />
         </Grid>
         <Grid item xs={12} sm={6}>
           <CustomInput
+            error={errors.surname !== null}
+            helperText={errors.surname}
             variant='outlined'
             size='small'
             required
             fullWidth
+            onChange={onChange}
             id='lastName'
             label='Surname'
-            name='lastName'
+            name='surname'
             autoComplete='lname'
             InputLabelProps={SylesInputLabel}
             InputProps={SylesInputLabel}
@@ -270,12 +395,15 @@ function FormInformation () {
         </Grid>
         <Grid item xs={12}>
           <CustomInput
+            error={errors.company !== null}
+            onChange={onChange}
+            label='Company'
+            helperText={errors.company}
             variant='outlined'
             required
             size='small'
             fullWidth
             id='email'
-            label='Company'
             name='company'
             autoComplete='company'
             InputLabelProps={SylesInputLabel}
@@ -284,13 +412,16 @@ function FormInformation () {
         </Grid>
         <Grid item xs={12}>
           <CustomInput
+            error={errors.email !== null}
+            onChange={onChange}
+            helperText={errors.email}
+            name='email'
             size='small'
             variant='outlined'
             required
             fullWidth
             id='email'
             label='Email Address'
-            name='email'
             autoComplete='email'
             InputLabelProps={SylesInputLabel}
             InputProps={SylesInputLabel}
@@ -298,11 +429,14 @@ function FormInformation () {
         </Grid>
         <Grid item xs={12}>
           <CustomInput
+            error={errors.phone !== null}
+            helperText={errors.phone}
+            onChange={onChange}
             variant='outlined'
             required
             size='small'
             fullWidth
-            name='phonenumber'
+            name='phone'
             label='Telephone Number'
             type='number'
             id='phonenumber'
@@ -312,7 +446,11 @@ function FormInformation () {
         </Grid>
       </Grid>
       <Box mt={3} display='flex ' justifyContent='flex-end'>
-        <button color='primary' className={classes.submit}>
+        <button
+          onClick={onSendEmail}
+          color='primary'
+          className={classes.submit}
+        >
           <Box fontSize='1rem'>Send</Box>
         </button>
       </Box>
@@ -346,25 +484,25 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 1,
     backgroundColor: 'black'
   },
-  footer:{
+  footer: {
     backgroundColor: '#000000',
-    color:'white'
+    color: 'white'
   },
   text1: {
     color: 'white',
     textAlign: 'center',
     fontSize: '0.875rem',
     fontFamily: 'font2',
-    marginBottom:'0.8rem'
+    marginBottom: '0.8rem'
   },
   text2: {
     color: 'white',
     textAlign: 'center',
     fontSize: '0.875rem'
   },
-  linkGo:{
+  linkGo: {
     backgroundColor: 'transparent',
-    border:'2px solid rgba(24, 160, 251, 1)',
+    border: '2px solid rgba(24, 160, 251, 1)',
     padding: '0.2rem 1.2rem',
     borderRadius: '30pt',
     fontFamily: 'font3',
@@ -381,7 +519,7 @@ const useStyles = makeStyles(theme => ({
     border: '2px solid #18A0FB',
     backgroundColor: 'rgba(36, 37, 38, 0.6)',
     borderRadius: '16pt',
-    minWidth:'16.5rem'
+    minWidth: '16.5rem'
   },
   blackBox: {
     minWidth: '29rem',
@@ -402,7 +540,7 @@ const useStyles = makeStyles(theme => ({
   landing: {
     backgroundImage: `url(${Images.landing2})`,
     backgroundSize: 'cover',
-    fontFamily:'font3'
+    fontFamily: 'font3'
   },
   arrow: {
     position: 'absolute',
@@ -413,11 +551,10 @@ const useStyles = makeStyles(theme => ({
     cursor: 'pointer'
   },
   buttonSingUp: {
-
     border: '0.15rem solid white',
     padding: ' 0.2rem 1.7rem',
     fontSize: '1.2rem',
-    color:'white',
+    color: 'white',
     cursor: 'pointer',
     borderRadius: '40pt',
     backgroundColor: 'transparent'

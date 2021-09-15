@@ -57,6 +57,7 @@ const EditAvatar = ({ toggleEditAvatar }) => {
       })
       const updateUserDto = new UpdateUserDTO({
         avatar: urlAvatar,
+        roomImage:null,
         name: null,
         thumbnail: data.renders[0]
       })

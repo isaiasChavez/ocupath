@@ -44,6 +44,7 @@ export type Profile = {
   thumbnail: string;
   email: string;
   type: number;
+  roomImage:string
 };
 export type UserStateType = {
   selectedUser: User,
