@@ -128,15 +128,15 @@
 }
 
 * {
-     font-family: "ITCAvantGardeStdBk" font1;
+     font-family: font1;
 }
 
 .ITCAvantGardeStdBkBold {
-     font-family: "ITCAvantGardeStdBkBold" font1
+     font-family: font1
 }
 
 .ITCAvantGardeStdBkSemiBold {
-     font-family: "ITCAvantGardeStdBkSemiBold" font2
+     font-family: font3
 }
 
 .Toastify__toast--success {
