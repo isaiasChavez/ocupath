@@ -40,7 +40,7 @@ const AskModal: React.FC<AskModalProps> = ({handleClose,handleOk,isOpen,title,su
       <Box className="ITCAvantGardeStdBkBold" fontWeight='fontWeightBold'  fontSize={32} textAlign="center" my={2}>
         {title}
       </Box>
-        <Box fontSize={20}  width="80%" mx="auto" mb={4} textAlign="center">
+        <Box fontSize={20} fontFamily="font2"  width="80%" mx="auto" mb={4} textAlign="center">
         {subtitle}
         </Box>
         <Box display='flex' justifyContent='space-around'>

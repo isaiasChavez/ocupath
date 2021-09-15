@@ -396,6 +396,9 @@ const InviteModal: React.FC<InviteModalProps> = ({
               color='secondary'
               variant='outlined'
               disabled={loading}
+              style={{ 
+                textTransform: 'capitalize',
+              }}
             >
               Cancel
             </Button>
@@ -407,9 +410,13 @@ const InviteModal: React.FC<InviteModalProps> = ({
               size='large'
               color='secondary'
               variant='contained'
+              style={{ 
+                textTransform: 'capitalize',
+                color:'white'
+              }}
               disabled={loading}
             >
-              Sure
+              send
             </Button>
           </Box>
         </Box>

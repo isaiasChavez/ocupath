@@ -106,14 +106,24 @@ const TableSuperAdmin: React.FC<TableSuperAdminProps> = () => {
 const AntTab = withStyles((theme: Theme) =>
   createStyles({
     root: {
-      display: 'flex',
-      height: '100%',
-      paddingTop: '1rem',
-      paddingBottom: '1rem',
-      textTransform: 'capitalize',
-      fontSize: '1rem'
+      textTransform: 'none',
+      width: 200,
+      minHeight: '4rem',
+      fontSize: '1.125rem',
+      color: '#A6ABAF',
+      marginRight: theme.spacing(4),
+      '&:hover': {
+        color: '#242526',
+        opacity: 1
+      },
+      '&$selected': {
+        color: '#242526'
+      },
+      '&:focus': {
+        color: '#242526'
+      }
     },
-    selected: {}
+    selected: { }
   })
 )((props: StyledTabProps) => <Tab disableRipple {...props} />)
 

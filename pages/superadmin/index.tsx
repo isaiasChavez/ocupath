@@ -1,14 +1,11 @@
-import { ListItemText,ListItemIcon,ListItem,Drawer,Grid,Divider,Typography,List,Toolbar,AppBar,makeStyles,Link,Box } from '@material-ui/core';
-import LayersIcon from '@material-ui/icons/Layers';
-
-import { useContext,useState } from 'react';
+import { Grid,makeStyles } from '@material-ui/core';
+import Head from "next/head";
+import { useState } from 'react';
 export interface AdminProps { }
-import { USERS,COLORS,Images } from '../../src/types/index';
+import { USERS,COLORS } from '../../src/types/index';
 import EditUser from '../../src/components/general/EditUser';
 import TableSuperAdmin from '../../src/components/superadmin/TableSuperAdmin';
-import theme from '../../src/theme';
 import withAuth from '../../src/auth/WithAuth';
-import SesionContext from '../../src/context/sesion/sesion.context';
 import AppBarCms from '../../src/components/general/AppBarCms';
 import SideBar from '../../src/components/general/SideBar';
 const drawerWidth = 240;
@@ -21,10 +18,17 @@ const Admin: React.FC<AdminProps> = () => {
   const classes = useStyles();
   const [currentTab,setCurrentTab] = useState<number>(0)
 
-  const { logout } = useContext(SesionContext)
 
   const [isEditingAvatar,setIsEditingAvatar] = useState(false)
   return (
+    <>
+     <Head>
+        <title>Multivrsity | Forgot</title>
+        <meta
+          name='viewport'
+          content='minimum-scale=1, initial-scale=1, width=device-width'
+        />
+      </Head>
     <div className={ classes.root }>
       <div className={ classes.inner }>
         {/* Barra superior */ }
@@ -44,6 +48,7 @@ const Admin: React.FC<AdminProps> = () => {
         </main>
       </div>
     </div>
+              </>
   );
 }
 

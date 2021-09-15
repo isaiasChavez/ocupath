@@ -1,16 +1,12 @@
 import { makeStyles } from '@material-ui/core/styles'
-import Drawer from '@material-ui/core/Drawer'
-import List from '@material-ui/core/List'
-import Typography from '@material-ui/core/Typography'
-import Divider from '@material-ui/core/Divider'
 import Grid from '@material-ui/core/Grid'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemText from '@material-ui/core/ListItemText'
 import { useState } from 'react'
+import TableFiles from '../../src/components/general/TableFiles'
+
 export interface AdminProps { }
+import Head from 'next/head'
 import { COLORS } from '../../src/types/index'
 import EditUser from '../../src/components/general/EditUser'
-import TableFiles from '../../src/components/general/TableFiles'
 import { USERS } from '../../src/types/index'
 import theme from '../../src/theme'
 import AppBarCms from '../../src/components/general/AppBarCms'
@@ -36,6 +32,14 @@ const UserMod = () => {
   
 
   return (
+    <>
+    <Head>
+        <title>Multivrsity | Guest</title>
+        <meta
+          name='viewport'
+          content='minimum-scale=1, initial-scale=1, width=device-width'
+        />
+      </Head>
     <div className={ classes.root }>
       <div className={ classes.inner }>
         <AppBarCms/>
@@ -53,6 +57,7 @@ const UserMod = () => {
       </div>
 
     </div>
+    </>
   )
 }
 

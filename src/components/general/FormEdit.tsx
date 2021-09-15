@@ -272,7 +272,7 @@ const RightSide = () => {
       >
         <h4 className={classes.information}>Logo</h4>
       </Box>
-      <Box>
+      <Box fontFamily="font2">
         Select your .png company logo. This image will be displayed within the
         virtual reality enviroment.
       </Box>

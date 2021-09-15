@@ -5,10 +5,7 @@ import {
   Typography,
   TextField,
   Button,
-  colors,
-  Container,
   FormControl,
-  Input,
   InputLabel,
   InputAdornment,
   IconButton,
@@ -17,13 +14,10 @@ import {
 import { makeStyles } from '@material-ui/core/styles'
 import { useContext, useEffect, useState } from 'react'
 import { verifyEmail } from '../../src/config/utils'
-import { useRouter } from 'next/router'
-
 import UserContext, {
   ReuestSesionDTO
 } from '../../src/context/user/user.context'
 import { COLORS, Images } from '../../src/types/index'
-import HeaderCustom from '../../src/components/general/HeaderCustom'
 import { withStyles } from '@material-ui/styles'
 import { Visibility, VisibilityOff } from '@material-ui/icons'
 import HeaderSimple from '../../src/components/general/HeaderSimple'
@@ -159,6 +153,14 @@ const Login: React.FC<LoginProps> = () => {
   const classes = useStyles()
 
   return (
+    <>
+    <Head>
+        <title>Multivrsity | Login</title>
+        <meta
+          name='viewport'
+          content='minimum-scale=1, initial-scale=1, width=device-width'
+        />
+      </Head>
     <div
       style={{
         height: '100vh',
@@ -169,11 +171,8 @@ const Login: React.FC<LoginProps> = () => {
         color: 'white',
         backgroundSize: 'cover'
       }}
-    >
+      >
       <HeaderSimple isLogin={true} />
-      <Head>
-        <title>Ocupath - Login </title>
-      </Head>
 
       <Box className={classes.container}  bgcolor="primary.main">
         
@@ -184,7 +183,7 @@ const Login: React.FC<LoginProps> = () => {
           display='flex'
           justifyContent='center'
           fontWeight='fontWeightBold'
-        >
+          >
           <img src={Images.logosvg} alt='Multivrsity' />
         </Box>
         <form className={classes.form} onSubmit={onSubmit}>
@@ -219,13 +218,13 @@ const Login: React.FC<LoginProps> = () => {
                 }
               }}
               variant='outlined'
-            />
+              />
           </Box>
           <CustomInputDos size='small' fullWidth variant='outlined'>
             <InputLabel
               style={{ color: 'white' }}
               htmlFor='outlined-adornment-password'
-            >
+              >
               Password
             </InputLabel>
             <OutlinedInput
@@ -251,12 +250,12 @@ const Login: React.FC<LoginProps> = () => {
                     style={{
                       color: 'white'
                     }}
-                  >
+                    >
                     {loginState.showPassword ? (
                       <Visibility />
-                    ) : (
-                      <VisibilityOff />
-                    )}
+                      ) : (
+                        <VisibilityOff />
+                        )}
                   </IconButton>
                 </InputAdornment>
               }
@@ -271,7 +270,7 @@ const Login: React.FC<LoginProps> = () => {
               alignItems: 'center',
               flexDirection: 'column'
             }}
-          >
+            >
             <Box mt={6} mb={2}>
 
             <Link
@@ -282,7 +281,7 @@ const Login: React.FC<LoginProps> = () => {
                 color: COLORS.blue_secondary,
                 textDecoration: 'underline',
                 fontFamily: 'font2'
-
+                
               }}
               href='login/forgot'
               >
@@ -298,7 +297,7 @@ const Login: React.FC<LoginProps> = () => {
               variant='contained'
               className={classes.submit}
               disableElevation
-            >
+              >
               <span
                 style={{
                   color: 'white',
@@ -306,7 +305,7 @@ const Login: React.FC<LoginProps> = () => {
                   textTransform: 'capitalize',
                   fontFamily: 'font2'
                 }}
-              >
+                >
                 Login
               </span>
             </Button>
@@ -314,6 +313,7 @@ const Login: React.FC<LoginProps> = () => {
         </form>
       </Box>
     </div>
+</>
   )
 }
 

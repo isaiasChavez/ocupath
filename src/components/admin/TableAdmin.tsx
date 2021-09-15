@@ -73,10 +73,6 @@ const TableAdmin: React.FC<TableAdminProps> = () => {
   const handleCloseUserDetailModal = () => {
     setIsOpenUserDetailModal(false)
   }
-
-  const handleOpenUserDetailModal = (dataUser: User) => {
-    setIsOpenUserDetailModal(true)
-  }
   const handleToggleDetailModal = () => {
     setIsOpenUserDetailModal(!isOpenUserDetailModal)
   }
@@ -147,12 +143,14 @@ const TableAdmin: React.FC<TableAdminProps> = () => {
           onChange={ handleChange }
           aria-label='ant example'
         >
-          <AntTab label='Users' />
-          <Box width='100%' display="flex" alignItems="center" justifyContent='flex-end'>
+          <AntTab label='Guests' />
+          <Box width='100%' mx={2} display="flex" alignItems="center" justifyContent='flex-end'>
+            <Box flex={1} textAlign="center" fontSize="1rem" fontFamily="font2" style={{color:'rgba(122, 134, 143, 1)'}}>
+        Your plan includes 20 invitations
+            </Box>
             <Button
               disabled={ loading }
               className={ classes.buttonNew }
-
               onClick={ handleOpenInviteModal }
               variant='contained'
               color='primary'
@@ -252,23 +250,24 @@ const AntTab = withStyles((theme: Theme) =>
   createStyles({
     root: {
       textTransform: 'none',
-      minWidth: 72,
-      fontWeight: theme.typography.fontWeightRegular,
+      width: 200,
+      minHeight: '4rem',
+      fontSize: '1.125rem',
+      color: '#A6ABAF',
       marginRight: theme.spacing(4),
       fontFamily: [
         '-apple-system',
 
       ].join(','),
       '&:hover': {
-        color: '#40a9ff',
+        color: '#242526',
         opacity: 1
       },
       '&$selected': {
-        color: '#1890ff',
-        fontWeight: theme.typography.fontWeightMedium
+        color: '#242526'
       },
       '&:focus': {
-        color: '#40a9ff'
+        color: '#242526'
       }
     },
     selected: { }
@@ -293,10 +292,13 @@ const useStyles = makeStyles((theme: Theme) => ({
     padding: '2rem'
   },
   buttonNew: {
-    height: '65%',marginRight: '1rem',
+    height: '65%',
+    fontFamily:'font2',
+    marginLeft: '1rem',
     minWidth: '10rem',
-    textTransform: 'capitalize',
-    color: 'white'
+    backgroundColor: '#45A0C5',
+    fontSize: '1rem',
+    textTransform: 'capitalize'
   },
   demo1: {
     maxWidth: '100%',

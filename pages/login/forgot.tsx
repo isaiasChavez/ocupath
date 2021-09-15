@@ -1,19 +1,12 @@
-import Layout from "../../src/layouts/Layout";
 import Head from "next/head";
 import Button from "@material-ui/core/Button";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import TextField from "@material-ui/core/TextField";
-import Link from "@material-ui/core/Link";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
-import Container from "@material-ui/core/Container";
 import { useContext, useState } from "react";
 import { verifyEmail } from "../../src/config/utils";
 import UserContext, {
-  PasswordRecovery,
   ResetPassword,
 } from "../../src/context/user/user.context";
-import HeaderCustom from "../../src/components/general/HeaderCustom";
 import { Box, LinearProgress } from "@material-ui/core";
 import { COLORS } from "../../src/types";
 import { CustomInput } from ".";
@@ -93,6 +86,13 @@ const Forgot: React.FC<ForgotProps> = () => {
 
   return (
     <>
+      <Head>
+        <title>Multivrsity | Forgot</title>
+        <meta
+          name='viewport'
+          content='minimum-scale=1, initial-scale=1, width=device-width'
+        />
+      </Head>
     
      <HeaderSimple isLogin={false}/>
     <div style={ {
@@ -103,9 +103,7 @@ const Forgot: React.FC<ForgotProps> = () => {
       backgroundColor:COLORS.blue_primary,
       color:'white'
     } }>
-      <Head>
-        <title>Ocupath - Login </title>
-      </Head>
+
 
       <div className={classes.inner}>
         <Typography component="h3" variant="h3" style={{textAlign: 'center'}} >

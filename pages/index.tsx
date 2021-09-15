@@ -1,22 +1,17 @@
 import {
   Link as LinkScroll,
-  DirectLink,
   Element,
-  Events,
   animateScroll as scroll,
-  scrollSpy,
-  scroller
 } from 'react-scroll'
 import { notification } from 'antd'
 
-import { makeStyles, Box, Grid, TextField } from '@material-ui/core'
-import MenuIcon from '@material-ui/icons/Menu'
-import Link from 'next/link'
+import { makeStyles, Box, Grid } from '@material-ui/core'
 import HeaderLogin from '../src/components/login/HeaderLogin'
 import { Images } from '../src/types'
-import { Button } from 'antd'
 import { CustomInput } from './login'
 import { useContext, useState } from 'react'
+import Head from "next/head";
+
 import UserContext, {
   SendEmailInfoProps
 } from '../src/context/user/user.context'
@@ -32,6 +27,14 @@ export default function Home () {
   /*   ScrollReveal().reveal('.headline');
    */
   return (
+    <>
+    <Head>
+                <title>Multivrsity</title>
+                <meta
+                  name="viewport"
+                  content="minimum-scale=1, initial-scale=1, width=device-width"
+                />
+              </Head>
     <Box height='100vh' className={classes.root}>
       <HeaderLogin />
       <Element name='landing' className='element'>
@@ -42,7 +45,7 @@ export default function Home () {
             left='10%'
             mr={2}
             style={{ color: 'white' }}
-          >
+            >
             <Box mb={1} fontSize='1.5rem' fontFamily="font3">
               Make all your meetings possible no matter <br /> where your team
               is located.
@@ -50,7 +53,7 @@ export default function Home () {
             <Box
               style={{ fontFamily: 'font2', lineHeight: '24px' }}
               fontSize='0.875rem'
-            >
+              >
               Improve the experience of your online meetings. Interact agilely
               in real time, share <br /> and display content to meeting
               participants.
@@ -67,7 +70,7 @@ export default function Home () {
                 spy={true}
                 smooth={true}
                 duration={500}
-              >
+                >
                 <button className={classes.buttonSingUp}>Sing up</button>
               </LinkScroll>
             </Box>
@@ -83,7 +86,7 @@ export default function Home () {
           alignItems='center'
           pl={20}
           className={classes.about}
-        >
+          >
           <Box  className={classes.blackBox}>
             <Box fontFamily="font3" fontSize='2rem' mb={2} color='white' className='headline'>
               About Us
@@ -94,9 +97,9 @@ export default function Home () {
             </Box>
             <Box
             fontFamily="font2"
-              fontSize='0.875rem'
+            fontSize='0.875rem'
               color='white'
-
+              
               lineHeight='1.8rem'
             >
               Lorem ipsum dolor sit amet consectetur adipisicing elit.
@@ -153,7 +156,7 @@ export default function Home () {
             justifyContent='space-around'
             alignItems='flex-start'
             position='relative'
-          >
+            >
             <Box color='white'>
               <Box fontFamily="font3" fontSize='2rem'>Download</Box>
               <Box fontSize='1.125rem' fontFamily="font2">
@@ -169,7 +172,7 @@ export default function Home () {
                 p={4}
                 pt={6}
                 height='auto'
-              >
+                >
                 <Box mb={4} display='flex' justifyContent='center'>
                   <img src={Images.steam} alt='' />
                 </Box>
@@ -221,7 +224,7 @@ export default function Home () {
               fontSize='0.75rem'
               textAlign='center'
               color='white'
-            >
+              >
               {' '}
               If you already have an account or an access code, you can download
               Multivrsity by choosing one of the options above, otherwise make
@@ -237,12 +240,12 @@ export default function Home () {
           color='white'
           justifyContent='flex-end'
           alignItems='center'
-        >
+          >
           <Box mx={4}>
             <a
               href=''
               style={{ color: 'white', fontSize: '1rem', fontFamily: 'font2' }}
-            >
+              >
               Privacy Policy
             </a>
           </Box>
@@ -265,16 +268,17 @@ export default function Home () {
             src={Images.powered}
             alt='Powered by inmersys'
             title='Powered by inmersys'
-          />
+            />
         </Box>
       </Box>
     </Box>
+</>
   )
 }
 
 function FormInformation () {
   const classes = useStyles()
-
+  
   const { sendInformationForm } = useContext(UserContext)
   const initialValues = {
     company: null,
