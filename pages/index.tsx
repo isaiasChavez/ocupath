@@ -43,13 +43,13 @@ export default function Home () {
             mr={2}
             style={{ color: 'white' }}
           >
-            <Box mb={1} fontSize='2rem'>
+            <Box mb={1} fontSize='1.5rem' fontFamily="font3">
               Make all your meetings possible no matter <br /> where your team
               is located.
             </Box>
             <Box
               style={{ fontFamily: 'font2', lineHeight: '24px' }}
-              fontSize='1rem'
+              fontSize='0.875rem'
             >
               Improve the experience of your online meetings. Interact agilely
               in real time, share <br /> and display content to meeting
@@ -84,19 +84,20 @@ export default function Home () {
           pl={20}
           className={classes.about}
         >
-          <Box className={classes.blackBox}>
-            <Box fontSize='2rem' mb={2} color='white' className='headline'>
+          <Box  className={classes.blackBox}>
+            <Box fontFamily="font3" fontSize='2rem' mb={2} color='white' className='headline'>
               About Us
             </Box>
-            <Box mb={2} fontSize='1.125rem' color='white'>
+            <Box mb={2} fontFamily="font3" fontSize='1.125rem' color='white'>
               Lorem ipsum dolor sit amet consectetur adipisicing elit.
               Dignissimos ea accusantium doloribus omnis
             </Box>
             <Box
+            fontFamily="font2"
               fontSize='1rem'
               color='white'
+
               lineHeight='1.8rem'
-              fontWeight='fontWeightLight'
             >
               Lorem ipsum dolor sit amet consectetur adipisicing elit.
               Dignissimos ea accusantium doloribus omnis Lorem ipsum dolo
@@ -118,17 +119,17 @@ export default function Home () {
           <Box flex='1' height='100%'></Box>
           <Box flex='1' display='flex' justifyContent='center'>
             <Box height='100%' className={classes.form} color='white'>
-              <Box fontSize='1.5rem' mb={2}>
+              <Box fontFamily="font3" fontSize='1.5rem' mb={2}>
                 Know Our Plans
               </Box>
-              <Box fontSize='1.125rem' mb={2}>
+              <Box fontFamily="font3" fontSize='1.125rem' mb={2}>
                 Let us contact you to learn about your business needs and
                 propose a customized plan.{' '}
               </Box>
-              <Box fontSize='0.975rem' mb={2} fontWeight='fontWeightLight'>
+              <Box fontFamily="font2" fontSize='0.875rem' mb={3} >
                 Once you know our plans you can register with us.{' '}
               </Box>
-              <Box fontSize='0.8rem' mb={2}>
+              <Box fontFamily="font3" fontSize='0.8rem' mb={2}>
                 Enter your information to contact to you{' '}
               </Box>
               <FormInformation />
@@ -154,8 +155,8 @@ export default function Home () {
             position='relative'
           >
             <Box color='white'>
-              <Box fontSize='2rem'>Download</Box>
-              <Box fontSize='1.125rem' fontWeight='fontWeightLight'>
+              <Box fontFamily="font3" fontSize='2rem'>Download</Box>
+              <Box fontSize='1.125rem' fontFamily="font2">
                 Download our app from one of these stores <br /> with the
                 following available devices
               </Box>
@@ -216,7 +217,8 @@ export default function Home () {
               mb={-7}
               position='absolute'
               bottom={0}
-              fontSize='1rem'
+              fontFamily="font2"
+              fontSize='0.75rem'
               textAlign='center'
               color='white'
             >
@@ -498,7 +500,8 @@ const useStyles = makeStyles(theme => ({
   text2: {
     color: 'white',
     textAlign: 'center',
-    fontSize: '0.875rem'
+    fontSize: '0.875rem',
+    fontFamily:'font3'
   },
   linkGo: {
     backgroundColor: 'transparent',
@@ -553,8 +556,9 @@ const useStyles = makeStyles(theme => ({
   buttonSingUp: {
     border: '0.15rem solid white',
     padding: ' 0.2rem 1.7rem',
-    fontSize: '1.2rem',
+    fontSize: '1rem',
     color: 'white',
+    fontFamily: 'font3',
     cursor: 'pointer',
     borderRadius: '40pt',
     backgroundColor: 'transparent'
