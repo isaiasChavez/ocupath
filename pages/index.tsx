@@ -453,7 +453,7 @@ function FormInformation () {
           color='primary'
           className={classes.submit}
         >
-          <Box fontSize='1rem'>Send</Box>
+          <Box fontFamily="font3" fontSize='1rem'>Send</Box>
         </button>
       </Box>
     </form>
