@@ -6,6 +6,18 @@
      -ms-animation: fadeIn ease 0.5s;
 }
 
+.animate-fadein-1s {
+     animation: fadeIn ease 1s;
+     -webkit-animation: fadeIn ease 1s;
+     -moz-animation: fadeIn ease 1s;
+     -o-animation: fadeIn ease 1s;
+     -ms-animation: fadeIn ease 1s;
+}
+
+.w-full {
+     width: 100%;
+}
+
 @font-face {
      font-family: 'font1';
      /*a name to be used later*/
@@ -84,6 +96,11 @@
      }
 }
 
+.animate-elevate:hover {
+     transform: scale( 1.05);
+     /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
+}
+
 
 /* Tipografías  */
 
@@ -107,11 +124,11 @@
 }
 
 .ITCAvantGardeStdBkBold {
-     font-family: "ITCAvantGardeStdBkBold"
+     font-family: "ITCAvantGardeStdBkBold" font1
 }
 
 .ITCAvantGardeStdBkSemiBold {
-     font-family: "ITCAvantGardeStdBkSemiBold"
+     font-family: "ITCAvantGardeStdBkSemiBold" font2
 }
 
 .Toastify__toast--success {

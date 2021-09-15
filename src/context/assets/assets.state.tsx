@@ -5,12 +5,15 @@ import AssetsContext, {
   CreateAssetDTO,
   DeleteAssetDto,
 } from "./assets.context";
-import { AS_A, URLS } from "../../types/index";
+import { AS_A, URLS,MIS } from "../../types/index";
 import AssetsReducer, { AssetsStateType } from "./assets.reducer";
+import { validateOrReject } from 'class-validator'
+
 
 const UserState = ({ children }) => {
   
   const [state, dispatch] = useReducer(AssetsReducer, initialState());
+
   const getAssetsUser = async (createAssetDTO: CreateAssetDTO) => {
     try {
       const { data } = await axios.get(URLS.assets);
@@ -22,6 +25,37 @@ const UserState = ({ children }) => {
     } catch (error) {
       console.error({ error });
     }
+  };
+
+   const openPreviewer = async (currentAsset:Asset,currentAssets:Asset[]) => {
+      dispatch({
+        type: MIS.OPEN_PREVIEWER,
+        payload:{currentAsset,currentAssets}
+      });
+  };
+  const selectAsset = async (currentAsset:Asset) => {
+      dispatch({
+        type: MIS.SELECT_ASSET,
+        payload:currentAsset
+      });
+  };
+  const nextPreview = async () => {
+      dispatch({
+        type: MIS.NEXT_PREVIEW,
+        payload:null
+      });
+  };
+  const prevPreview = async () => {
+      dispatch({
+        type: MIS.PREV_PREVIEW,
+        payload:null
+      });
+  };
+  const closePreviewer = async () => {
+      dispatch({
+        type: MIS.CLOSE_PREVIEWER,
+        payload:null
+      });
   };
 
   const successCreate = async (asset:Asset) => {
@@ -37,14 +71,23 @@ const UserState = ({ children }) => {
   };
  
   
-  const deleteAsset = async (deleteAssetDto: DeleteAssetDto) => {
+  const deleteAsset = async (uuid:string) => {
+    const deleteAssetDto = new DeleteAssetDto(uuid)
+
     try {
-      const { data } = await axios.post(URLS.deleteAsset, deleteAssetDto);
-      dispatch({
-        type: AS_A.CREATE_SUCCESS,
+      
+      await validateOrReject(deleteAssetDto);
+        
+      const { data } = await axios.put(URLS.deleteAsset, deleteAssetDto);
+      
+
+        console.log({data})
+        /* dispatch({
+          type: AS_A.DELETE_SUCCESS,
         payload: data,
-      });
+      }); */
     } catch (error) {
+      alert("ha ocurrido un error")
       console.error({ error });
     }
   };
@@ -52,10 +95,15 @@ const UserState = ({ children }) => {
   return (
     <AssetsContext.Provider
       value={{
+        ...state,
         successCreate,
+        nextPreview,
+        prevPreview,
+        selectAsset,
+        closePreviewer,
+        openPreviewer,
         deleteAsset,
         getAssetsUser,
-        ...state,
       }}
     >
       {children}
@@ -65,17 +113,31 @@ const UserState = ({ children }) => {
 
 const initialState = () => {
   let state: AssetsStateType = {
+      isPreviewerOpened:false,
+      previewIsImage:false,
+      currentAssets:[],
+      currentAsset:{
+        uuid:'',
+        thumbnail:'',
+        url:'',
+        typeAsset:{
+          id:null,
+          name:''
+        }
+      },
       assets:{
         images: [{
           typeAsset: { id: 0,name: '' },
           thumbnail:"",
-          url: ''
+          url: '',
+          uuid:'',
         }],
         images360: [{
           thumbnail:'',
           typeAsset:{ 
             id:0,name:''
           },
+          uuid:'',
           url:''
         }],
         videos: [{
@@ -83,6 +145,7 @@ const initialState = () => {
           typeAsset:{ 
             id:0,name:''
           },
+          uuid:'',
           url:''
         }],
         videos360: [{
@@ -90,6 +153,7 @@ const initialState = () => {
           typeAsset:{ 
             id:0,name:''
           },
+          uuid:'',
           url:''
         }]  
       },

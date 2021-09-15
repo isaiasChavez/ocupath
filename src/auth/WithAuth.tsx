@@ -15,6 +15,7 @@ const withAuth = (WrappedComponent) => {
       if (!accessToken) {
         Router.replace("/");
       } else {
+        
         // we call the api that verifies the token.
         const isValid =  verifyToken(accessToken);
         // if token was verified we set the state.
@@ -47,9 +48,6 @@ const withAuth = (WrappedComponent) => {
               }
             
           }
-
-
-
         } else {
           // If the token was fraud we first remove it from localStorage and then redirect to "/"
           localStorage.removeItem(Config.TOKEN_NAME_INTERN);

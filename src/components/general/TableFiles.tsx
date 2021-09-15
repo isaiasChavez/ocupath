@@ -1,4 +1,5 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
+import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined'
 import {
   withStyles,
   Theme,
@@ -7,7 +8,8 @@ import {
 } from '@material-ui/core/styles'
 import Paper from '@material-ui/core/Paper'
 import Tabs from '@material-ui/core/Tabs'
-import { Image } from 'antd'
+import { Image, Space } from 'antd'
+import { Popover, Button as ButtonAnt } from 'antd'
 
 import Tab from '@material-ui/core/Tab'
 import GridList from '@material-ui/core/GridList'
@@ -23,6 +25,7 @@ import AssetsContext, {
 import NotificationsContext from '../../context/notifications/notifications.context'
 import { useDropzone } from 'react-dropzone'
 import { Config } from '../../config'
+import Previwer from '../login/Previwer'
 
 interface StyledTabProps {
   label: string
@@ -50,40 +53,43 @@ const TableFiles: React.FC<TableFilesProps> = () => {
   useEffect(() => {
     getAssetsUser()
   }, [currentTab])
-  const { getAssetsUser } = useContext(AssetsContext)
+  const { getAssetsUser, isPreviewerOpened } = useContext(AssetsContext)
 
   const [loading, setLoading] = useState(false)
 
   return (
-    <Grid container className={classes.root}>
-      <Grid item xs={12}>
-        <Paper className={classes.paper}>
-          <AntTabs
-            value={currentTab}
-            onChange={handleChange}
-            aria-label='ant example'
-          >
-            <AntTab label='Images' />
-            <AntTab label='360 Images' />
-            <AntTab label='Video' />
-            <AntTab label='360 Videos' />
-          </AntTabs>
+    <>
+      {isPreviewerOpened && <Previwer />}
+      <Grid container className={classes.root}>
+        <Grid item xs={12}>
+          <Paper className={classes.paper}>
+            <AntTabs
+              value={currentTab}
+              onChange={handleChange}
+              aria-label='ant example'
+            >
+              <AntTab label='Images' />
+              <AntTab label='360 Images' />
+              <AntTab label='Video' />
+              <AntTab label='360 Videos' />
+            </AntTabs>
 
-          {currentTab === FILES.IMG && (
-            <Img loading={loading} setLoading={setLoading} />
-          )}
-          {currentTab === FILES.IMG_360 && (
-            <Img360 loading={loading} setLoading={setLoading} />
-          )}
-          {currentTab === FILES.VIDEO && (
-            <Video loading={loading} setLoading={setLoading} />
-          )}
-          {currentTab === FILES.VIDEO_360 && (
-            <Video360 loading={loading} setLoading={setLoading} />
-          )}
-        </Paper>
+            {currentTab === FILES.IMG && (
+              <Img loading={loading} setLoading={setLoading} />
+            )}
+            {currentTab === FILES.IMG_360 && (
+              <Img360 loading={loading} setLoading={setLoading} />
+            )}
+            {currentTab === FILES.VIDEO && (
+              <Video loading={loading} setLoading={setLoading} />
+            )}
+            {currentTab === FILES.VIDEO_360 && (
+              <Video360 loading={loading} setLoading={setLoading} />
+            )}
+          </Paper>
+        </Grid>
       </Grid>
-    </Grid>
+    </>
   )
 }
 
@@ -94,14 +100,33 @@ export interface DropZoneProps {
   loading: boolean
   isEmpty: boolean
   text: string
+  type: FILES_TYPES
 }
 
 const DropZone: React.FC<DropZoneProps> = ({
   isDragActive,
   isEmpty,
   loading,
-  text
+  text,
+  type
 }) => {
+  const correctImage = () => {
+    switch (type) {
+      case FILES_TYPES.IMG:
+        return Images.drop.dropimages
+      case FILES_TYPES.IMG_360:
+        return Images.drop.dropimages360
+      case FILES_TYPES.VIDEO:
+        return Images.drop.dropvideo
+      case FILES_TYPES.VIDEO_360:
+        return Images.drop.dropvideo360
+
+      default:
+        return Images.drop.dropimages
+        break
+    }
+  }
+
   return (
     <>
       {isDragActive && (
@@ -153,12 +178,9 @@ const DropZone: React.FC<DropZoneProps> = ({
           <Box display='flex' flexDirection='column'>
             <img
               style={{ opacity: '0.5' }}
-              src={Images.upload}
+              src={correctImage()}
               alt='Upload your image'
             />
-            <Box mt={2} fontSize={12}>
-              Drop files to instantly upload them{' '}
-            </Box>
           </Box>
         </Box>
       )}
@@ -185,10 +207,13 @@ const DropZone: React.FC<DropZoneProps> = ({
 }
 
 const Img: React.FC<ImgProps> = ({ loading, setLoading }) => {
-  const { assets, successCreate } = useContext(AssetsContext)
+  const { assets, successCreate, openPreviewer } = useContext(AssetsContext)
+
   const classes = useStyles()
   const { sendAlert } = useContext(NotificationsContext)
+
   const [files, setFiles] = useState([])
+
   useEffect(() => {
     if (files && files.length !== 0) {
       setImage()
@@ -254,57 +279,172 @@ const Img: React.FC<ImgProps> = ({ loading, setLoading }) => {
       })
     }
   }
+  const onOpenPreviewer = (currentAsset: Asset) => {
+    openPreviewer(currentAsset, assets.images)
+  }
   const isEmpty = assets.images.length == 0
 
   return (
-    <Box {...getRootProps()} width='100%' height='100%' position='relative'>
-      <Image.PreviewGroup>
-        {assets.images.map((asset: Asset, i) => (
-          <Image
-            style={{ 
-              objectFit:'cover'
-            }}
-            height={200}
- src={asset.url} />
-        ))}
-      </Image.PreviewGroup>
-      {/*  <GridList  cellHeight={ 100 } className={ classes.gridList } cols={ 7 }>
-        { assets.images.map((asset: Asset,i) => (
-          <GridListTile key={ i } cols={ 1 } style={ { height: 180 } }>
-            <img className='animate-fadein' src={ asset.url } alt={ "Imagen normal" } />
-          </GridListTile>
-        )) }
-      <DropZone isEmpty={isEmpty} text="Drop your files here png/jpg" isDragActive={isDragActive} loading={loading}/>
-      </GridList> */}
-      <Paper>
-        <Box
-          display='flex'
-          justifyContent='flex-end'
-          alignItems='center'
-          className={classes.containerUpload}
-        >
-          <input
-            {...getInputProps()}
-            onChange={e => uploadImage(e.target.files)}
-            multiple
-            accept='image/*'
-            id='upload'
-            type='file'
-          />
-          <label htmlFor='upload'>
-            <Button
-              disabled={loading}
-              variant='contained'
-              color='primary'
-              className={classes.uploadButton}
-              component='span'
+    <>
+      <Box {...getRootProps()} width='100%' height='100%' position='relative'>
+        <Box height='90%' width='100%'>
+          <Box width='82%' mx='auto' pt={1}>
+            <div
+              style={{
+                display: 'grid',
+                gridAutoRows: '160px',
+                gridTemplateColumns: 'repeat(7,1fr)',
+                gap: '0.3rem'
+              }}
             >
-              Upload
-            </Button>
-          </label>
+              {assets.images.map((asset: Asset, i) => (
+                <ImageGrid onOpenPreviewer={onOpenPreviewer} asset={asset} />
+              ))}
+            </div>
+          </Box>
         </Box>
-      </Paper>
-    </Box>
+
+        <DropZone
+          type={FILES_TYPES.IMG}
+          isEmpty={isEmpty}
+          text='Drop your files here png/jpg'
+          isDragActive={isDragActive}
+          loading={loading}
+        />
+        <Paper>
+          <Box
+            display='flex'
+            justifyContent='flex-end'
+            alignItems='center'
+            className={classes.containerUpload}
+          >
+            <Box flex={1} fontFamily='font2' fontSize='1rem' textAlign='center'>
+              Drop files to upload them instantly
+            </Box>
+            <input
+              {...getInputProps()}
+              onChange={e => uploadImage(e.target.files)}
+              multiple
+              accept='image/*'
+              id='upload'
+              type='file'
+            />
+            <label htmlFor='upload'>
+              <Button
+                disabled={loading}
+                variant='contained'
+                color='primary'
+                className={classes.uploadButton}
+                component='span'
+              >
+                Upload file
+              </Button>
+            </label>
+          </Box>
+        </Paper>
+      </Box>
+    </>
+  )
+}
+
+const ImageGrid = ({ asset,onOpenPreviewer }: { asset: Asset,onOpenPreviewer:Function }) => {
+  const { openPreviewer, assets ,deleteAsset} = useContext(AssetsContext)
+
+  
+  const [isPopperVisible, setIsPopperVisible] = useState<boolean>(false)
+  const [isDeleteHoverd, setIsDeleteHoverd] = useState(false)
+  const [isImageHovered, setIsImageHoverd] = useState(false)
+  const classes = useStyles()
+
+  const assetIsVideo =
+    asset.typeAsset.id === FILES_TYPES.VIDEO ||
+    asset.typeAsset.id === FILES_TYPES.VIDEO_360
+
+  const onDeleteAsset =()=>{
+    deleteAsset(asset.uuid)
+  }
+
+  return (
+    <div
+      style={{
+        borderRadius: '0.3rem',
+        overflow: 'hidden',
+        position: 'relative',
+        cursor: 'pointer'
+      }}
+      onMouseEnter={() => setIsImageHoverd(true)}
+      onMouseLeave={() => {
+        setIsPopperVisible(false)
+        setIsImageHoverd(false)
+      }}
+      onClick={() => {
+        if (!isDeleteHoverd && !isPopperVisible) {
+          onOpenPreviewer(asset)
+        }
+      }}
+    >
+      {isImageHovered && (
+        <Box
+          position='absolute'
+          className='animate-fadein-1s'
+          top={0}
+          height='2rem'
+          width='2rem'
+          display='flex'
+          justifyContent='center'
+          alignItems='center'
+          borderRadius='100%'
+          right={0}
+          ml={1}
+          style={{
+            backgroundColor: '#374980',
+            margin: '0.1rem'
+          }}
+        >
+          <Popover
+            placement='bottom'
+            content={
+              <Space direction='vertical' align='end'>
+                <span style={{ fontFamily: 'font2' }}>
+                  Are you sure you want to <br /> delete this image?
+                </span>
+                <Space>
+                  <ButtonAnt
+                    onClick={() => setIsPopperVisible(false)}
+                    size='small'
+                    className={classes.buttonCancel}
+                  >
+                    Cancel
+                  </ButtonAnt>
+                  <ButtonAnt onClick={onDeleteAsset} size='small' className={classes.buttonOk}>
+                    Delete
+                  </ButtonAnt>
+                </Space>
+              </Space>
+            }
+            trigger='click'
+            visible={isPopperVisible}
+          >
+            <DeleteOutlineOutlinedIcon
+              onMouseEnter={() => setIsDeleteHoverd(true)}
+              onMouseLeave={() => setIsDeleteHoverd(false)}
+              onClick={() => setIsPopperVisible(!isPopperVisible)}
+              style={{
+                color: 'white'
+              }}
+            />
+          </Popover>
+        </Box>
+      )}
+      <img
+        style={{
+          width: '100%',
+          minHeight: '100%',
+          objectFit: 'cover'
+        }}
+        src={assetIsVideo ? asset.thumbnail : asset.url}
+      />
+    </div>
   )
 }
 
@@ -315,7 +455,7 @@ export interface Img360Props {
 
 const Img360: React.FC<Img360Props> = ({ loading, setLoading }) => {
   const [files, setFiles] = useState([])
-  const { assets, successCreate } = useContext(AssetsContext)
+  const { assets, successCreate,openPreviewer } = useContext(AssetsContext)
   const { sendAlert } = useContext(NotificationsContext)
 
   useEffect(() => {
@@ -389,22 +529,31 @@ const Img360: React.FC<Img360Props> = ({ loading, setLoading }) => {
       })
     }
   }
+  const onOpenPreviewer = (currentAsset: Asset) => {
+    openPreviewer(currentAsset, assets.images360)
+  }
   const isEmpty = assets.images360.length == 0
   return (
     <>
       <Box {...getRootProps()} width='100%' height='100%' position='relative'>
-        <GridList cellHeight={100} className={classes.gridList} cols={7}>
-          {assets.images360.map((asset: Asset) => (
-            <GridListTile key={asset.url} cols={1} style={{ height: 180 }}>
-              <img
-                className='animate-fadein'
-                src={asset.url}
-                alt='Imagen 360'
-              />
-            </GridListTile>
-          ))}
-        </GridList>
+        <Box height='90%' width='100%'>
+          <Box width='82%' mx='auto' pt={1}>
+            <div
+              style={{
+                display: 'grid',
+                gridAutoRows: '160px',
+                gridTemplateColumns: 'repeat(7,1fr)',
+                gap: '0.3rem'
+              }}
+            >
+              {assets.images360.map((asset: Asset, i) => (
+                <ImageGrid onOpenPreviewer={onOpenPreviewer} asset={asset} />
+              ))}
+            </div>
+          </Box>
+        </Box>
         <DropZone
+          type={FILES_TYPES.IMG_360}
           isEmpty={isEmpty}
           text='Drop your 360 images here | png/jpg'
           isDragActive={isDragActive}
@@ -432,7 +581,7 @@ const Img360: React.FC<Img360Props> = ({ loading, setLoading }) => {
                 disabled={loading}
                 component='span'
               >
-                Upload img 360
+                Upload file
               </Button>
             </label>
           </Box>
@@ -443,7 +592,7 @@ const Img360: React.FC<Img360Props> = ({ loading, setLoading }) => {
 }
 
 const Video: React.FC<VideoProps> = ({ loading, setLoading }) => {
-  const { assets, successCreate } = useContext(AssetsContext)
+  const { assets, successCreate,openPreviewer } = useContext(AssetsContext)
   const [files, setFiles] = useState<FileList>(null)
   const [urlVideo, setUrlVideo] = useState<string>('')
   const { sendAlert } = useContext(NotificationsContext)
@@ -562,20 +711,33 @@ const Video: React.FC<VideoProps> = ({ loading, setLoading }) => {
       })
     }
   }
+  const onOpenPreviewer = (currentAsset: Asset) => {
+    openPreviewer(currentAsset, assets.videos)
+  }
   const classes = useStyles()
   const isEmpty = assets.videos.length == 0
   return (
     <>
       <Box {...getRootProps()} width='100%' height='100%' position='relative'>
-        <GridList cellHeight={100} className={classes.gridList} cols={7}>
-          {assets.videos.map((video, i) => (
-            <GridListTile key={i} cols={1} style={{ height: 180 }}>
-              <img src={video.thumbnail} alt={`Video ${i}`} />
-            </GridListTile>
-          ))}
-        </GridList>
+        <Box height='90%' width='100%'>
+          <Box width='82%' mx='auto' pt={1}>
+            <div
+              style={{
+                display: 'grid',
+                gridAutoRows: '160px',
+                gridTemplateColumns: 'repeat(7,1fr)',
+                gap: '0.3rem'
+              }}
+            >
+              {assets.videos.map((asset: Asset, i) => (
+                <ImageGrid onOpenPreviewer={onOpenPreviewer} asset={asset} />
+              ))}
+            </div>
+          </Box>
+        </Box>
 
         <DropZone
+          type={FILES_TYPES.VIDEO}
           isEmpty={isEmpty}
           text='Drop your video here | mp4'
           isDragActive={isDragActive}
@@ -604,7 +766,7 @@ const Video: React.FC<VideoProps> = ({ loading, setLoading }) => {
                 className={classes.uploadButton}
                 component='span'
               >
-                Upload video
+                Upload file
               </Button>
             </label>
             <video
@@ -613,7 +775,6 @@ const Video: React.FC<VideoProps> = ({ loading, setLoading }) => {
                 width: '200px',
                 position: 'fixed',
                 left: '-1000%',
-                backgroundColor: 'red',
                 display: 'hidden',
                 visibility: 'hidden'
               }}
@@ -649,7 +810,7 @@ export interface Video360Props {
 
 const Video360: React.FC<Video360Props> = ({ loading, setLoading }) => {
   const classes = useStyles()
-  const { assets, successCreate } = useContext(AssetsContext)
+  const { assets, successCreate ,openPreviewer} = useContext(AssetsContext)
   const [files, setFiles] = useState<FileList>()
   const { sendAlert } = useContext(NotificationsContext)
   const [urlVideo, setUrlVideo] = useState<string>('')
@@ -767,18 +928,33 @@ const Video360: React.FC<Video360Props> = ({ loading, setLoading }) => {
   }
 
   const isEmpty = assets.videos360.length == 0
+  const onOpenPreviewer = (currentAsset: Asset) => {
+    openPreviewer(currentAsset, assets.videos)
+  }
 
   return (
     <>
       <Box {...getRootProps()} width='100%' height='100%' position='relative'>
         <GridList cellHeight={100} className={classes.gridList} cols={7}>
-          {assets.videos360.map((asset: Asset, i) => (
-            <GridListTile key={i} cols={1} style={{ height: 180 }}>
-              <img src={asset.thumbnail} />
-            </GridListTile>
-          ))}
+          <Box height='90%' width='100%'>
+            <Box width='82%' mx='auto' pt={1}>
+              <div
+                style={{
+                  display: 'grid',
+                  gridAutoRows: '160px',
+                  gridTemplateColumns: 'repeat(7,1fr)',
+                  gap: '0.3rem'
+                }}
+              >
+                {assets.videos360.map((asset: Asset, i) => (
+                  <ImageGrid onOpenPreviewer={onOpenPreviewer} asset={asset} />
+                ))}
+              </div>
+            </Box>
+          </Box>
         </GridList>
         <DropZone
+          type={FILES_TYPES.VIDEO_360}
           isEmpty={isEmpty}
           text='Drop your video here | mp4'
           isDragActive={isDragActive}
@@ -806,7 +982,7 @@ const Video360: React.FC<Video360Props> = ({ loading, setLoading }) => {
                 className={classes.uploadButton}
                 component='span'
               >
-                Upload video 360
+                Upload file
               </Button>
             </label>
             <video
@@ -815,7 +991,6 @@ const Video360: React.FC<Video360Props> = ({ loading, setLoading }) => {
                 width: '200px',
                 position: 'fixed',
                 left: '-1000%',
-                backgroundColor: 'red',
                 display: 'hidden',
                 visibility: 'hidden'
               }}
@@ -831,7 +1006,6 @@ const Video360: React.FC<Video360Props> = ({ loading, setLoading }) => {
               style={{
                 position: 'fixed',
                 left: '-1000%',
-                backgroundColor: 'red',
                 display: 'hidden',
                 visibility: 'hidden'
               }}
@@ -861,6 +1035,11 @@ const useStyles = makeStyles((theme: Theme) => ({
     borderTopColor: COLORS.GRAY_MEDIUM,
     borderBottomColor: COLORS.GRAY_MEDIUM
   },
+  gridImages: {
+    display: 'grid',
+    gridAutoRows: '1fr',
+    gridTemplateColumns: '200px 200px'
+  },
   paper: {
     height: '100%'
   },
@@ -868,11 +1047,25 @@ const useStyles = makeStyles((theme: Theme) => ({
     padding: '1rem'
   },
   uploadButton: {
-    marginLeft: '1rem'
+    marginLeft: '1rem',
+    minWidth: '10rem',
+    backgroundColor: '#45A0C5',
+    fontSize: '0.75rem',
+    textTransform: 'capitalize'
   },
   gridList: {
     width: '100%',
     height: '90%'
+  },
+  buttonCancel: {
+    borderRadius: '2px',
+    borderColor: 'rgba(69, 160, 197, 1)',
+    color: '#45A0C5'
+  },
+  buttonOk: {
+    borderRadius: '2px',
+    backgroundColor: '#45A0C5',
+    color: 'white'
   }
 }))
 
@@ -889,10 +1082,14 @@ const AntTab = withStyles((theme: Theme) =>
   createStyles({
     root: {
       textTransform: 'none',
-      minWidth: 72,
-      fontWeight: theme.typography.fontWeightRegular,
+      width: 200,
+
+      minHeight: '4rem',
+      fontSize: '1.125rem',
+      color: '#A6ABAF',
       marginRight: theme.spacing(4),
       fontFamily: [
+        'font3',
         '-apple-system',
         'BlinkMacSystemFont',
         '"Segoe UI"',
@@ -905,15 +1102,14 @@ const AntTab = withStyles((theme: Theme) =>
         '"Segoe UI Symbol"'
       ].join(','),
       '&:hover': {
-        color: '#40a9ff',
+        color: '#242526',
         opacity: 1
       },
       '&$selected': {
-        color: '#1890ff',
-        fontWeight: theme.typography.fontWeightMedium
+        color: '#242526'
       },
       '&:focus': {
-        color: '#40a9ff'
+        color: '#242526'
       }
     },
     selected: {}

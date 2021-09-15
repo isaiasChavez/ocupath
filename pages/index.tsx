@@ -34,13 +34,14 @@ export default function Home () {
             position='absolute'
             top='55%'
             left='10%'
+            mr={2}
             style={{ color: 'white' }}
           >
             <Box mb={1} fontSize='2rem'>
               Make all your meetings possible no matter <br /> where your team
               is located.
             </Box>
-            <Box fontWeight="fontWeightLight" fontSize='1rem'>
+            <Box style={{fontFamily:'font2',lineHeight:'24px'}}  fontSize='1rem'>
               Improve the experience of your online meetings. Interact agilely
               in real time, share <br /> and display content to meeting
               participants.
@@ -70,11 +71,11 @@ export default function Home () {
             <Box fontSize='2rem' mb={2} color='white' className='headline'>
               About Us
             </Box>
-            <Box mb={2} fontSize='1.4rem' color='white'>
-              Lorem ipsum dolor sit amet consectetur <br /> adipisicing elit.
-              Dignissimos ea accusantium <br /> doloribus omnis
+            <Box mb={2} fontSize='1.125rem' color='white'>
+              Lorem ipsum dolor sit amet consectetur   adipisicing elit.
+              Dignissimos ea accusantium  doloribus omnis
             </Box>
-            <Box fontSize='1rem' color='white'>
+            <Box fontSize='1rem' color='white' lineHeight='1.8rem' fontWeight="fontWeightLight">
               Lorem ipsum dolor sit amet consectetur adipisicing elit.
               Dignissimos ea accusantium doloribus omnis Lorem ipsum dolo
               consectetur adipisicing elit. Dignissimos ea accusantium doloribus
@@ -95,7 +96,7 @@ export default function Home () {
           <Box flex='1' height='100%'></Box>
           <Box flex='1' display='flex' justifyContent='center'>
             <Box
-              width='50%'
+              
               height='100%'
               className={classes.form}
               color='white'
@@ -117,10 +118,10 @@ export default function Home () {
             </Box>
           </Box>
 
-          <BottomArrow next='download' />
+          <BottomArrow next='donwload' />
         </Box>
       </Element>
-      <Element name='download' className='element'>
+      <Element name='donwload' className='element'>
         <Box
           height='calc(100vh - 5.625rem)'
           className={classes.download}
@@ -196,7 +197,9 @@ export default function Home () {
                 </Box>
               </Box>
             </Box>
-            <Box mb={-7} position="absolute" bottom={0} fontSize="1rem" color="white" > If you already have an account or an access code, you can download Multivrsity by choosing one of the options above, otherwise make sure to sign up first</Box>
+            <Box mb={-7} position="absolute" bottom={0} fontSize="1rem" textAlign="center"  color="white" > If you already have an account or an access code, you can download Multivrsity by choosing one of the options above, otherwise make sure to sign up first</Box>
+            
+
           </Box>
           
         </Box>
@@ -384,12 +387,14 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: 'rgba(36, 37, 38, 0.6)',
     maxWidth: '29rem',
     minHeight: '20rem',
+    minWidth: '29rem',
     padding: '1.5rem',
     borderRadius: '0.6rem'
   },
   landing: {
     backgroundImage: `url(${Images.landing2})`,
-    backgroundSize: 'cover'
+    backgroundSize: 'cover',
+    fontFamily:'font3'
   },
   arrow: {
     position: 'absolute',
@@ -400,6 +405,7 @@ const useStyles = makeStyles(theme => ({
     cursor: 'pointer'
   },
   buttonSingUp: {
+
     border: '0.15rem solid white',
     padding: ' 0.2rem 1.7rem',
     fontSize: '1.2rem',

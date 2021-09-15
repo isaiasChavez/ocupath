@@ -5,6 +5,8 @@ import AskModal from '../general/AskModal';
 import UserDetailModal from './UserDetailModal';
 import { USERS,USERS_TYPES } from '../../types'
 import moment from 'moment'
+import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
+import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 import UserContext from '../../context/user/user.context';
 import { User } from '../../context/user/user.reducer';
 export interface TableCompaniesProps {
@@ -196,7 +198,19 @@ const TableCompanies: React.FC<TableCompaniesProps> = () => {
                 />
               </StyledTableCell>
               <StyledTableCell align='right'>
-                <Button
+                <EditOutlinedIcon
+                style={{ 
+                  color:'#A6ABAF',
+                  cursor:'pointer'
+                }}
+                onClick={ () => {
+                    if (user.isActive) {
+                      onEdit(user)
+                    }
+                  } }
+                
+                />
+               {/*  <Button
                   disabled={!user.isActive||loading}
                   size='small'
                   onClick={ () => {
@@ -208,11 +222,17 @@ const TableCompanies: React.FC<TableCompaniesProps> = () => {
                   variant="outlined"
                 >
                   Edit
-                </Button>
+                </Button> */}
               </StyledTableCell>
               <StyledTableCell align='right'>
-                { ' ' }
-                <Button
+                <DeleteOutlineOutlinedIcon
+                style={{ 
+                  color:'#A6ABAF',
+                  cursor:'pointer'
+                }}
+                onClick={ () => onDelete(user) }
+                />
+               {/*  <Button
                   disabled={loading}
                   variant="outlined"
                   size='small'
@@ -220,7 +240,7 @@ const TableCompanies: React.FC<TableCompaniesProps> = () => {
                   color='secondary'
                 >
                   Delete
-                </Button>
+                </Button> */}
               </StyledTableCell>
             </StyledTableRow>
           )) }

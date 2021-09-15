@@ -17,6 +17,7 @@ import HeaderCustom from "../../src/components/general/HeaderCustom";
 import { Box, LinearProgress } from "@material-ui/core";
 import { COLORS } from "../../src/types";
 import { CustomInput } from ".";
+import HeaderSimple from "../../src/components/general/HeaderSimple";
 export interface ForgotProps {}
 
 const Forgot: React.FC<ForgotProps> = () => {
@@ -70,7 +71,8 @@ const Forgot: React.FC<ForgotProps> = () => {
    
      inner: {
       width: '34rem',
-      marginTop: '-3rem'
+      marginTop: '-3rem',
+      color:'white'
     },
     button: {
       color: "white",
@@ -92,6 +94,7 @@ const Forgot: React.FC<ForgotProps> = () => {
   return (
     <>
     
+     <HeaderSimple isLogin={false}/>
     <div style={ {
       height: '100vh',
       display: 'flex',
@@ -103,17 +106,16 @@ const Forgot: React.FC<ForgotProps> = () => {
       <Head>
         <title>Ocupath - Login </title>
       </Head>
-            <HeaderCustom/>
 
       <div className={classes.inner}>
         <Typography component="h3" variant="h3" style={{textAlign: 'center'}} >
-          <Box fontWeight="fontWeightBold" m={4} >
+          <Box color="white" fontWeight="fontWeightBold" m={4} >
             Recover Password
       </Box>
           </Typography>
           <form onSubmit={onSubmit} className={classes.form}>
           <Typography component="h3"   style={ { fontSize:'16px', textAlign: 'center' } } >
-            <Box fontWeight="fontWeightLight" m={ 1 } >
+            <Box color="white" fontWeight="fontWeightLight" m={ 1 } >
               
             Enter the email in which you want to receive your password 
           </Box>

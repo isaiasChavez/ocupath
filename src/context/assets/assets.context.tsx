@@ -28,7 +28,8 @@ export type Asset =  {
     id: number,
     name: string
   },
-  url:string
+  url:string,
+  uuid:string
 }
 
 
@@ -36,7 +37,19 @@ interface AssetsContextInterface {
   deleteAsset: Function;
   successCreate: Function;
   getAssetsUser: Function;
-  assets:AssetsResponse
+  openPreviewer:Function;
+  closePreviewer:Function;
+  selectAsset:Function;
+  prevPreview:Function,
+  nextPreview:Function,
+
+  assets:AssetsResponse,
+  currentAsset:Asset,
+  previewIsImage:boolean,
+  isPreviewerOpened:boolean,
+  currentAssets:Asset[],
+  
+
 }
 
 
