@@ -1,4 +1,6 @@
 import Head from 'next/head'
+import { message} from 'antd';
+
 import {
   Link,
   Box,
@@ -11,6 +13,7 @@ import {
   IconButton,
   OutlinedInput
 } from '@material-ui/core'
+
 import { makeStyles } from '@material-ui/core/styles'
 import { useContext, useEffect, useState } from 'react'
 import { verifyEmail } from '../../src/config/utils'
@@ -21,6 +24,7 @@ import { COLORS, Images } from '../../src/types/index'
 import { withStyles } from '@material-ui/styles'
 import { Visibility, VisibilityOff } from '@material-ui/icons'
 import HeaderSimple from '../../src/components/general/HeaderSimple'
+import withAuth from '../../src/auth/WithAuth'
 
 export const CustomInput = withStyles({
   root: {
@@ -114,6 +118,10 @@ const Login: React.FC<LoginProps> = () => {
     }
     if (res.status === 2) {
       newErrors.password = 'Invalid password'
+    }
+    if (res.status === 3) {
+      message.info('Your subscription has expired');
+
     }
     setErrors(newErrors)
   }
@@ -367,4 +375,4 @@ const useStyles = makeStyles(theme => ({
     textalign: 'center'
   }
 }))
-export default Login
+export default  withAuth(Login) 

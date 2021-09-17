@@ -1,7 +1,7 @@
 import {
   Link as LinkScroll,
   Element,
-  animateScroll as scroll,
+  animateScroll as scroll
 } from 'react-scroll'
 import { notification } from 'antd'
 
@@ -10,7 +10,8 @@ import HeaderLogin from '../src/components/login/HeaderLogin'
 import { Images } from '../src/types'
 import { CustomInput } from './login'
 import { useContext, useState } from 'react'
-import Head from "next/head";
+import Head from 'next/head'
+import withAuth from '../src/auth/WithAuth'
 
 import UserContext, {
   SendEmailInfoProps
@@ -22,263 +23,284 @@ export interface NavigationProps {
   isPanel: boolean | null
 }
 
-export default function Home () {
+const Home= () => {
   const classes = useStyles()
   /*   ScrollReveal().reveal('.headline');
    */
   return (
     <>
-    <Head>
-                <title>Multivrsity</title>
-                <meta
-                  name="viewport"
-                  content="minimum-scale=1, initial-scale=1, width=device-width"
-                />
-              </Head>
-    <Box height='100vh' className={classes.root}>
-      <HeaderLogin />
-      <Element name='landing' className='element'>
-        <Box height='100vh' position='relative' className={classes.landing}>
-          <Box
-            position='absolute'
-            top='55%'
-            left='10%'
-            mr={2}
-            style={{ color: 'white' }}
-            >
-            <Box mb={1} fontSize='1.5rem' fontFamily="font3">
-              Make all your meetings possible no matter <br /> where your team
-              is located.
-            </Box>
+      <Head>
+        <title>Multivrsity</title>
+        <meta
+          name='viewport'
+          content='minimum-scale=1, initial-scale=1, width=device-width'
+        />
+      </Head>
+      <Box height='100vh' className={classes.root}>
+        <HeaderLogin />
+        <Element name='landing' className='element'>
+          <Box height='100vh' position='relative' className={classes.landing}>
             <Box
-              style={{ fontFamily: 'font2', lineHeight: '24px' }}
-              fontSize='0.875rem'
+              position='absolute'
+              top='55%'
+              left='10%'
+              mr={2}
+              style={{ color: 'white' }}
+            >
+              <Box mb={1} fontSize='1.5rem' fontFamily='font3'>
+                Make all your meetings possible no matter <br /> where your team
+                is located.
+              </Box>
+              <Box
+                style={{ fontFamily: 'font2', lineHeight: '24px' }}
+                fontSize='0.875rem'
               >
-              Improve the experience of your online meetings. Interact agilely
-              in real time, share <br /> and display content to meeting
-              participants.
-            </Box>
-            <Box
-              display='flex'
-              py={1}
-              alignItems='center'
-              justifyContent='flex-end'
-            >
-              <LinkScroll
-                activeClass='active'
-                to='plans'
-                spy={true}
-                smooth={true}
-                duration={500}
+                Improve the experience of your online meetings. Interact agilely
+                in real time, share <br /> and display content to meeting
+                participants.
+              </Box>
+              <Box
+                display='flex'
+                py={1}
+                alignItems='center'
+                justifyContent='flex-end'
+              >
+                <LinkScroll
+                  activeClass='active'
+                  to='plans'
+                  spy={true}
+                  smooth={true}
+                  duration={500}
                 >
-                <button className={classes.buttonSingUp}>Sing up</button>
-              </LinkScroll>
+                  <button className={classes.buttonSingUp}>Sing up</button>
+                </LinkScroll>
+              </Box>
             </Box>
+            <BottomArrow next='about' />
           </Box>
-          <BottomArrow next='about' />
-        </Box>
-      </Element>
-      <Element name='about' className='element'>
-        <Box
-          height='100vh'
-          position='relative'
-          display='flex'
-          alignItems='center'
-          pl={20}
-          className={classes.about}
+        </Element>
+        <Element name='about' className='element'>
+          <Box
+            height='100vh'
+            position='relative'
+            display='flex'
+            alignItems='center'
+            pl={20}
+            className={classes.about}
           >
-          <Box  className={classes.blackBox}>
-            <Box fontFamily="font3" fontSize='2rem' mb={2} color='white' className='headline'>
-              About Us
+            <Box className={classes.blackBox}>
+              <Box
+                fontFamily='font3'
+                fontSize='2rem'
+                mb={2}
+                color='white'
+                className='headline'
+              >
+                About Us
+              </Box>
+              <Box mb={2} fontFamily='font3' fontSize='1.125rem' color='white'>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                Dignissimos ea accusantium doloribus omnis
+              </Box>
+              <Box
+                fontFamily='font2'
+                fontSize='0.875rem'
+                color='white'
+                lineHeight='1.8rem'
+              >
+                Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                Dignissimos ea accusantium doloribus omnis Lorem ipsum dolo
+                consectetur adipisicing elit. Dignissimos ea accusantium
+                doloribus omnis
+              </Box>
             </Box>
-            <Box mb={2} fontFamily="font3" fontSize='1.125rem' color='white'>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              Dignissimos ea accusantium doloribus omnis
-            </Box>
-            <Box
-            fontFamily="font2"
-            fontSize='0.875rem'
-              color='white'
-              
-              lineHeight='1.8rem'
-            >
-              Lorem ipsum dolor sit amet consectetur adipisicing elit.
-              Dignissimos ea accusantium doloribus omnis Lorem ipsum dolo
-              consectetur adipisicing elit. Dignissimos ea accusantium doloribus
-              omnis
-            </Box>
+            <BottomArrow next='plans' />
           </Box>
-          <BottomArrow next='plans' />
-        </Box>
-      </Element>
-      <Element name='plans' className='element'>
-        <Box
-          height='100vh'
-          position='relative'
-          display='flex'
-          alignItems='center'
-          className={classes.plans}
-        >
-          <Box flex='1' height='100%'></Box>
-          <Box flex='1' display='flex' justifyContent='center'>
-            <Box height='100%' className={classes.form} color='white'>
-              <Box fontFamily="font3" fontSize='1.5rem' mb={2}>
-                Know Our Plans
+        </Element>
+        <Element name='plans' className='element'>
+          <Box
+            height='100vh'
+            position='relative'
+            display='flex'
+            alignItems='center'
+            className={classes.plans}
+          >
+            <Box flex='1' height='100%'></Box>
+            <Box flex='1' display='flex' justifyContent='center'>
+              <Box height='100%' className={classes.form} color='white'>
+                <Box fontFamily='font3' fontSize='1.5rem' mb={2}>
+                  Know Our Plans
+                </Box>
+                <Box fontFamily='font3' fontSize='1.125rem' mb={2}>
+                  Let us contact you to learn about your business needs and
+                  propose a customized plan.{' '}
+                </Box>
+                <Box fontFamily='font2' fontSize='0.875rem' mb={3}>
+                  Once you know our plans you can register with us.{' '}
+                </Box>
+                <Box fontFamily='font3' fontSize='0.8rem' mb={2}>
+                  Enter your information to contact to you{' '}
+                </Box>
+                <FormInformation />
               </Box>
-              <Box fontFamily="font3" fontSize='1.125rem' mb={2}>
-                Let us contact you to learn about your business needs and
-                propose a customized plan.{' '}
-              </Box>
-              <Box fontFamily="font2" fontSize='0.875rem' mb={3} >
-                Once you know our plans you can register with us.{' '}
-              </Box>
-              <Box fontFamily="font3" fontSize='0.8rem' mb={2}>
-                Enter your information to contact to you{' '}
-              </Box>
-              <FormInformation />
             </Box>
-          </Box>
 
-          <BottomArrow next='donwload' />
-        </Box>
-      </Element>
-      <Element name='donwload' className='element'>
+            <BottomArrow next='donwload' />
+          </Box>
+        </Element>
+        <Element name='donwload' className='element'>
+          <Box
+            height='calc(100vh - 5.625rem)'
+            className={classes.download}
+            display='flex'
+            alignItems='center'
+            justifyContent='center'
+          >
+            <Box
+              flex='1'
+              display='flex'
+              justifyContent='space-around'
+              alignItems='flex-start'
+              position='relative'
+            >
+              <Box color='white'>
+                <Box fontFamily='font3' fontSize='2rem'>
+                  Download
+                </Box>
+                <Box fontSize='1.125rem' fontFamily='font2'>
+                  Download our app from one of these stores <br /> with the
+                  following available devices
+                </Box>
+              </Box>
+              <Box display='flex' justifyContent='center'>
+                <Box
+                  className={classes.banner}
+                  mr={3}
+                  color='white'
+                  p={4}
+                  pt={6}
+                  height='auto'
+                >
+                  <Box mb={4} display='flex' justifyContent='center'>
+                    <img src={Images.steam} alt='' />
+                  </Box>
+                  <Box component='h2' className={classes.text2} mb={2}>
+                    Standalone headset
+                  </Box>
+                  <Box component='h3' className={classes.text1}>
+                    Oculus Quest 1
+                  </Box>
+                  <Box component='h3' className={classes.text1}>
+                    Oculus Quest 2
+                  </Box>
+                  <Box component='h3' className={classes.text1}>
+                    HTC Vive
+                  </Box>
+                  <Box component='div' my={3}></Box>
+                  <Box display='flex' justifyContent='center' mb={-1} pt={2}>
+                    <a className={classes.linkGo}>Go to Oculus Store</a>
+                  </Box>
+                </Box>
+
+                <Box className={classes.banner} p={4} ml={3} pt={6}>
+                  <Box mb={5} display='flex' justifyContent='center'>
+                    <img src={Images.sidequest} alt='' />
+                  </Box>
+                  <Box component='h2' className={classes.text2} mb={2}>
+                    Standalone headset
+                  </Box>
+                  <Box component='h3' className={classes.text1}>
+                    Oculus Quest 1
+                  </Box>
+                  <Box component='h3' className={classes.text1}>
+                    Oculus Quest 2
+                  </Box>
+                  <Box component='h3' className={classes.text1}>
+                    HTC Vive
+                  </Box>
+                  <Box component='div' my={3}></Box>
+                  <Box display='flex' justifyContent='center' mb={-1} pt={2}>
+                    <a className={classes.linkGo}>Go to Side Quest</a>
+                  </Box>
+                </Box>
+              </Box>
+              <Box
+                mb={-7}
+                position='absolute'
+                bottom={0}
+                fontFamily='font2'
+                fontSize='0.75rem'
+                textAlign='center'
+                color='white'
+              >
+                {' '}
+                If you already have an account or an access code, you can
+                download Multivrsity by choosing one of the options above,
+                otherwise make sure to sign up first
+              </Box>
+            </Box>
+          </Box>
+        </Element>
         <Box
-          height='calc(100vh - 5.625rem)'
-          className={classes.download}
+          height='5.625rem'
           display='flex'
-          alignItems='center'
-          justifyContent='center'
+          className={classes.footer}
+          pr={10}
         >
+          <Box
+            flex='1.5'
+            display='flex'
+            color='white'
+            justifyContent='flex-end'
+            alignItems='center'
+          >
+            <Box mx={4}>
+              <a
+                href=''
+                style={{
+                  color: 'white',
+                  fontSize: '1rem',
+                  fontFamily: 'font2'
+                }}
+              >
+                Privacy Policy
+              </a>
+            </Box>
+            <Box mx={4}>
+              <a
+                href=''
+                style={{
+                  color: 'white',
+                  fontSize: '1rem',
+                  fontFamily: 'font2'
+                }}
+              >
+                Terms of service
+              </a>
+            </Box>
+          </Box>
           <Box
             flex='1'
             display='flex'
-            justifyContent='space-around'
-            alignItems='flex-start'
-            position='relative'
-            >
-            <Box color='white'>
-              <Box fontFamily="font3" fontSize='2rem'>Download</Box>
-              <Box fontSize='1.125rem' fontFamily="font2">
-                Download our app from one of these stores <br /> with the
-                following available devices
-              </Box>
-            </Box>
-            <Box display='flex' justifyContent='center'>
-              <Box
-                className={classes.banner}
-                mr={3}
-                color='white'
-                p={4}
-                pt={6}
-                height='auto'
-                >
-                <Box mb={4} display='flex' justifyContent='center'>
-                  <img src={Images.steam} alt='' />
-                </Box>
-                <Box component='h2' className={classes.text2} mb={2}>
-                  Standalone headset
-                </Box>
-                <Box component='h3' className={classes.text1}>
-                  Oculus Quest 1
-                </Box>
-                <Box component='h3' className={classes.text1}>
-                  Oculus Quest 2
-                </Box>
-                <Box component='h3' className={classes.text1}>
-                  HTC Vive
-                </Box>
-                <Box component='div' my={3}></Box>
-                <Box display='flex' justifyContent='center' mb={-1} pt={2}>
-                  <a className={classes.linkGo}>Go to Oculus Store</a>
-                </Box>
-              </Box>
-
-              <Box className={classes.banner} p={4} ml={3} pt={6}>
-                <Box mb={5} display='flex' justifyContent='center'>
-                  <img src={Images.sidequest} alt='' />
-                </Box>
-                <Box component='h2' className={classes.text2} mb={2}>
-                  Standalone headset
-                </Box>
-                <Box component='h3' className={classes.text1}>
-                  Oculus Quest 1
-                </Box>
-                <Box component='h3' className={classes.text1}>
-                  Oculus Quest 2
-                </Box>
-                <Box component='h3' className={classes.text1}>
-                  HTC Vive
-                </Box>
-                <Box component='div' my={3}></Box>
-                <Box display='flex' justifyContent='center' mb={-1} pt={2}>
-                  <a className={classes.linkGo}>Go to Side Quest</a>
-                </Box>
-              </Box>
-            </Box>
-            <Box
-              mb={-7}
-              position='absolute'
-              bottom={0}
-              fontFamily="font2"
-              fontSize='0.75rem'
-              textAlign='center'
-              color='white'
-              >
-              {' '}
-              If you already have an account or an access code, you can download
-              Multivrsity by choosing one of the options above, otherwise make
-              sure to sign up first
-            </Box>
-          </Box>
-        </Box>
-      </Element>
-      <Box height='5.625rem' display='flex' className={classes.footer} pr={10}>
-        <Box
-          flex='1.5'
-          display='flex'
-          color='white'
-          justifyContent='flex-end'
-          alignItems='center'
+            justifyContent='flex-end'
+            alignItems='center'
           >
-          <Box mx={4}>
-            <a
-              href=''
-              style={{ color: 'white', fontSize: '1rem', fontFamily: 'font2' }}
-              >
-              Privacy Policy
-            </a>
-          </Box>
-          <Box mx={4}>
-            <a
-              href=''
-              style={{ color: 'white', fontSize: '1rem', fontFamily: 'font2' }}
-            >
-              Terms of service
-            </a>
-          </Box>
-        </Box>
-        <Box
-          flex='1'
-          display='flex'
-          justifyContent='flex-end'
-          alignItems='center'
-        >
-          <img
-            src={Images.powered}
-            alt='Powered by inmersys'
-            title='Powered by inmersys'
+            <img
+              src={Images.powered}
+              alt='Powered by inmersys'
+              title='Powered by inmersys'
             />
+          </Box>
         </Box>
       </Box>
-    </Box>
-</>
+    </>
   )
 }
+export default withAuth(Home)
 
 function FormInformation () {
   const classes = useStyles()
-  
+
   const { sendInformationForm } = useContext(UserContext)
   const initialValues = {
     company: null,
@@ -287,10 +309,10 @@ function FormInformation () {
     phone: null,
     surname: null
   }
-  const [formInformation, setFormInformation] = useState<SendEmailInfoProps>(
-    {...initialValues}
-  )
-  const [errors, setErrors] = useState<SendEmailInfoProps>({...initialValues})
+  const [formInformation, setFormInformation] = useState<SendEmailInfoProps>({
+    ...initialValues
+  })
+  const [errors, setErrors] = useState<SendEmailInfoProps>({ ...initialValues })
   useContext
   const onChange = e => {
     e.preventDefault()
@@ -344,7 +366,7 @@ function FormInformation () {
     e.preventDefault()
     if (validateForm()) {
       const status = await sendInformationForm(formInformation)
-      console.log({status})
+      console.log({ status })
       if (status === 0) {
         notification.open({
           message: '¡Mail Sent Successfully!',
@@ -457,7 +479,9 @@ function FormInformation () {
           color='primary'
           className={classes.submit}
         >
-          <Box fontFamily="font3" fontSize='1rem'>Send</Box>
+          <Box fontFamily='font3' fontSize='1rem'>
+            Send
+          </Box>
         </button>
       </Box>
     </form>
@@ -505,7 +529,7 @@ const useStyles = makeStyles(theme => ({
     color: 'white',
     textAlign: 'center',
     fontSize: '0.875rem',
-    fontFamily:'font3'
+    fontFamily: 'font3'
   },
   linkGo: {
     backgroundColor: 'transparent',

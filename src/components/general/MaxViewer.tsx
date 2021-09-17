@@ -1,20 +1,22 @@
-import { Box } from "@material-ui/core";
-import { useContext, useState } from "react";
-import AssetsContext from "../../context/assets/assets.context";
+import { Box } from '@material-ui/core'
+import { useContext, useState } from 'react'
+import AssetsContext from '../../context/assets/assets.context'
 import FullscreenExitIcon from '@material-ui/icons/FullscreenExit'
 
 interface MaxViewerProps {
- closeMaxViewer:Function
+  closeMaxViewer: Function
 }
- 
-const MaxViewer: React.FC<MaxViewerProps> = ({closeMaxViewer}) => {
- const {currentAsset} = useContext(AssetsContext)
- const [isHoveringImage, setisHoveringImage] = useState(false)
- return (  <>
- <Box
+
+const MaxViewer: React.FC<MaxViewerProps> = ({ closeMaxViewer }) => {
+  const { currentAsset } = useContext(AssetsContext)
+  const [isHoveringImage, setisHoveringImage] = useState(false)
+  return (
+    <>
+      <Box
         position='fixed'
         zIndex={300}
         display='flex'
+        width="100%"
         justifyContent='center'
         alignItems='center'
         top={0}
@@ -24,28 +26,45 @@ const MaxViewer: React.FC<MaxViewerProps> = ({closeMaxViewer}) => {
         style={{
           backgroundColor: 'rgba(0,0,0,0.6)'
         }}
-        className="animate-fadein-03s"
-        onClick={()=>{if (!isHoveringImage)closeMaxViewer()}}
+        className='animate-fadein-03s'
+        onClick={() => {
+          if (!isHoveringImage) closeMaxViewer()
+        }}
       >
-        <Box height="90%" width="90%" display="flex" justifyContent="center" >
-         <Box position="relative">
-          <FullscreenExitIcon
-           onClick={()=>{if (!isHoveringImage)closeMaxViewer()}}
-           style={{ cursor:'pointer',position:'absolute', top:0,right:0, color:'white',fontSize:'2rem',marginTop:'1rem',marginRight:'1rem'}}/>
+        <Box height='90%' width='90%' maxWidth="90%" display='flex' justifyContent='center'>
+          <Box position='relative' >
+            <FullscreenExitIcon
+              onClick={() => {
+                if (!isHoveringImage) closeMaxViewer()
+              }}
+              style={{
+                cursor: 'pointer',
+                position: 'absolute',
+                top: 0,
+                right: 0,
+                color: 'white',
+                fontSize: '2rem',
+                marginTop: '1rem',
+                marginRight: '1rem'
+              }}
+            />
 
-          <img src={currentAsset.url} 
-          onMouseEnter={()=>setisHoveringImage(true)}
-          onMouseLeave={()=>setisHoveringImage(false)}
-           style={{
-            height: '100%',
-            objectFit: 'contain'
-           }}
-           alt="Preview de una imagen" />
-           </Box>
+            <img
+              src={currentAsset.url}
+              onMouseEnter={() => setisHoveringImage(true)}
+              onMouseLeave={() => setisHoveringImage(false)}
+              style={{
+                height: '100%',
+                maxWidth:'100%',
+                objectFit: 'contain'
+              }}
+              alt='Preview de una imagen'
+            />
+          </Box>
         </Box>
       </Box>
-
- </>);
+    </>
+  )
 }
- 
-export default MaxViewer;
+
+export default MaxViewer

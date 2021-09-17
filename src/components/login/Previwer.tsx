@@ -114,7 +114,7 @@ const Previwer: React.FC<PreviewProps> = () => {
                 display='flex'
                 justifyContent='center'
               >
-                <Box position='relative' height='100%'>
+                <Box position='relative' height='100%' maxWidth='80%'>
                   {previewIsImage ? (
                     <img
                       src={
@@ -125,6 +125,7 @@ const Previwer: React.FC<PreviewProps> = () => {
                       style={{
                         objectFit: 'contain',
                         height: '100%',
+                        maxWidth: '100%',
                         opacity:loading?0.5:1
                       }}
                       alt=''

@@ -194,12 +194,12 @@ const UserState = ({ children }) => {
   };
   const getUserChildrens = async () => {
     try {
+      console.log("getUserChildrens")
       setLoading(true)
       const { data } = await axios.post(URLS.childrens);
       console.log({data})
       setLoading(false)
       if (data.status ===0) {
-       
         dispatch({
           type: US_A.CHILDRENS,
           payload: data,
@@ -255,8 +255,8 @@ const UserState = ({ children }) => {
       
       setLoading(true)
       const { data } = await axios.get(URLS.userDetail);
-
       setLoading(false)
+      console.log("asdf=>",US_A.GET_USER_DETAIL,{data})
       if (data.status ===0) {
         dispatch({ type: US_A.GET_USER_DETAIL, payload: data.profile });
       }
@@ -298,10 +298,6 @@ const UserState = ({ children }) => {
     }
   };
   const getAdminChildDetail = async (uuid) => {
-    sendAlert({
-      type:'success',
-      msg:'Prueba para ver color de notificación success'
-    })
     try {
       const dto = new GetAdminDetailDTO(uuid)
       console.log({dto})
@@ -655,9 +651,15 @@ const initialState = () => {
       lastname: "",
       thumbnail:"",
       email: "",
-      type:0
+      type:0,
+      lastSuscription:{
+        invitations:0
+      }
     },
     type: 0,
+    isAdmin:false,
+    isGuest:false,
+    isSuperAdmin:false
   };
   return state;
 };

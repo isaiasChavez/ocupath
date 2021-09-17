@@ -370,6 +370,9 @@ interface UserContextInterface {
   confirmPass: Function;
   passRecover: Function;
   inviteUser: Function;
+  isGuest:boolean;
+  isAdmin:boolean;
+  isSuperAdmin:boolean;
   addUserAdm: Function;
   deleteUserAdm: Function;
   updateUserAdm: Function;

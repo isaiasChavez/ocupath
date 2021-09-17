@@ -182,7 +182,6 @@ const TableCompanies: React.FC<TableCompaniesProps> = () => {
                   { getDataStatus(user.status).name }
                 </Box>
 
-                {/* color={ getDataStatus(user.status).color } */ }
               </StyledTableCell>
               <StyledTableCell align='center'>
                 { moment(user.lastSuscription.createdAt).format('L') }
@@ -210,19 +209,7 @@ const TableCompanies: React.FC<TableCompaniesProps> = () => {
                   } }
                 
                 />
-               {/*  <Button
-                  disabled={!user.isActive||loading}
-                  size='small'
-                  onClick={ () => {
-                    if (user.isActive) {
-                      onEdit(user)
-                    }
-                  } }
-                  color='primary'
-                  variant="outlined"
-                >
-                  Edit
-                </Button> */}
+              
               </StyledTableCell>
               <StyledTableCell align='right'>
                 <DeleteOutlineOutlinedIcon
@@ -232,15 +219,7 @@ const TableCompanies: React.FC<TableCompaniesProps> = () => {
                 }}
                 onClick={ () => onDelete(user) }
                 />
-               {/*  <Button
-                  disabled={loading}
-                  variant="outlined"
-                  size='small'
-                  onClick={ () => onDelete(user) }
-                  color='secondary'
-                >
-                  Delete
-                </Button> */}
+            
               </StyledTableCell>
             </StyledTableRow>
           )) }

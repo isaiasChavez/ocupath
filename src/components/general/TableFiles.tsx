@@ -212,17 +212,33 @@ const Img: React.FC<ImgProps> = ({ loading, setLoading }) => {
   const classes = useStyles()
   const { sendAlert } = useContext(NotificationsContext)
 
-  const [files, setFiles] = useState([])
+  const [files, setFiles] = useState<FileList | []>([])
 
   useEffect(() => {
-    if (files && files.length !== 0) {
+    const hasSelectedSomething = files && files.length !== 0
+    if (hasSelectedSomething) {
       setImage()
     }
   }, [files])
 
-  const uploadImage = data => {
-    setFiles(data)
+  const uploadImage = (data: FileList) => {
+    const hasSelectedSomething = data && data.length !== 0    
+    if (hasSelectedSomething) {
+      const statusImage = Config.isImageValid(data[0])
+      if (statusImage.isValid) {
+        setFiles(data)
+      } else {
+        if (statusImage.errors.weight) {
+          sendAlert({
+            type: 'warning',
+            msg: `The maximum allowed file weight is: ${Config.MAX_IMAGE_SIZE_MB} MBs, your file has: ${statusImage.dataImage.sizeImage} MBs`
+          })
+        }
+        setFiles([])
+      }
+    }
   }
+
   const onDrop = useCallback((acceptedFiles, errors) => {
     errors.map(error => {
       sendAlert({
@@ -324,8 +340,8 @@ const Img: React.FC<ImgProps> = ({ loading, setLoading }) => {
             <input
               {...getInputProps()}
               onChange={e => uploadImage(e.target.files)}
-              multiple
-              accept='image/*'
+              multiple={false}
+              accept='image/png, image/jpeg'
               id='upload'
               type='file'
             />
@@ -347,10 +363,15 @@ const Img: React.FC<ImgProps> = ({ loading, setLoading }) => {
   )
 }
 
-const ImageGrid = ({ asset,onOpenPreviewer }: { asset: Asset,onOpenPreviewer:Function }) => {
-  const { openPreviewer, assets ,deleteAsset} = useContext(AssetsContext)
+const ImageGrid = ({
+  asset,
+  onOpenPreviewer
+}: {
+  asset: Asset
+  onOpenPreviewer: Function
+}) => {
+  const { openPreviewer, assets, deleteAsset } = useContext(AssetsContext)
 
-  
   const [isPopperVisible, setIsPopperVisible] = useState<boolean>(false)
   const [isDeleteHoverd, setIsDeleteHoverd] = useState(false)
   const [isImageHovered, setIsImageHoverd] = useState(false)
@@ -360,7 +381,7 @@ const ImageGrid = ({ asset,onOpenPreviewer }: { asset: Asset,onOpenPreviewer:Fun
     asset.typeAsset.id === FILES_TYPES.VIDEO ||
     asset.typeAsset.id === FILES_TYPES.VIDEO_360
 
-  const onDeleteAsset =()=>{
+  const onDeleteAsset = () => {
     deleteAsset(asset.uuid)
   }
 
@@ -416,7 +437,11 @@ const ImageGrid = ({ asset,onOpenPreviewer }: { asset: Asset,onOpenPreviewer:Fun
                   >
                     Cancel
                   </ButtonAnt>
-                  <ButtonAnt onClick={onDeleteAsset} size='small' className={classes.buttonOk}>
+                  <ButtonAnt
+                    onClick={onDeleteAsset}
+                    size='small'
+                    className={classes.buttonOk}
+                  >
                     Delete
                   </ButtonAnt>
                 </Space>
@@ -454,19 +479,34 @@ export interface Img360Props {
 }
 
 const Img360: React.FC<Img360Props> = ({ loading, setLoading }) => {
-  const [files, setFiles] = useState([])
-  const { assets, successCreate,openPreviewer } = useContext(AssetsContext)
+  const [files, setFiles] = useState<FileList | []>([])
+  const { assets, successCreate, openPreviewer } = useContext(AssetsContext)
   const { sendAlert } = useContext(NotificationsContext)
 
   useEffect(() => {
-    if (files && files.length !== 0) {
+     const hasSelectedSomething = files && files.length !== 0
+    if (hasSelectedSomething) {
       setImage()
     }
   }, [files])
   const classes = useStyles()
 
-  const uploadImage = data => {
-    setFiles(data)
+  const uploadImage = (data: FileList) => {
+    const hasSelectedSomething = data && data.length !== 0    
+    if (hasSelectedSomething) {
+      const statusImage = Config.isImage360Valid(data[0])
+      if (statusImage.isValid) {
+        setFiles(data)
+      } else {
+        if (statusImage.errors.weight) {
+          sendAlert({
+            type: 'warning',
+            msg: `The maximum allowed file weight is: ${Config.MAX_IMAGE_SIZE_MB} MBs, your file has: ${statusImage.dataImage.sizeImage} MBs`
+          })
+        }
+        setFiles([])
+      }
+    }
   }
   const onDrop = useCallback((acceptedFiles, errors) => {
     errors.map(error => {
@@ -569,7 +609,7 @@ const Img360: React.FC<Img360Props> = ({ loading, setLoading }) => {
             <input
               {...getInputProps()}
               onChange={e => uploadImage(e.target.files)}
-              accept='image/*'
+              accept='image/png, image/jpeg'
               id='image360_uploader'
               type='file'
             />
@@ -592,7 +632,7 @@ const Img360: React.FC<Img360Props> = ({ loading, setLoading }) => {
 }
 
 const Video: React.FC<VideoProps> = ({ loading, setLoading }) => {
-  const { assets, successCreate,openPreviewer } = useContext(AssetsContext)
+  const { assets, successCreate, openPreviewer } = useContext(AssetsContext)
   const [files, setFiles] = useState<FileList>(null)
   const [urlVideo, setUrlVideo] = useState<string>('')
   const { sendAlert } = useContext(NotificationsContext)
@@ -810,7 +850,7 @@ export interface Video360Props {
 
 const Video360: React.FC<Video360Props> = ({ loading, setLoading }) => {
   const classes = useStyles()
-  const { assets, successCreate ,openPreviewer} = useContext(AssetsContext)
+  const { assets, successCreate, openPreviewer } = useContext(AssetsContext)
   const [files, setFiles] = useState<FileList>()
   const { sendAlert } = useContext(NotificationsContext)
   const [urlVideo, setUrlVideo] = useState<string>('')

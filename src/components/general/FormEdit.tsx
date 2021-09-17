@@ -25,7 +25,7 @@ interface FormEditProps {
 }
 
 const FormEdit: React.FC<FormEditProps> = ({ type, toggleEditAvatar }) => {
-  const { profile, updateName, loading } = useContext(UserContext)
+  const { profile, updateName, loading,isSuperAdmin } = useContext(UserContext)
   const classes = useStyles()
   const [isBlocked, setIsBlocked] = useState(true)
   const [error, setError] = useState('')
@@ -94,6 +94,7 @@ const FormEdit: React.FC<FormEditProps> = ({ type, toggleEditAvatar }) => {
       </Typography>
     )
   }
+  console.log({isSuperAdmin})
   return (
     <Box width={'100%'} className={classes.root} pl={3}>
       <Header />
@@ -225,7 +226,7 @@ const FormEdit: React.FC<FormEditProps> = ({ type, toggleEditAvatar }) => {
             </Box>
           )}
         </Box>
-        <RightSide />
+        {!isSuperAdmin&&<RightSide />}
       </Box>
     </Box>
   )

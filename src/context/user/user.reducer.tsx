@@ -1,5 +1,5 @@
 import { Config } from "../../config";
-import { US_A,LOG_A,AD_A } from "../../types";
+import { US_A,LOG_A,AD_A,USERS_TYPES } from "../../types";
 
 
 export enum Status {
@@ -44,7 +44,10 @@ export type Profile = {
   thumbnail: string;
   email: string;
   type: number;
-  roomImage:string
+  roomImage:string,
+  lastSuscription: {
+    invitations: number
+  }
 };
 export type UserStateType = {
   selectedUser: User,
@@ -52,6 +55,9 @@ export type UserStateType = {
   profile: Profile;
   type: number;
   childrens: Childrens,
+  isSuperAdmin:boolean,
+  isAdmin:boolean,
+  isGuest:boolean
 };
 
 type Actions =
@@ -87,15 +93,21 @@ const userReducer = (state: UserStateType,action: Actions): UserStateType => {
 
   switch (action.type) {
     case LOG_A.LOGIN_SUCCESS:
-      console.log(LOG_A.LOGIN_SUCCESS,{ payload });
       localStorage.setItem(Config.TOKEN_NAME_INTERN,payload.profile.token);
+      const isAdmin = payload.profile.type ===USERS_TYPES.ADMIN
+      const isGuest = payload.profile.type ===USERS_TYPES.GUEST
+      const isSuperAdmin = payload.profile.type ===USERS_TYPES.SUPER_ADMIN
       return {
         ...state,
-        profile: payload.profile,
+        profile:{
+          ...state.profile,
+          ...payload.profile
+        },
         type: payload.profile.type,
+        isAdmin,
+        isGuest,
+        isSuperAdmin
       };
-
-
     case LOG_A.CONFIRM_PASS_SUCCESS:
       console.log(LOG_A.CONFIRM_PASS_SUCCESS,{ payload });
       return {
@@ -124,21 +136,45 @@ const userReducer = (state: UserStateType,action: Actions): UserStateType => {
         ...state,
       };
     case US_A.GET_USER_DETAIL:
+
+     const isAdminn = payload.type ===USERS_TYPES.ADMIN
+      const isGuestt = payload.type ===USERS_TYPES.GUEST
+      const isSuperAdminn = payload.type ===USERS_TYPES.SUPER_ADMIN
+      console.log({isAdminn,isGuestt,isSuperAdminn})
       let newState = {
         ...state,
         profile: {
           ...state.profile,
-          ...payload
+          ...payload,
         },
+        isAdmin: isAdminn,
+        isGuest:isGuestt,
+        isSuperAdminn:isSuperAdminn
       };
       return newState
     case US_A.CHILDRENS:
-      
+      console.log("CHILDRENS")
+    const isAdminnn = payload.profile.type ===USERS_TYPES.ADMIN
+    let canAddMoreChilds:boolean
+    console.log({isAdminnn})
+    if (isAdminnn) {
+      const totalChildrensAdded = payload.childrens.admins.length + payload.childrens.users.length
+      canAddMoreChilds =  totalChildrensAdded >=  state.profile.lastSuscription.invitations
+    }
+  
+    /* const childrensss= {
+          admins,
+          users
+        }, */
     return {
         ...state,
-        profile: payload.profile,
+        profile:{
+          ...state.profile,
+          ...payload.profile
+        },
         type: payload.profile.type,
         childrens: payload.childrens,
+        
       };
     case US_A.SELECT_USER:
       console.log(US_A.SELECT_USER,{ payload });
@@ -210,9 +246,7 @@ const userReducer = (state: UserStateType,action: Actions): UserStateType => {
         ...state,
       };
       case AD_A.ADMIN_CHILD_DETAIL:
-        console.log("================")
-        console.log(AD_A.ADMIN_CHILD_DETAIL,{ payload });
-        console.log("================")
+  
         return {
           ...state,
           selectedUser:{

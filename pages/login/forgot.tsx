@@ -11,6 +11,7 @@ import { Box, LinearProgress } from "@material-ui/core";
 import { COLORS } from "../../src/types";
 import { CustomInput } from ".";
 import HeaderSimple from "../../src/components/general/HeaderSimple";
+import withAuth from "../../src/auth/WithAuth";
 export interface ForgotProps {}
 
 const Forgot: React.FC<ForgotProps> = () => {
@@ -179,4 +180,4 @@ const Forgot: React.FC<ForgotProps> = () => {
   );
 };
 
-export default Forgot;
+export default withAuth(Forgot) ;
