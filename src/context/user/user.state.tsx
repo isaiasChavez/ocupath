@@ -534,6 +534,7 @@ console.log({deleteUserDTO})
       await validateOrReject(loginDTO);
       setLoading(true)
       const {data} = await axios.post(URLS.login, loginDTO);
+      console.log({data})
       setLoading(false)
       if (data.status === 0) {
         tokenAuth(data.profile.token);

@@ -17,6 +17,7 @@ import clienteAxios from '../../config/axios'
 import NotificationsContext from '../../context/notifications/notifications.context'
 import { useDropzone } from 'react-dropzone'
 import { Config } from '../../config'
+import { Image, Spin, Upload } from 'antd'
 
 interface FormEditProps {
   type: number
@@ -121,11 +122,33 @@ const FormEdit: React.FC<FormEditProps> = ({ type, toggleEditAvatar }) => {
             >
               <h4 className={classes.information}>Avatar</h4>
             </Box>
-            <Avatar
-              src={profile.thumbnail}
-              alt='Remy Sharp'
+            <Box width='100%' display='flex' justifyContent='center'>
+              <Image
+                src={profile.thumbnail}
+                className={classes.large}
+                preview={false}
+                alt={profile.name}
+                placeholder={
+                  <Box
+                    flex={1}
+                    width='100%'
+                    height='100%'
+                    display='flex'
+                    justifyContent='center'
+                    alignItems='center'
+                  >
+                    <Spin />
+                  </Box>
+                }
+              />
+            </Box>
+            {/* <Avatar
+               src={profile.thumbnail}
+             src=""
+              alt={profile.name}
+
               className={classes.large}
-            />
+            /> */}
             <Button
               fullWidth={true}
               variant='outlined'
@@ -188,7 +211,7 @@ const FormEdit: React.FC<FormEditProps> = ({ type, toggleEditAvatar }) => {
           </Box>
 
           {!isBlocked && (
-            <Box mt={5}>
+            <Box mt={5} width='100%'>
               <ButtonSave
                 disabled={loading}
                 fullWidth={true}
@@ -211,22 +234,14 @@ const FormEdit: React.FC<FormEditProps> = ({ type, toggleEditAvatar }) => {
 const RightSide = () => {
   const classes = useStyles()
   const [files, setFiles] = useState([])
-  const { updateUser, profile,loading } = useContext(UserContext)
+  const { updateUser, profile, loading } = useContext(UserContext)
   const [urlPreview, setUrlPreview] = useState<ArrayBuffer | string>(null)
   const { sendAlert } = useContext(NotificationsContext)
-
-  const uploadImage = data => {
-    const reader = new FileReader()
-    reader.onload = function () {
-      console.log('RESULT:', reader.result)
-      setUrlPreview(reader.result)
-    }
-    reader.readAsDataURL(data[0])
-    setFiles(data)
-  }
-
-  const setImage = async () => {
+  const [imageRoom, setImageRoom] = useState(Images.preload)
+  
+  const handleUpload = async () => {
     try {
+      console.log("handle")
       const selectedFile = files[0]
       const formData = new FormData()
       formData.append('upload', selectedFile)
@@ -238,28 +253,42 @@ const RightSide = () => {
         roomImage: data
       })
       const status = await updateUser(updateUserDto)
-      console.log({ status })
       if (status === 0) {
-        setFiles(null)
+        setFiles([])
         setUrlPreview(null)
       }
     } catch (error) {
+      console.log(error)
       sendAlert({
         type: 'error',
         msg: 'An error occurred while uploading the images'
       })
     }
   }
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-   onDrop:()=>{},
-    accept: 'image/jpeg, image/png',
-    maxFiles: 1,
-    maxSize: Config.MAX_IMAGE_SIZE,
-    noClick: true,
-    multiple: false,
-    noKeyboard: true,
-    disabled: loading
-  })
+
+  const props = {
+    beforeUpload: file => {
+      if (file.type !== 'image/png') {
+        return 
+      }
+      const reader = new FileReader()
+      reader.onload = function () {
+        setUrlPreview(reader.result)
+      }
+      reader.readAsDataURL(file)
+      setFiles([...files,file])
+      return file.type === 'image/png' ? true : Upload.LIST_IGNORE
+    },
+    onChange: info => {
+      console.log(info.fileList)
+    }
+  }
+
+  useEffect(() => {
+    const imageRoomUser: HTMLImageElement = document.createElement('img')
+    imageRoomUser.onload = () => setImageRoom(imageRoomUser.src)
+    imageRoomUser.src = profile.roomImage
+  }, [profile.roomImage])
 
   return (
     <Box pl={8} height='100%' minWidth='12rem' width='20%'>
@@ -272,54 +301,78 @@ const RightSide = () => {
       >
         <h4 className={classes.information}>Logo</h4>
       </Box>
-      <Box fontFamily="font2">
+      <Box fontFamily='font2'>
         Select your .png company logo. This image will be displayed within the
         virtual reality enviroment.
       </Box>
-      <Box maxHeight="10rem" overflow="hidden" mt={1} mb={1}>
-        <img width='100%' src={profile.roomImage} alt='Default app image' />
-      </Box>
-      <input
-        onChange={e => uploadImage(e.target.files)}
-        multiple
-        accept='image/*'
-        id='upload'
-        type='file'
-      />
-      <label htmlFor='upload'>
-      <Button
-        size='large'
-        color='secondary'
-        fullWidth
-        variant='outlined'
-        className={classes.submit}
-        disableElevation
-        disabled={loading}
+      <Box
+        maxHeight='8rem'
+        minHeight='8rem'
+        width='100%'
+        display="flex"
+        justifyContent="center"
+        borderRadius='0.25rem'
+        overflow='hidden'
+        mt={1}
+        mb={1}
       >
-        <span
-          className='ITCAvantGardeStdBkSemiBold'
-          style={{
-            textTransform: 'capitalize'
-          }}
-        >
-          Upload logo
-        </span>
-      </Button>
-                  </label>
+        <img
+          src={imageRoom}
+          style={{ height: '100%', objectFit: 'contain' }}
+          alt='Room image'
+        />
+      </Box>
+      <Box display='flex' justifyContent='center'>
+        <Upload showUploadList={false} listType='picture' {...props}>
+          <Button
+            size='large'
+            color='secondary'
+            fullWidth
+            variant='outlined'
+            className={classes.submit}
+            disableElevation
+          >
+            <span
+              className='ITCAvantGardeStdBkSemiBold'
+              style={{
+                textTransform: 'capitalize'
+              }}
+            >
+              Upload logo
+            </span>
+          </Button>
+        </Upload>
+      </Box>
 
       {urlPreview && (
         <>
-      <Box
-        textAlign='left'
+          <Box
+            textAlign='left'
+            width='100%'
+            fontSize={16}
+            mb={2}
+            mt={2}
+            fontWeight='fontWeightBold'
+          >
+            <h4 className={classes.information}>Example</h4>
+          </Box>
+          <Box
+          maxHeight='8rem'
+        minHeight='8rem'
         width='100%'
-        fontSize={16}
-        mb={2}
-        fontWeight='fontWeightBold'
-      >
-        <h4 className={classes.information}>Example</h4>
-      </Box>
-          <Box>
-            <img width='100%' src={urlPreview as string} alt='Default app image' />
+        display="flex"
+        justifyContent="center"
+        borderRadius='0.25rem'
+        overflow='hidden'
+        mt={1}
+        mb={1}
+          >
+            <img
+              style={{ height: '100%', objectFit: 'contain' }}
+
+              src={urlPreview as string}
+              alt='Default app image'
+            />
           </Box>
           <Button
             size='large'
@@ -328,7 +381,7 @@ const RightSide = () => {
             disabled={loading}
             fullWidth
             variant='contained'
-            onClick={setImage}
+            onClick={handleUpload}
             className={classes.submit}
           >
             <span
@@ -371,10 +424,14 @@ const useStyles = makeStyles(theme => ({
   },
   submit: {
     margin: theme.spacing(2, 0, 0),
-    minWidth: '11rem',
+    minWidth: '13rem',
+    width: '100%',
     paddingTop: '0.45rem'
   },
   large: {
+    borderRadius: '100%',
+    display: 'flex',
+    justifyContent: 'center',
     marginTop: '-0.2rem',
     width: theme.spacing(15),
     height: theme.spacing(15),

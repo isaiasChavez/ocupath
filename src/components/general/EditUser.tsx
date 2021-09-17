@@ -57,9 +57,9 @@ const EditAvatar = ({ toggleEditAvatar }) => {
       })
       const updateUserDto = new UpdateUserDTO({
         avatar: urlAvatar,
-        roomImage:null,
         name: null,
-        thumbnail: data.renders[0]
+        thumbnail: data.renders[0],
+        roomImage:null
       })
       const status = await updateUser(updateUserDto)
       setloading(false)

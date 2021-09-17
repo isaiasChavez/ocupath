@@ -71,6 +71,7 @@ const Login: React.FC<LoginProps> = () => {
     password: '',
     showPassword: false
   })
+  
   const { logUser, loading } = useContext(UserContext)
   useEffect(() => {
     console.log({ logUser })
@@ -220,7 +221,7 @@ const Login: React.FC<LoginProps> = () => {
               variant='outlined'
               />
           </Box>
-          <CustomInputDos size='small' fullWidth variant='outlined'>
+          <CustomInputDos  size='small' fullWidth variant='outlined'>
             <InputLabel
               style={{ color: 'white' }}
               htmlFor='outlined-adornment-password'
@@ -233,6 +234,7 @@ const Login: React.FC<LoginProps> = () => {
               type={loginState.showPassword ? 'text' : 'password'}
               value={loginState.password}
               name='password'
+              
               error={errors.password !== null}
               required
               style={{
@@ -262,7 +264,7 @@ const Login: React.FC<LoginProps> = () => {
               labelWidth={70}
             />
           </CustomInputDos>
-
+            {errors.password}
           <div
             style={{
               display: 'flex',
