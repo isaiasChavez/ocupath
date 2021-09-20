@@ -214,6 +214,12 @@ const Login: React.FC<LoginProps> = () => {
               autoComplete='email'
               helperText={errors.email}
               size='small'
+               FormHelperTextProps={{
+                 style:{
+                   color:'#bb2929'
+                 }
+               }}
+
               InputLabelProps={{
                 style: {
                   color: 'white',
@@ -272,7 +278,9 @@ const Login: React.FC<LoginProps> = () => {
               labelWidth={70}
             />
           </CustomInputDos>
+          <Box mt={0.5} ml={1} fontSize="0.75rem" fontFamily="font2" fontWeight="fontWeightLight" color="#bb2929">
             {errors.password}
+          </Box>
           <div
             style={{
               display: 'flex',

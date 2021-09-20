@@ -42,7 +42,6 @@ const TableAdmin: React.FC<TableAdminProps> = () => {
     profile,
     suspendUser,
     loading,
-    getUserChildDetail,
     deleteUser,
     selectUser,
     selectedUser
@@ -103,12 +102,7 @@ const TableAdmin: React.FC<TableAdminProps> = () => {
     toggleDeleteUserModal()
     selectUser(dataUser, USERS.GUEST)
   }
-  const onEdit = (dataUser: User) => {
-    console.log({ dataUser })
-    selectUser(dataUser, USERS.GUEST)
-    handleToggleDetailModal()
-    getUserChildDetail()
-  }
+ 
 
   return (
     <Box display='flex' height='100%'>

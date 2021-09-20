@@ -81,16 +81,16 @@ const TableGuest: React.FC<TableGuestProps> = () => {
 
   const onSuspend = (dataUser: User) => {
     setIsOpenSuspendUserModal(true)
-    selectUser(dataUser, USERS.ADMIN)
+    selectUser(dataUser, USERS.GUEST)
   }
   const onDelete = (dataUser: User) => {
     toggleDeleteUserModal()
-    selectUser(dataUser, USERS.ADMIN)
+    selectUser(dataUser, USERS.GUEST)
   }
   const onEdit = async (dataUser: User) => {
     selectUser(dataUser, USERS.GUEST)
     handleToggleDetailModal()
-    await getUserChildDetail()
+    await getUserChildDetail(dataUser)
   }
 
   return (

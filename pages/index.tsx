@@ -1,7 +1,7 @@
 import {
   Link as LinkScroll,
   Element,
-  animateScroll as scroll
+  animateScroll as Scroll
 } from 'react-scroll'
 import { notification } from 'antd'
 
@@ -9,7 +9,7 @@ import { makeStyles, Box, Grid } from '@material-ui/core'
 import HeaderLogin from '../src/components/login/HeaderLogin'
 import { Images } from '../src/types'
 import { CustomInput } from './login'
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import Head from 'next/head'
 import withAuth from '../src/auth/WithAuth'
 
@@ -25,8 +25,14 @@ export interface NavigationProps {
 
 const Home= () => {
   const classes = useStyles()
+  const scroll = Scroll.animateScroll;
+
   /*   ScrollReveal().reveal('.headline');
    */
+  useEffect(() => {
+
+    window.scrollTo(0, 0);
+  }, [])
   return (
     <>
       <Head>
@@ -72,7 +78,7 @@ const Home= () => {
                   smooth={true}
                   duration={500}
                 >
-                  <button className={classes.buttonSingUp}>Sing up</button>
+                  <button className={classes.buttonSingUp}>Sign up</button>
                 </LinkScroll>
               </Box>
             </Box>
@@ -132,11 +138,10 @@ const Home= () => {
                   Know Our Plans
                 </Box>
                 <Box fontFamily='font3' fontSize='1.125rem' mb={2}>
-                  Let us contact you to learn about your business needs and
-                  propose a customized plan.{' '}
+                  Let us contact you to learn about your business needs and offer a customized plan to you.
                 </Box>
                 <Box fontFamily='font2' fontSize='0.875rem' mb={3}>
-                  Once you know our plans you can register with us.{' '}
+                  After this you'll be able to register. 
                 </Box>
                 <Box fontFamily='font3' fontSize='0.8rem' mb={2}>
                   Enter your information to contact to you{' '}
@@ -188,17 +193,17 @@ const Home= () => {
                     Standalone headset
                   </Box>
                   <Box component='h3' className={classes.text1}>
-                    Oculus Quest 1
+                    Vive
                   </Box>
                   <Box component='h3' className={classes.text1}>
-                    Oculus Quest 2
+                    Vive Pro
                   </Box>
                   <Box component='h3' className={classes.text1}>
                     HTC Vive
                   </Box>
                   <Box component='div' my={3}></Box>
                   <Box display='flex' justifyContent='center' mb={-1} pt={2}>
-                    <a className={classes.linkGo}>Go to Oculus Store</a>
+                    <a className={classes.linkGo}>Go to Steam</a>
                   </Box>
                 </Box>
 
@@ -210,13 +215,13 @@ const Home= () => {
                     Standalone headset
                   </Box>
                   <Box component='h3' className={classes.text1}>
-                    Oculus Quest 1
+                    Oculus Rift
+                  </Box>
+                  <Box component='h3' className={classes.text1}>
+                    Oculus Quest 
                   </Box>
                   <Box component='h3' className={classes.text1}>
                     Oculus Quest 2
-                  </Box>
-                  <Box component='h3' className={classes.text1}>
-                    HTC Vive
                   </Box>
                   <Box component='div' my={3}></Box>
                   <Box display='flex' justifyContent='center' mb={-1} pt={2}>
@@ -234,9 +239,8 @@ const Home= () => {
                 color='white'
               >
                 {' '}
-                If you already have an account or an access code, you can
-                download Multivrsity by choosing one of the options above,
-                otherwise make sure to sign up first
+                If you already have an account or an access code, you can download Multivrsity by choosing one of the options above. Otherwise make sure to sign up first.
+
               </Box>
             </Box>
           </Box>

@@ -1,4 +1,4 @@
-import { IsNotEmpty,IsString,IsUUID } from "class-validator";
+import {  IsNotEmpty,IsString,IsUUID } from "class-validator";
 import { createContext } from "react";
 
 
@@ -13,6 +13,8 @@ export class DeleteAssetDto {
   constructor (uuid: string) {
     this.uuid = uuid;
   }
+  @IsNotEmpty()
+  @IsUUID()
   uuid: string;
 }
 export type AssetsResponse = {

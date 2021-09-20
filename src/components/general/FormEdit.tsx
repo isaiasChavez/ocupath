@@ -268,18 +268,28 @@ const RightSide = () => {
   }
 
   const props = {
+    accept:'image/png, image/jpeg',
     beforeUpload: file => {
-      if (file.type !== 'image/png') {
+      const okFiles= ['image/png','image/jpeg','image/jpg']
+      console.log(file.type)
+      if (!okFiles.includes(file.type)) {
+
+        sendAlert({
+        type: 'warning',
+        msg: 'Only .png / .jpg'
+      })
         return 
       }
+
       const reader = new FileReader()
       reader.onload = function () {
         setUrlPreview(reader.result)
       }
       reader.readAsDataURL(file)
       setFiles([...files,file])
-      return file.type === 'image/png' ? true : Upload.LIST_IGNORE
+      return okFiles.includes(file.type) ? true : Upload.LIST_IGNORE
     },
+          multiple: false,
     onChange: info => {
       console.log(info.fileList)
     }
@@ -303,8 +313,7 @@ const RightSide = () => {
         <h4 className={classes.information}>Logo</h4>
       </Box>
       <Box fontFamily='font2'>
-        Select your .png company logo. This image will be displayed within the
-        virtual reality enviroment.
+        Select your company logo image. This will be displayed within the virtual realy environmet as shown in the image below
       </Box>
       <Box
         maxHeight='8rem'
@@ -355,7 +364,7 @@ const RightSide = () => {
             mt={2}
             fontWeight='fontWeightBold'
           >
-            <h4 className={classes.information}>Example</h4>
+            <h4 className={classes.information}>Your logo</h4>
           </Box>
           <Box
           maxHeight='8rem'

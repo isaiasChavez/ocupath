@@ -152,6 +152,12 @@ const UserState = ({ children }) => {
           payload: data,
         });
       }
+      if (data.status===6) {
+        sendAlert({
+          type:'error',
+          msg:"You cannot select a date before today"
+        })
+      }
       if (data.status===5) {
         sendAlert({
           type:'error',
@@ -270,14 +276,14 @@ const UserState = ({ children }) => {
     }
   };
   
-  const getUserChildDetail = async () => {
+  const getUserChildDetail = async (selectedUser:User) => {
     try {
-      const dto = new GetUserDetailDTO(state.selectedUser.uuid)
+      const dto = new GetUserDetailDTO(selectedUser.uuid)
       await validateOrReject(dto);
       setLoading(true)
       const { data } = await axios.post(URLS.userChildDetail, dto);
+      console.log(AD_A.USER_CHILD_DETAIL,{data})
       setLoading(false)
-  
       if (data.status ===0) {
         dispatch({ type: AD_A.USER_CHILD_DETAIL, payload: data });
       }
@@ -313,12 +319,12 @@ const UserState = ({ children }) => {
   };
 
   const selectUser = async (user:User,type:number) => {
-    console.log("selectUser")
     try {
       dispatch({
         type: US_A.SELECT_USER,
         payload: {
-        user,type
+        user,
+        type
         },
       });
     } catch (error) {

@@ -1,21 +1,12 @@
 import {
-  AppBar,
   Button,
-  Container,
-  IconButton,
   LinearProgress,
   makeStyles,
   Toolbar,
-  Typography
 } from '@material-ui/core'
 import {
   Link as LinkScroll,
-  DirectLink,
-  Element,
-  Events,
   animateScroll as scroll,
-  scrollSpy,
-  scroller
 } from 'react-scroll'
 import { Images } from '../../types'
 import Link from 'next/link'
@@ -38,7 +29,16 @@ const HeaderLogin: React.FC<HeaderLoginProps> = () => {
         }} color="primary" />}
 
         <div className={classes.title}>
+           <LinkScroll
+              activeClass='active'
+              className='test1'
+              to='landing'
+              spy={true}
+              smooth={true}
+              duration={500}
+            >
           <img src={Images.logichiquito} alt='' />
+            </LinkScroll>
         </div>
         <div className={classes.center}>
           <Button size='large' color='primary' className={classes.buttons}>
@@ -79,10 +79,10 @@ const HeaderLogin: React.FC<HeaderLoginProps> = () => {
               <span className={classes.link}>Download</span>
             </LinkScroll>
           </Button>
-          <Button color='primary' className={classes.buttons}>
+          <Button color='primary' style={{cursor:'pointer'}} className={classes.buttons}>
             {/* <Link href="/" onClick={preventDefault}> */}
-            <Link href='/login'>
-              <button className={classes.linkLogin}>Login</button>
+            <Link href='/login' >
+              <span className={classes.linkLogin}>Login</span>
             </Link>
           </Button>
         </div>
@@ -109,7 +109,8 @@ const useStyles = makeStyles(theme => ({
     zIndex: 200
   },
   buttons: {
-    minWidth: '10rem'
+    minWidth: '10rem',
+    cursor:'pointer'
   },
   link: {
     color: 'white',
@@ -120,6 +121,7 @@ const useStyles = makeStyles(theme => ({
   },
   linkLogin: {
     fontFamily:'font2',
+    cursor: 'pointer',
     color: 'white',
     textDecoration: 'none',
     fontWeight: 'bold',

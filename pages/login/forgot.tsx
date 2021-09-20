@@ -116,7 +116,7 @@ const Forgot: React.FC<ForgotProps> = () => {
           <Typography component="h3"   style={ { fontSize:'16px', textAlign: 'center' } } >
             <Box color="white" fontWeight="fontWeightLight" m={ 1 } >
               
-            Enter the email in which you want to receive your password 
+            Enter the email in which you want to receive instructions to reset your password 
           </Box>
         </Typography>
             <CustomInput

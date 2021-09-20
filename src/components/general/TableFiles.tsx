@@ -222,7 +222,7 @@ const Img: React.FC<ImgProps> = ({ loading, setLoading }) => {
   }, [files])
 
   const uploadImage = (data: FileList) => {
-    const hasSelectedSomething = data && data.length !== 0    
+    const hasSelectedSomething = data && data.length !== 0
     if (hasSelectedSomething) {
       const statusImage = Config.isImageValid(data[0])
       if (statusImage.isValid) {
@@ -309,7 +309,7 @@ const Img: React.FC<ImgProps> = ({ loading, setLoading }) => {
               style={{
                 display: 'grid',
                 gridAutoRows: '160px',
-                gridTemplateColumns: 'repeat(7,1fr)',
+                gridTemplateColumns: 'repeat(7,minmax(10rem,1fr))',
                 gap: '0.3rem'
               }}
             >
@@ -370,7 +370,8 @@ const ImageGrid = ({
   asset: Asset
   onOpenPreviewer: Function
 }) => {
-  const { openPreviewer, assets, deleteAsset } = useContext(AssetsContext)
+  console.log({asset})
+  const {  deleteAsset } = useContext(AssetsContext)
 
   const [isPopperVisible, setIsPopperVisible] = useState<boolean>(false)
   const [isDeleteHoverd, setIsDeleteHoverd] = useState(false)
@@ -484,7 +485,7 @@ const Img360: React.FC<Img360Props> = ({ loading, setLoading }) => {
   const { sendAlert } = useContext(NotificationsContext)
 
   useEffect(() => {
-     const hasSelectedSomething = files && files.length !== 0
+    const hasSelectedSomething = files && files.length !== 0
     if (hasSelectedSomething) {
       setImage()
     }
@@ -492,7 +493,7 @@ const Img360: React.FC<Img360Props> = ({ loading, setLoading }) => {
   const classes = useStyles()
 
   const uploadImage = (data: FileList) => {
-    const hasSelectedSomething = data && data.length !== 0    
+    const hasSelectedSomething = data && data.length !== 0
     if (hasSelectedSomething) {
       const statusImage = Config.isImage360Valid(data[0])
       if (statusImage.isValid) {
@@ -582,7 +583,7 @@ const Img360: React.FC<Img360Props> = ({ loading, setLoading }) => {
               style={{
                 display: 'grid',
                 gridAutoRows: '160px',
-                gridTemplateColumns: 'repeat(7,1fr)',
+                gridTemplateColumns: 'repeat(7,minmax(10rem,1fr))',
                 gap: '0.3rem'
               }}
             >
@@ -638,6 +639,12 @@ const Video: React.FC<VideoProps> = ({ loading, setLoading }) => {
   const { sendAlert } = useContext(NotificationsContext)
   const [urlThumnail, seturlThumnail] = useState<string>(null)
 
+  useEffect(() => {
+    const _CANVAS = document.querySelector(
+      '#canvas-element'
+    ) as HTMLCanvasElement
+    _CANVAS.height = 10
+  }, [])
   const onDrop = useCallback((acceptedFiles, errors) => {
     errors.map(error => {
       sendAlert({
@@ -648,7 +655,6 @@ const Video: React.FC<VideoProps> = ({ loading, setLoading }) => {
     if (errors.length > 0) {
       return
     }
-    console.log('OK FILES', { acceptedFiles })
     setFiles(acceptedFiles)
     uploadVideo(acceptedFiles)
   }, [])
@@ -669,6 +675,7 @@ const Video: React.FC<VideoProps> = ({ loading, setLoading }) => {
     setUrlVideo(url)
     setFiles(filesUploaded)
   }
+
   const uploadThumbnail = async () => {
     const _CANVAS = document.querySelector(
       '#canvas-element'
@@ -682,14 +689,20 @@ const Video: React.FC<VideoProps> = ({ loading, setLoading }) => {
           URLS.urlUploadImage,
           formData
         )
+        
         setVideo(urlThumnail)
       } catch (error) {
         setLoading(false)
+        sendAlert({
+          type: 'error',
+          msg: 'Error uploading thumbnail'
+        })
         console.log({ error })
       }
     })
   }
   const onLoadMetadata = async () => {
+    console.log('onLoadMetadata')
     const _VIDEO = document.querySelector('#video-element') as HTMLVideoElement
     const _CANVAS = document.querySelector(
       '#canvas-element'
@@ -699,6 +712,7 @@ const Video: React.FC<VideoProps> = ({ loading, setLoading }) => {
     _VIDEO.currentTime = 3
   }
   const onTimeVideoIsUpdated = async () => {
+    console.log('onTimeVideoIsUpdated')
     const _VIDEO = document.querySelector('#video-element') as HTMLVideoElement
     const _CANVAS = document.querySelector(
       '#canvas-element'
@@ -706,8 +720,8 @@ const Video: React.FC<VideoProps> = ({ loading, setLoading }) => {
     const _CANVAS_CTX = _CANVAS.getContext('2d')
     _CANVAS_CTX.drawImage(_VIDEO, 0, 0, _VIDEO.videoWidth, _VIDEO.videoHeight)
     console.log(_CANVAS.height)
-    console.log(_CANVAS.height == 720)
-    if (_CANVAS.height == 720) {
+    console.log(_CANVAS.height !== 10)
+    if (_CANVAS.height !== 10) {
       await uploadThumbnail()
     }
   }
@@ -718,7 +732,9 @@ const Video: React.FC<VideoProps> = ({ loading, setLoading }) => {
       const formData = new FormData()
       formData.append('upload', selectedFile)
       setLoading(true)
+      console.log({thumbnail})
       const response = await clienteAxios.post(URLS.urlUploadVideo, formData)
+      console.log({response})
       setLoading(false)
 
       const DTO = {
@@ -726,6 +742,7 @@ const Video: React.FC<VideoProps> = ({ loading, setLoading }) => {
         typeAsset: FILES_TYPES.VIDEO,
         thumbnail
       }
+      console.log(DTO)
       const { data } = await clienteAxios.post(URLS.createAsset, DTO)
       setLoading(false)
       console.log({ data })
@@ -735,7 +752,7 @@ const Video: React.FC<VideoProps> = ({ loading, setLoading }) => {
         const _CANVAS = document.querySelector(
           '#canvas-element'
         ) as HTMLCanvasElement
-        _CANVAS.height = 150
+        _CANVAS.height = 10
         sendAlert({
           type: 'success',
           msg: 'Your video has been uploaded successfully'
@@ -751,6 +768,7 @@ const Video: React.FC<VideoProps> = ({ loading, setLoading }) => {
       })
     }
   }
+
   const onOpenPreviewer = (currentAsset: Asset) => {
     openPreviewer(currentAsset, assets.videos)
   }
@@ -765,7 +783,7 @@ const Video: React.FC<VideoProps> = ({ loading, setLoading }) => {
               style={{
                 display: 'grid',
                 gridAutoRows: '160px',
-                gridTemplateColumns: 'repeat(7,1fr)',
+                gridTemplateColumns: 'repeat(7,minmax(10rem,1fr))',
                 gap: '0.3rem'
               }}
             >
@@ -855,6 +873,13 @@ const Video360: React.FC<Video360Props> = ({ loading, setLoading }) => {
   const { sendAlert } = useContext(NotificationsContext)
   const [urlVideo, setUrlVideo] = useState<string>('')
 
+ useEffect(() => {
+    const _CANVAS = document.querySelector(
+      '#canvas-element'
+    ) as HTMLCanvasElement
+    _CANVAS.height = 10
+  }, [])
+
   const uploadVideo360 = (filesUploaded: FileList) => {
     const url = URL.createObjectURL(filesUploaded[0])
     setUrlVideo(url)
@@ -885,7 +910,7 @@ const Video360: React.FC<Video360Props> = ({ loading, setLoading }) => {
         const formData = new FormData()
         formData.append('upload', blob, 'filename.png')
         const { data: urlThumnail } = await clienteAxios.post(
-          URLS.urlUploadImage,
+          URLS.urlUploadImage360,
           formData
         )
         setVideo360(urlThumnail)
@@ -912,8 +937,8 @@ const Video360: React.FC<Video360Props> = ({ loading, setLoading }) => {
     const _CANVAS_CTX = _CANVAS.getContext('2d')
     _CANVAS_CTX.drawImage(_VIDEO, 0, 0, _VIDEO.videoWidth, _VIDEO.videoHeight)
     console.log(_CANVAS.height)
-    console.log(_CANVAS.height == 720)
-    if (_CANVAS.height == 720) {
+    console.log(_CANVAS.height !== 10)
+    if (_CANVAS.height !== 10) {
       await uploadThumbnail()
     }
   }
@@ -950,7 +975,7 @@ const Video360: React.FC<Video360Props> = ({ loading, setLoading }) => {
         const _CANVAS = document.querySelector(
           '#canvas-element'
         ) as HTMLCanvasElement
-        _CANVAS.height = 150
+        _CANVAS.height = 10
         sendAlert({
           type: 'success',
           msg: 'Your video has been uploaded successfully'
@@ -975,14 +1000,13 @@ const Video360: React.FC<Video360Props> = ({ loading, setLoading }) => {
   return (
     <>
       <Box {...getRootProps()} width='100%' height='100%' position='relative'>
-        <GridList cellHeight={100} className={classes.gridList} cols={7}>
           <Box height='90%' width='100%'>
             <Box width='82%' mx='auto' pt={1}>
               <div
                 style={{
                   display: 'grid',
                   gridAutoRows: '160px',
-                  gridTemplateColumns: 'repeat(7,1fr)',
+                  gridTemplateColumns: 'repeat(7,minmax(10rem,1fr))',
                   gap: '0.3rem'
                 }}
               >
@@ -992,7 +1016,6 @@ const Video360: React.FC<Video360Props> = ({ loading, setLoading }) => {
               </div>
             </Box>
           </Box>
-        </GridList>
         <DropZone
           type={FILES_TYPES.VIDEO_360}
           isEmpty={isEmpty}

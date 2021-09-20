@@ -177,7 +177,7 @@ const userReducer = (state: UserStateType,action: Actions): UserStateType => {
         
       };
     case US_A.SELECT_USER:
-      console.log(US_A.SELECT_USER,{ payload });
+      console.log({payload})
       return {
         ...state,
         selectedUser: payload.user,

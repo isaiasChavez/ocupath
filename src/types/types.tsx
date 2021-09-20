@@ -10,8 +10,8 @@ export type NewUserDTO = {
   email: string;
   invitations: number;
   cost: number;
-  startedAt: string;
-  finishedAt: string;
+  startedAt: string|Date;
+  finishedAt: string|Date;
   typeToInvite: number;
 };
 export type NewUserErrors = {

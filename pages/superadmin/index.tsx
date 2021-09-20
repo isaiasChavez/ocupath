@@ -23,7 +23,7 @@ const Admin: React.FC<AdminProps> = () => {
   return (
     <>
      <Head>
-        <title>Multivrsity | Forgot</title>
+        <title>Multivrsity | Superadmin</title>
         <meta
           name='viewport'
           content='minimum-scale=1, initial-scale=1, width=device-width'
