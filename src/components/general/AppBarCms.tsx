@@ -17,6 +17,7 @@ const AppBarCms: React.FC<AppBarCmsProps> = () => {
    <>
   <AppBar style={ {
     backgroundColor: COLORS.blue_header,
+    zIndex:0
   } }>
   {(loading ||loadingSesion)&&<LinearProgress color="primary" />}
     <Toolbar  >

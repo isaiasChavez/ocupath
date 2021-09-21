@@ -1,5 +1,10 @@
-import React, { MouseEventHandler, useContext, useEffect, useState } from 'react'
-import { Button,  TextField,  Box } from '@material-ui/core'
+import React, {
+  MouseEventHandler,
+  useContext,
+  useEffect,
+  useState
+} from 'react'
+import { Button, TextField, Box } from '@material-ui/core'
 import MomentUtils from '@date-io/moment'
 import { COMPANIES, GUEST } from '../../types'
 import moment from 'moment'
@@ -30,13 +35,15 @@ const InviteModal: React.FC<InviteModalProps> = ({
 }) => {
   const MIN_INVITATIONS = 1
   const MAX_INVITATIONS = 1000
-
-  const [startedAt, setStartDate] = useState(new Date())
-  const [finishedAt, setFinishDate] = useState(new Date())
+  const today = new Date()
+  const [startedAt, setStartDate] = useState<string>(moment(today).toISOString())
+  const [finishedAt, setFinishDate] = useState<string>(moment(today).toISOString())
   const [dataNewUser, setDataNewUser] = useState<NewUserDTO>(initialState(type))
   const [errors, setErrors] = useState<NewUserErrors>(initialErrors())
-  const { inviteUser,selectedUser,loading } = useContext(UserContext)
-  const {sendAlert} = useContext(NotificationsContext)
+  const { inviteUser, selectedUser, loading } = useContext(UserContext)
+  const { sendAlert } = useContext(NotificationsContext)
+   const isInviteCompany = type === COMPANIES
+    const isInviteGuest = type === GUEST
   const handleDateStartChange = e => {
     setErrors(initialErrors())
     if (moment(e.format()).isAfter(finishedAt)) {
@@ -45,13 +52,14 @@ const InviteModal: React.FC<InviteModalProps> = ({
         startedAt: `The date must be before the final.`
       })
     } else {
-      setStartDate(e.format())
+      const newDate =new Date(e.format()).toISOString()
+      console.log("newDatestart: ",{newDate})
+      setStartDate(newDate)
     }
   }
   useEffect(() => {
-    console.log({dataNewUser})
+    console.log({ dataNewUser })
   }, [dataNewUser])
-
 
   const handleDateEndChange = e => {
     setErrors(initialErrors())
@@ -62,7 +70,8 @@ const InviteModal: React.FC<InviteModalProps> = ({
         finishedAt: `The date must be after the start.`
       })
     } else {
-      setFinishDate(e.format())
+      const newDate =new Date(e.format()).toISOString() 
+      setFinishDate(newDate)
     }
   }
 
@@ -74,10 +83,13 @@ const InviteModal: React.FC<InviteModalProps> = ({
     })
   }
 
-  const isCommondFieldsValid = (): boolean => {
+  const isCommondFieldsValid = (): {isOk:boolean,commondErrors:NewUserErrors} => {
     let isValid = true
-
     let newErrors: NewUserErrors = { ...errors }
+    if (!dataNewUser.email||dataNewUser.email.trim().length === 0) {
+      newErrors.email = 'Please enter a valid value'
+      isValid = false
+    }
     if (!verifyEmail(dataNewUser.email)) {
       newErrors.email = 'Please enter a valid value'
       isValid = false
@@ -95,26 +107,29 @@ const InviteModal: React.FC<InviteModalProps> = ({
       newErrors.finishedAt = `You must select a date`
       isValid = false
     }
+    console.log({finishedAt,startedAt})
+    console.log(moment(finishedAt).isSame(startedAt))
     if (moment(finishedAt).isSame(startedAt)) {
       newErrors.finishedAt = `The dates must be different`
       newErrors.startedAt = `The dates must be different`
       isValid = false
     }
-    if (dataNewUser.cost <= 0) {
+
+    if (!dataNewUser.cost||dataNewUser.cost <= 0) {
       newErrors.cost = `You cannot put this value`
       isValid = false
     }
-    if (!isValid) {
-      console.log("isCommondFieldsValid:",{newErrors})
-      setErrors(newErrors)
+    return {
+      commondErrors:newErrors,
+      isOk:isValid
     }
-    return isValid
   }
 
-  const validateCompany = (): boolean => {
+  const validateCompany = (commondErrors:NewUserErrors): {isOk:boolean,errors:NewUserErrors} => {
     let isValid = true
+    console.log({errors,dataNewUser})
     const newErrors: NewUserErrors = {
-      ...errors
+      ...commondErrors
     }
     if (dataNewUser.company.trim().length === 0) {
       newErrors.company = 'Please enter a valid value'
@@ -130,61 +145,78 @@ const InviteModal: React.FC<InviteModalProps> = ({
       newErrors.invitations = `You can only choose up to ${MAX_INVITATIONS} invitations.`
       isValid = false
     }
-    if (!isValid) {
-      console.log({newErrors})
-      setErrors(newErrors)
+ 
+    return{
+      isOk:isValid,
+      errors:newErrors
     }
-    return isValid
   }
 
-  const validateGuest = (): boolean => {
+  const validateGuest = (commondErrors:NewUserErrors): {isOk:boolean,errors:NewUserErrors} => {
     let isValid = true
+    const newErrors: NewUserErrors = {
+      ...commondErrors
+    }
     if (dataNewUser.name.trim().length === 0) {
-      setErrors({ ...errors, name: 'Please enter a valid value' })
+      newErrors.name= 'Please enter a valid value' 
       isValid = false
     }
-    console.log('validateGuest:', { isValid })
 
-    return isValid
+    return {
+      isOk:isValid,
+      errors:newErrors
+    }
   }
 
   const handleSend = async () => {
-    
-    const userToValid = type === COMPANIES ? validateCompany : validateGuest
+   
+    let commondsFieldsAreValid: boolean
+    let particularFieldsAreValid: boolean
+    if (isInviteCompany) {
+      const {isOk,commondErrors} = isCommondFieldsValid()
+      commondsFieldsAreValid = isOk
+      const {isOk:isOkCompany,errors} = validateCompany(commondErrors)
+      particularFieldsAreValid= isOkCompany
+      setErrors(errors)
+    }
+    if (isInviteGuest) {
+      const {isOk,commondErrors} = isCommondFieldsValid()
+      commondsFieldsAreValid=isOk
+      const {isOk:isOkGuest,errors} = validateGuest(commondErrors)
+      particularFieldsAreValid= isOkGuest
+      setErrors(errors)
+    }
 
-    if (isCommondFieldsValid() && userToValid()) {
+    console.log({ particularFieldsAreValid, commondsFieldsAreValid,isInviteGuest })
+
+    if (particularFieldsAreValid && commondsFieldsAreValid) {
       setErrors(initialErrors())
       try {
-        
-        const inviteDTO = {
+        const inviteDTO:NewUserDTO = {
           ...dataNewUser,
           startedAt,
           finishedAt
-        }      
+        }
+        if (isInviteGuest) {
+          inviteDTO.invitations = 0
+        }
+        
         const newInvite = new InviteUserDTO(inviteDTO)
-        
-        await validateOrReject(newInvite);
-        
-      const response = await inviteUser(newInvite)
-      if (response ===0||response ===8) {
-        setDataNewUser({...initialState(type)})
-        handleClose()
-      }
+        await validateOrReject(newInvite)
+        inviteDTO.email = inviteDTO.email.toLowerCase()
 
+        const response = await inviteUser(newInvite)
+        if (response === 0 || response === 8) {
+          setDataNewUser({ ...initialState(type) })
+          handleClose()
+        }
       } catch (error) {
-        console.log({error})
+        console.log({ error })
         sendAlert({
-          type:'error',
-          msg:'Error validating fields'
+          type: 'error',
+          msg: 'Error validating fields'
         })
       }
-
-    } else {
-      sendAlert({
-        type:'error',
-        msg:'Error validating fields'
-      })
-
     }
   }
   const classes = useStyles()
@@ -198,8 +230,17 @@ const InviteModal: React.FC<InviteModalProps> = ({
       headerText = 'Invite new guest'
     }
     return (
-      <Box height='12%' className='ITCAvantGardeStdBkBold' my={1}  display="flex" alignItems="center" justifyContent="center" fontWeight='fontWeightBold' fontSize={28}  >
-          {headerText}
+      <Box
+        height='12%'
+        className='ITCAvantGardeStdBkBold'
+        my={1}
+        display='flex'
+        alignItems='center'
+        justifyContent='center'
+        fontWeight='fontWeightBold'
+        fontSize={28}
+      >
+        {headerText}
       </Box>
     )
   }
@@ -210,18 +251,22 @@ const InviteModal: React.FC<InviteModalProps> = ({
 
       <Box
         display='flex'
-        minHeight="28%"
+        minHeight='28%'
         flexDirection='column'
         justifyContent='space-around'
-        
       >
-        <Box mt={2} fontSize={14} className="ITCAvantGardeStdBkBold" fontWeight='fontWeightBold'>
+        <Box
+          mt={2}
+          fontSize={14}
+          className='ITCAvantGardeStdBkBold'
+          fontWeight='fontWeightBold'
+        >
           Personal Information
         </Box>
         {type === COMPANIES && (
           <Box mb={2} mt={1}>
             <TextField
-            size="small"
+              size='small'
               helperText={errors.company}
               error={errors.company !== null}
               variant='outlined'
@@ -240,8 +285,7 @@ const InviteModal: React.FC<InviteModalProps> = ({
         {type === GUEST && (
           <Box my={2}>
             <TextField
-            size="small"
-
+              size='small'
               variant='outlined'
               helperText={errors.name}
               error={errors.name !== null}
@@ -261,12 +305,14 @@ const InviteModal: React.FC<InviteModalProps> = ({
 
         <Box>
           <TextField
-          size="small"
+            size='small'
             required
             helperText={errors.email}
             error={errors.email !== null}
             variant='outlined'
             onChange={onChangeInput}
+            inputProps={{ style: { textTransform: "lowercase" } }}
+
             type='email'
             name='email'
             label='Email'
@@ -276,54 +322,54 @@ const InviteModal: React.FC<InviteModalProps> = ({
           />
         </Box>
       </Box>
-      <Box
-        display='flex'
-        flexDirection='column'
-        justifyContent='space-around'
-      >
+      <Box display='flex' flexDirection='column' justifyContent='space-around'>
         {type === COMPANIES && (
           <>
-        <Box mt={2}  mb={1} fontSize={14} className="ITCAvantGardeStdBkBold" fontWeight='fontWeightBold'>
-          Plan
-        </Box>
-          <Box mb={2}>
-            <TextField
-            size="small"
-            name='invitations'
-            variant='outlined'
-            disabled={loading}
-            helperText={errors.invitations}
-            onChange={onChangeInput}
-            error={errors.invitations !== null}
-            type='number'
-            required
-            placeholder='Number of invitations*'
-            value={dataNewUser.invitations?dataNewUser.invitations:null}
-            fullWidth
-
-            
-            />
-          </Box>
-            </>
+            <Box
+              mt={2}
+              mb={1}
+              fontSize={14}
+              className='ITCAvantGardeStdBkBold'
+              fontWeight='fontWeightBold'
+            >
+              Plan
+            </Box>
+            <Box mb={2}>
+              <TextField
+                size='small'
+                name='invitations'
+                variant='outlined'
+                disabled={loading}
+                helperText={errors.invitations}
+                onChange={onChangeInput}
+                error={errors.invitations !== null}
+                type='number'
+                required
+                placeholder='Number of invitations*'
+                value={dataNewUser.invitations ? dataNewUser.invitations : null}
+                fullWidth
+              />
+            </Box>
+          </>
         )}
-       
       </Box>
-      <Box
-        display='flex'
-        flexDirection='column'
-        justifyContent='space-around'
-        
-      >
-        <Box mt={type === COMPANIES?0:2} mb={2} fontSize={14} className="ITCAvantGardeStdBkBold" fontWeight='fontWeightBold'>
+      <Box display='flex' flexDirection='column' justifyContent='space-around'>
+        <Box
+          mt={type === COMPANIES ? 0 : 2}
+          mb={2}
+          fontSize={14}
+          className='ITCAvantGardeStdBkBold'
+          fontWeight='fontWeightBold'
+        >
           Period
         </Box>
-        <Box  mb={2} >
+        <Box mb={2}>
           <MuiPickersUtilsProvider utils={MomentUtils}>
             <Box display='flex'>
               <Box width='100%' mr={2}>
                 <KeyboardDatePicker
-                  initialFocusedDate={new Date()}
-                  size="small"
+                  initialFocusedDate={today}
+                  size='small'
                   fullWidth={true}
                   autoOk
                   variant='inline'
@@ -334,23 +380,22 @@ const InviteModal: React.FC<InviteModalProps> = ({
                   value={startedAt}
                   disablePast
                   disabled={loading}
-                maxDate={new Date('2025-01-01')}
-                disableToolbar
+                  maxDate={new Date('2025-01-01')}
+                  disableToolbar
                   InputAdornmentProps={{ position: 'start' }}
                   onChange={handleDateStartChange}
                 />
               </Box>
               <Box width='100%' ml={2}>
                 <KeyboardDatePicker
-                disablePast
-                disabled={loading}
-
+                  disablePast
+                  disabled={loading}
                   fullWidth={true}
                   disableToolbar
                   maxDate={new Date('2025-01-01')}
                   autoOk
                   variant='inline'
-                  size="small"
+                  size='small'
                   inputVariant='outlined'
                   label='Finish'
                   helperText={errors.finishedAt}
@@ -363,12 +408,17 @@ const InviteModal: React.FC<InviteModalProps> = ({
             </Box>
           </MuiPickersUtilsProvider>
         </Box>
-        <Box mb={1} fontSize={14} className="ITCAvantGardeStdBkBold" fontWeight='fontWeightBold'>
+        <Box
+          mb={1}
+          fontSize={14}
+          className='ITCAvantGardeStdBkBold'
+          fontWeight='fontWeightBold'
+        >
           Total cost
         </Box>
-        <Box mb={4} width="46%">
+        <Box mb={4} width='46%'>
           <TextField
-          size="small"
+            size='small'
             required
             onChange={onChangeInput}
             variant='outlined'
@@ -387,7 +437,7 @@ const InviteModal: React.FC<InviteModalProps> = ({
             <Button
               fullWidth={true}
               size='large'
-              onClick={()=>{
+              onClick={() => {
                 if (!loading) {
                   handleClose()
                 }
@@ -396,6 +446,9 @@ const InviteModal: React.FC<InviteModalProps> = ({
               color='secondary'
               variant='outlined'
               disabled={loading}
+              style={{
+                textTransform: 'capitalize'
+              }}
             >
               Cancel
             </Button>
@@ -407,9 +460,13 @@ const InviteModal: React.FC<InviteModalProps> = ({
               size='large'
               color='secondary'
               variant='contained'
+              style={{
+                textTransform: 'capitalize',
+                color: 'white'
+              }}
               disabled={loading}
             >
-              Sure
+              send
             </Button>
           </Box>
         </Box>
@@ -421,23 +478,21 @@ const InviteModal: React.FC<InviteModalProps> = ({
     <>
       <Modal
         open={isOpen}
-        onClose={()=>{
+        onClose={() => {
           if (!loading) {
-            handleClose()  
+            handleClose()
           }
-          }}
+        }}
         style={{
           display: 'flex',
           justifyContent: 'center',
-          alignItems: 'center',
-          
+          alignItems: 'center'
         }}
-        className="animate-fadein"
+        className='animate-fadein'
         aria-labelledby='simple-modal-title'
         aria-describedby='simple-modal-description'
       >
         {body}
-
       </Modal>
     </>
   )
@@ -447,9 +502,9 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     paper: {
       margin: '0 auto 0 auto',
-      overflowY:'auto',  
-      minWidth: "468px",
-      width:'468px',
+      overflowY: 'auto',
+      minWidth: '468px',
+      width: '468px',
       maxHeight: '100vh',
       backgroundColor: theme.palette.background.paper,
       padding: theme.spacing(2, 4, 3)

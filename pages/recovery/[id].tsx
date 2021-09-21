@@ -1,9 +1,5 @@
-import Layout from "../../src/layouts/Layout";
 import Head from "next/head";
 import Button from "@material-ui/core/Button";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import TextField from "@material-ui/core/TextField";
-import Link from "@material-ui/core/Link";
 import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
 import { makeStyles } from "@material-ui/core/styles";
@@ -13,8 +9,10 @@ import { verifyPassword } from "../../src/config/utils";
 import UserContext, {
   PasswordRecovery,
 } from "../../src/context/user/user.context";
-import { CircularProgress } from "@material-ui/core";
-import { COLORS } from "../../src/types";
+import {CustomInput} from '../login/index'
+import HeaderSimple from "../../src/components/general/HeaderSimple";
+import {COLORS,Images} from '../../src/types/index'
+import { Box } from "@material-ui/core";
 export interface RecoveryProps {}
 
 // eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbiI6eyJlbWFpbCI6ImFkbWluQGlubWVyc3lzLmNvbSIsInR5cGUiOnsiaWQiOjIsIm5hbWUiOiJBRE1JTiJ9LCJhZG1pbiI6eyJpZCI6OCwibmFtZSI6ImFzZGZzZGYiLCJsYXN0bmFtZSI6IkNow6F2ZXoiLCJhdmF0YXIiOiJodHRwczovL2QxYTM3MG5lbWl6YmpxLmNsb3VkZnJvbnQubmV0LzI0YzJmMzk4LTIyY2MtNDY5Mi05ZGI0LTIxYjkyMDc1ZDRmYy5nbGIiLCJ0aHVtYm5haWwiOiJodHRwczovL3JlbmRlcmFwaS5zMy5hbWF6b25hd3MuY29tL0xPWnNia0oyNi5wbmciLCJlbWFpbCI6ImFkbWluQGlubWVyc3lzLmNvbSIsInBhc3N3b3JkIjoiJDJiJDEyJFNoRVQ2NURpMXJZdnlyNm5mcTBaOS5FM3VpLlJMSkQxNlpESm84d1MwR2VaLzRJL09tdUpTIiwiYnVzaW5lc3MiOm51bGwsInV1aWQiOiI2MTY3Yjk5ZS1kZTkxLTRiNzAtODgxYy04YTVhOTBiZjE1YzEiLCJpc0RlbGV0ZWQiOmZhbHNlLCJpc0FjdGl2ZSI6dHJ1ZSwiY3JlYXRlZEF0IjoiMjAyMS0wNi0wM1QwMzowOToyNy4zMDVaIiwidXBkYXRlZEF0IjoiMjAyMS0wOC0wNVQyMToxMTo1Ny43NThaIiwidHlwZSI6eyJpZCI6MiwibmFtZSI6IkFETUlOIn19LCJzdXBlckFkbWluIjpudWxsLCJ1c2VyIjpudWxsLCJpZCI6IjkyNDkxNWJiLWE2ZWUtNGRlOS1iODg5LTAzZmVmNDRhMzNlOCJ9LCJpYXQiOjE2MjgyMTcyNjQsImV4cCI6MTYzNTQxNzI2NH0.13mM21HB2w46B52OwfLBK8sxF7LeI7_tQwHnX1PfWoI
@@ -26,11 +24,13 @@ const Recovery: React.FC<RecoveryProps> = () => {
   const token:string = router.query.id as string
   const [loginState, setloginState] = useState({
     password: "",
+    confirm:""
   });
   const [errors, setErrors] = useState({
     password: "",
+    confirm:""
   });
-  const { password } = loginState;
+  const { password,confirm } = loginState;
 
   useEffect(() => {
     const validate=async()=>{
@@ -57,6 +57,10 @@ const Recovery: React.FC<RecoveryProps> = () => {
   };
 
   const onChange = (e) => {
+    setErrors({
+      password: "",
+      confirm:""
+    })
     setloginState({
       ...loginState,
       [e.target.name]: e.target.value,
@@ -66,16 +70,27 @@ const Recovery: React.FC<RecoveryProps> = () => {
     let isValid = true;
     const newErrors = {
       password: "",
+      confirm:""
     };
     if (password.trim() === "") {
       newErrors.password = "Enter a value";
       isValid = false;
     }
-    // if (!verifyPassword(password)) {
-    //   isValid = false;
-    //   newErrors.password =
-    //     "Su contraseña no es segura, trate de incluir al menos un caracter diferente, 8 letras un número y letras mayúsculas y minúsculas.";
-    // }
+    if (confirm.trim() === "") {
+      newErrors.confirm = "Enter a value";
+      isValid = false;
+    }
+    if (!verifyPassword(password)) {
+      isValid = false;
+      newErrors.password =
+        "Your password is not secure, try to include at least one different character, 8 letters a number, and upper and lower case letters.";
+    }
+    if (password!==confirm) {
+      isValid = false;
+      newErrors.confirm =
+        "Passwords do not match";
+    }
+    
 
     if (!isValid) {
       setErrors(newErrors);
@@ -85,7 +100,6 @@ const Recovery: React.FC<RecoveryProps> = () => {
   const useStyles = makeStyles((theme) => ({
     paper: {
       marginTop: theme.spacing(8),
-
       display: "flex",
       flexDirection: "column",
       alignItems: "center",
@@ -98,11 +112,17 @@ const Recovery: React.FC<RecoveryProps> = () => {
       color: "white",
     },
     form: {
+      minWidth: '28.75rem',
+      maxWidth: '28.75rem',
+
       width: "100%", // Fix IE 11 issue.
       marginTop: theme.spacing(1),
     },
     submit: {
-      margin: theme.spacing(3, 0, 2),
+      minWidth: theme.spacing(10),
+      textTransform: 'capitalize',
+      fontSize: '1rem',
+      paddingTop: '0.55rem'
     },
   }));
   const classes = useStyles();
@@ -111,47 +131,117 @@ const Recovery: React.FC<RecoveryProps> = () => {
   }
 
   return (
-    <Layout>
+    <>
+
       <Head>
-        <title>Ocupath - Login </title>
+        <title>Ocupath - Recovery </title>
       </Head>
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
+      <HeaderSimple isLogin={false} />
+      <div style={ {
+        height: '100vh',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: COLORS.blue_primary,
+        color: 'white'
+      } }>
+
         <div className={classes.paper}>
-          <Typography component="h1" variant="h5">
-            Ingrese su nueva contraseña
-          </Typography>
+        <Box
+          width='100%'
+          mb={6}
+          height='4.5rem'
+          display='flex'
+          justifyContent='center'
+          fontWeight='fontWeightBold'
+          >
+          <img src={Images.logosvg} alt='Multivrsity' />
+        </Box>
+          <Box component="h1" color="#fff" fontSize="1rem" fontFamily="font3" >
+            Reset your password
+          </Box>
           <form onSubmit={onSubmit} className={classes.form}>
-            <TextField
+            <CustomInput
             disabled={loading}
             margin="normal"
             required
             fullWidth
             onChange={onChange}
             id="password"
-            label="password"
+            size="small"
+            label="Password"
+            variant='outlined'
             name="password"
             autoComplete="password"
-            autoFocus
             error={errors.password.length !== 0}
             helperText={errors.password}
+            InputLabelProps={{
+              style: {
+                color: 'white',
+                fontFamily: 'font2'
+              }
+            }}
+            FormHelperTextProps={ {
+              style: {
+                color: '#bb2929'
+              }
+            } }
+            InputProps={{
+              style: {
+                color: 'white',
+                fontFamily: 'font2'
+              }
+            }}
             />
+            <CustomInput
+            disabled={loading}
+            margin="normal"
+            required
+            fullWidth
+            onChange={onChange}
+            id="confirm"
+            size="small"
+            label="Confirm password"
+            variant='outlined'
+            name="confirm"
+            autoComplete="password"
+            error={errors.confirm.length !== 0}
+            helperText={errors.confirm}
+            FormHelperTextProps={ {
+              style: {
+                color: '#bb2929'
+              }
+            } }
+            InputLabelProps={{
+              style: {
+                color: 'white',
+                fontFamily: 'font2'
+              }
+            }}
+            InputProps={{
+              style: {
+                color: 'white',
+                fontFamily: 'font2'
+              }
+            }}
+            />
+            <Box justifyContent="center" pt={4} display="flex" width="100%"  >
+
             <Button
             disabled={loading}
-              type="submit"
-              fullWidth
-              variant="contained"
-              color="primary"
-              className={classes.submit}
+            type="submit"
+            variant="contained"
+            size="small"
+            color="secondary"
+            className={classes.submit}
             >
-              <Link href="/panel">
-                <span className={classes.button}>Enviar</span>
-              </Link>
+                <span className={classes.button}>Update password</span>
             </Button>
+              </Box>
           </form>
         </div>
-      </Container>
-    </Layout>
+      </div>
+    </>
   );
 };
 

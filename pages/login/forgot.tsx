@@ -1,22 +1,17 @@
-import Layout from "../../src/layouts/Layout";
 import Head from "next/head";
 import Button from "@material-ui/core/Button";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import TextField from "@material-ui/core/TextField";
-import Link from "@material-ui/core/Link";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
-import Container from "@material-ui/core/Container";
 import { useContext, useState } from "react";
 import { verifyEmail } from "../../src/config/utils";
 import UserContext, {
-  PasswordRecovery,
   ResetPassword,
 } from "../../src/context/user/user.context";
-import HeaderCustom from "../../src/components/general/HeaderCustom";
 import { Box, LinearProgress } from "@material-ui/core";
 import { COLORS } from "../../src/types";
 import { CustomInput } from ".";
+import HeaderSimple from "../../src/components/general/HeaderSimple";
+import withAuth from "../../src/auth/WithAuth";
 export interface ForgotProps {}
 
 const Forgot: React.FC<ForgotProps> = () => {
@@ -70,7 +65,8 @@ const Forgot: React.FC<ForgotProps> = () => {
    
      inner: {
       width: '34rem',
-      marginTop: '-3rem'
+      marginTop: '-3rem',
+      color:'white'
     },
     button: {
       color: "white",
@@ -91,7 +87,15 @@ const Forgot: React.FC<ForgotProps> = () => {
 
   return (
     <>
+      <Head>
+        <title>Multivrsity | Recover</title>
+        <meta
+          name='viewport'
+          content='minimum-scale=1, initial-scale=1, width=device-width'
+        />
+      </Head>
     
+     <HeaderSimple isLogin={false}/>
     <div style={ {
       height: '100vh',
       display: 'flex',
@@ -100,22 +104,19 @@ const Forgot: React.FC<ForgotProps> = () => {
       backgroundColor:COLORS.blue_primary,
       color:'white'
     } }>
-      <Head>
-        <title>Ocupath - Login </title>
-      </Head>
-            <HeaderCustom/>
+
 
       <div className={classes.inner}>
         <Typography component="h3" variant="h3" style={{textAlign: 'center'}} >
-          <Box fontWeight="fontWeightBold" m={4} >
+          <Box color="white" fontWeight="fontWeightBold" m={4} >
             Recover Password
       </Box>
           </Typography>
           <form onSubmit={onSubmit} className={classes.form}>
           <Typography component="h3"   style={ { fontSize:'16px', textAlign: 'center' } } >
-            <Box fontWeight="fontWeightLight" m={ 1 } >
+            <Box color="white" fontWeight="fontWeightLight" m={ 1 } >
               
-            Enter the email in which you want to receive your password 
+            Enter the email in which you want to receive instructions to reset your password 
           </Box>
         </Typography>
             <CustomInput
@@ -131,6 +132,11 @@ const Forgot: React.FC<ForgotProps> = () => {
               }}
             size="small"
             value={loginState.email}
+            FormHelperTextProps={ {
+              style: {
+                color: '#bb2929'
+              }
+            } }
               margin="normal"
               required
               fullWidth
@@ -179,4 +185,4 @@ const Forgot: React.FC<ForgotProps> = () => {
   );
 };
 
-export default Forgot;
+export default withAuth(Forgot) ;

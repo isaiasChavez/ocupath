@@ -6,14 +6,23 @@ import { verifyToken } from "../config/utils";
 import {USERS_TYPES} from '../types/'
 const withAuth = (WrappedComponent) => {
   return (props) => {
+
     const Router = useRouter();
     const [verified, setVerified] = useState(false);
-
+    const freeRoutes=["/","/login","/login/forgot"]
+    const routesBloquedWhenIsLogged=["/"]
+    
+    const isAFreeRoute = freeRoutes.includes(Router.pathname)
+    console.log({isAFreeRoute})
     useEffect(() => {
       const accessToken = localStorage.getItem(Config.TOKEN_NAME_INTERN);
       // if no accessToken was found,then we redirect to "/" page.
+      console.log({isAFreeRoute})
       if (!accessToken) {
-        Router.replace("/");
+        if (!isAFreeRoute) {
+          Router.replace("/");
+        }
+
       } else {
         // we call the api that verifies the token.
         const isValid =  verifyToken(accessToken);
@@ -22,6 +31,7 @@ const withAuth = (WrappedComponent) => {
         const routesAdmin =["/panel/admin"]
         const routesSuperAdmin =["/superadmin"]
         const routesGuest =["/panel/user"]
+        
 
         if (isValid.status) {
           setVerified(isValid.status);
@@ -29,6 +39,7 @@ const withAuth = (WrappedComponent) => {
           let isAdmin = userType ===USERS_TYPES.ADMIN
           let isSuperAdmin = userType ===USERS_TYPES.SUPER_ADMIN
           let isGuest = userType ===USERS_TYPES.GUEST
+
           if (isValid.status) {
               if (isAdmin) {
                 if (!routesAdmin.includes(Router.pathname)) {
@@ -40,6 +51,7 @@ const withAuth = (WrappedComponent) => {
                   Router.replace("/superadmin");
                 }
               }
+
               if (isGuest) {
                 if (!routesGuest.includes(Router.pathname)) {
                   Router.replace("/panel/user");
@@ -47,9 +59,6 @@ const withAuth = (WrappedComponent) => {
               }
             
           }
-
-
-
         } else {
           // If the token was fraud we first remove it from localStorage and then redirect to "/"
           localStorage.removeItem(Config.TOKEN_NAME_INTERN);
@@ -57,8 +66,9 @@ const withAuth = (WrappedComponent) => {
         }
       }
     }, []);
+    console.log({isAFreeRoute,verified})
 
-    if (verified) {
+    if (verified||isAFreeRoute) {
       return <WrappedComponent {...props} />;
     } else {
       return null;

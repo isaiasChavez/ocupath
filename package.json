@@ -16,6 +16,7 @@
     "@material-ui/icons": "^4.11.2",
     "@material-ui/lab": "^4.0.0-alpha.60",
     "@material-ui/pickers": "^3.3.10",
+    "antd": "^4.16.13",
     "axios": "^0.21.1",
     "class-validator": "^0.13.1",
     "jsonwebtoken": "^8.5.1",
@@ -26,6 +27,7 @@
     "react-dropzone": "^11.3.4",
     "react-loading-skeleton": "^2.2.0",
     "react-number-format": "^4.7.3",
+    "react-scroll": "^1.8.4",
     "react-toastify": "^7.0.4",
     "styled-components": "^5.3.0"
   },

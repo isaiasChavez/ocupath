@@ -4,7 +4,10 @@ import SesionContext from "../../context/sesion/sesion.context";
 import { COLORS, Images,USERS_TYPES } from "../../types";
 import LayersIcon from '@material-ui/icons/Layers';
 import UserContext from "../../context/user/user.context";
-
+import PersonOutlineOutlinedIcon from '@material-ui/icons/PersonOutlineOutlined';
+import FolderOpenOutlinedIcon from '@material-ui/icons/FolderOpenOutlined';
+import PeopleAltOutlinedIcon from '@material-ui/icons/PeopleAltOutlined';
+import ExitToAppOutlinedIcon from '@material-ui/icons/ExitToAppOutlined';
 export interface SideBarProps {
  setCurrentTab:Function,
  currentTab:number,
@@ -47,7 +50,9 @@ const SideBar: React.FC<SideBarProps> = ({setCurrentTab,currentTab}) => {
       setCurrentTab(PROFILE)
     } }>
       <ListItemIcon>
-        <LayersIcon color="primary" />
+        <PersonOutlineOutlinedIcon style={{
+          color:'white'
+        }} />
       </ListItemIcon>
       <ListItemText className={ classes.link } primary="Profile" />
     </ListItem>
@@ -55,15 +60,19 @@ const SideBar: React.FC<SideBarProps> = ({setCurrentTab,currentTab}) => {
       setCurrentTab(USER)
     } }>
       <ListItemIcon>
-        <LayersIcon color="primary" />
+        <PeopleAltOutlinedIcon style={{
+          color:'white'
+        }} />
       </ListItemIcon>
-      <ListItemText className={ classes.link } primary="User" />
+      <ListItemText className={ classes.link } primary="Users" />
     </ListItem>}
     {(isAdmin||isGuest)&& <ListItem style={currentTab === FILES?styleSelected:{} } button selected={ currentTab === FILES } onClick={ () => {
       setCurrentTab(FILES)
     } }>
       <ListItemIcon>
-        <LayersIcon color="primary" />
+        <FolderOpenOutlinedIcon style={{
+          color:'white'
+        }} />
       </ListItemIcon>
       <ListItemText className={ classes.link } primary="Files" />
     </ListItem>}
@@ -72,7 +81,9 @@ const SideBar: React.FC<SideBarProps> = ({setCurrentTab,currentTab}) => {
   <List>
     <ListItem button  disabled={loadingSesion}>
       <ListItemIcon>
-        <LayersIcon color="primary" />
+        <ExitToAppOutlinedIcon style={{
+          color:'white'
+        }} />
       </ListItemIcon>
       <a onClick={ () => logout() }>
 
@@ -91,6 +102,7 @@ const useStyles = makeStyles(theme => ({
    
  },
  drawerPaper: {
+  zIndex: 0 ,
   position: 'relative',
   width: drawerWidth,
   height: '100%',

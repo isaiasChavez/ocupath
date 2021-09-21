@@ -1,6 +1,6 @@
 //Módulo de administración súper usuario
 
-import React, { useContext, useEffect, useState } from "react";
+import React,{ useContext,useEffect,useState } from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -17,28 +17,30 @@ import Container from "@material-ui/core/Container";
 import Layout from "../../src/layouts/Layout";
 import { useRouter } from "next/router";
 import clienteAxios from "../../src/config/axios";
-import { URLS } from "../../src/types/index";
+import { COLORS,Images,URLS } from "../../src/types/index";
 import { AxiosResponse } from "axios";
 import UserContext from "../../src/context/user/user.context";
 import withAuth from "../../src/auth/WithAuth";
-import { decifreToken } from "../../src/config/utils";
+import { decifreToken,verifyPassword } from "../../src/config/utils";
+import HeaderSimple from "../../src/components/general/HeaderSimple";
+import { CustomInput } from "../login";
+import { CircularProgress } from "@material-ui/core";
 
-export interface RegisterProps {}
+export interface RegisterProps { }
 
 const Register: React.FC<RegisterProps> = () => {
   const router = useRouter();
 
-  const [isViewBlocked, setIsViewBlocked] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
+  const [isViewBlocked,setIsViewBlocked] = useState(false)
+  const [isLoading,setIsLoading] = useState(true)
   const { id } = router.query;
 
-  const {addUserAdm,addUser} = useContext(UserContext)
+  const { addUserAdm,addUser } = useContext(UserContext)
 
   const classes = useStyles();
   useEffect(() => {
-
     if (id) {
-      console.log({id})
+      console.log({ id })
       const status = decifreToken(id as string)
       if (status.status) {
         console.log(status.jwtDecoded.token)
@@ -46,12 +48,12 @@ const Register: React.FC<RegisterProps> = () => {
       }
 
     }
-    return () => {};
-  }, [id]);
+    return () => { };
+  },[id]);
 
-  const [dataUsuario, setDataUsuario] = useState(initialState())
+  const [dataUsuario,setDataUsuario] = useState(initialState())
 
-  const [errors, setErrors] = useState(initialErrors())
+  const [errors,setErrors] = useState(initialErrors())
 
 
   const onChangeInput = (e) => {
@@ -69,50 +71,46 @@ const Register: React.FC<RegisterProps> = () => {
     console.log("Validando comunes")
     let newErrors = { ...errors }
     if (dataUsuario.name.trim().length === 0) {
-      setErrors({ ...errors, name: "Enter a value válido" });
+      newErrors.name= "The field is empty"
       isValid = false
     }
     if (dataUsuario.lastname.trim().length === 0) {
-      setErrors({ ...errors, name: "Enter a value válido" });
+      newErrors.lastname= "The field is empty"
+      isValid = false
+    }
+    if (!verifyPassword(dataUsuario.password)) {
+      newErrors.password= "Your password is not secure, try to include at least one different character, 8 letters a number, and upper and lower case letters"
       isValid = false
     }
     if (dataUsuario.password.trim().length === 0) {
-      setErrors({ ...errors, name: "Enter a value válido" });
+      newErrors.password= "The field is empty"
       isValid = false
     }
-    if (dataUsuario.confirmPassword!==dataUsuario.password ) {
-      setErrors({
-        ...errors,
-        password: "Las contraseñas no coinciden",
-        confirmPassword: "Las contraseñas no coinciden"
-      });
+    if (dataUsuario.confirmPassword !== dataUsuario.password) {
+      newErrors.confirmPassword= "Passwords do not match",
       isValid = false
     }
-    if (!isValid) {
+    console.log({isValid,newErrors})
       setErrors(newErrors)
-    }
     return isValid
   }
 
-  const onSubmit = async(e) => {
+  const onSubmit = async (e) => {
     e.preventDefault()
     if (validateFields()) {
-        if (dataUsuario.type === 2) {
-          const response = await addUserAdm(dataUsuario)
-        }
-        if (dataUsuario.type === 3) {
-          await addUser(dataUsuario)
-        }
-        setDataUsuario(initialState())
-      } else {
-        alert("Errores ")
-        
+      if (dataUsuario.type === 2) {
+        await addUserAdm(dataUsuario)
       }
+      if (dataUsuario.type === 3) {
+        await addUser(dataUsuario)
+      }
+      setDataUsuario(initialState())
+    }
 
   }
 
 
-  const getDataRegister = async (token:string) => {
+  const getDataRegister = async (token: string) => {
     try {
 
       const response: AxiosResponse = await clienteAxios.get(
@@ -129,7 +127,7 @@ const Register: React.FC<RegisterProps> = () => {
           ...dataUsuario,
           email: data.data.email,
           company: data.data.company,
-          type:data.data.type,
+          type: data.data.type,
         })
       }
     } catch (error) {
@@ -138,29 +136,79 @@ const Register: React.FC<RegisterProps> = () => {
     }
   };
 
-  if (isViewBlocked&&!isLoading) {
-      return <div>¡No puedes estár aquí!</div>
+  if (isViewBlocked && !isLoading) {
+    return <div>¡No puedes estár aquí!</div>
   }
   if (isLoading) {
-      return <div>Cargando</div>
+    return <Box style={{
+      backgroundColor:COLORS.blue_primary
+    }} height="100vh" width="100vw" display="flex" justifyContent="center" alignItems="center">
+      <CircularProgress color="secondary" />
+
+    </Box>
+  }
+  const props = {
+    FormHelperTextProps: {
+      style: {
+        color: '#bb2929'
+      }
+    },
+    InputLabelProps: {
+      style: {
+        color: 'white',
+        fontFamily: 'font2'
+      }
+    },
+    InputProps: {
+      style: {
+        color: 'white',
+        fontFamily: 'font2'
+      }
+    },
   }
 
   return (
-    <Layout>
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <div className={classes.paper}>
-          <Avatar className={classes.avatar}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            WELCOME TO OCUPATH VR
-          </Typography>
-          <form className={classes.form} onSubmit={onSubmit}>
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={12}>
-                <TextField
-                  value={dataUsuario.name}
+    <>
+      <HeaderSimple isLogin={ false } />
+      <div
+        style={ {
+          height: '100vh',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: COLORS.blue_primary
+        } }
+        className="animate-fadein"
+      >
+        <div className={ classes.paper }>
+          <Box mb={ 3 } component="h1" textAlign="center" fontFamily="font1" fontSize="1.6rem" lineHeight="20px" color={ COLORS.white }>
+            Welcome to
+          </Box>
+          <Box
+            width='100%'
+            mb={ 1 }
+            height='3rem'
+            display='flex'
+            justifyContent='center'
+            fontWeight='fontWeightBold'
+          >
+            <img src={ Images.logosvg } alt='Multivrsity' />
+          </Box>
+          <form className={ classes.form } onSubmit={ onSubmit }>
+            <Box component="h1" fontFamily="font2" fontSize="0.9rem" lineHeight="20px" color={ COLORS.white }>
+              To complete the process please provide us with the following information:
+            </Box>
+            <Box mb={ 2 } mt={ 3 } component="h1" fontFamily="font1" fontSize="0.9rem" lineHeight="20px" color={ COLORS.white }>
+              Personal Information
+            </Box>
+            <Grid container spacing={ 2 }>
+              <Grid item xs={ 12 } sm={ 12 }>
+                <CustomInput
+                  { ...props }
+                  size='small'
+                  className={ classes.input }
+
+                  value={ dataUsuario.name }
                   autoComplete="fname"
                   name="name"
                   variant="outlined"
@@ -169,47 +217,65 @@ const Register: React.FC<RegisterProps> = () => {
                   id="name"
                   label="Name"
                   autoFocus
-                   onChange={ onChangeInput }
+                  onChange={ onChangeInput }
+
                 />
               </Grid>
-              <Grid item xs={12} sm={12}>
-                <TextField
+              <Grid item xs={ 12 } sm={ 12 }>
+                <CustomInput
+                  { ...props }
+                  size='small'
+                  className={ classes.input }
+
                   variant="outlined"
                   required
                   fullWidth
                   id="lastname"
-                  label="Last Name"
+                  label="Surname"
                   name="lastname"
                   autoComplete="lname"
-                  value={dataUsuario.lastname}
-                   onChange={ onChangeInput }
+                  value={ dataUsuario.lastname }
+                  onChange={ onChangeInput }
                 />
               </Grid>
-              {dataUsuario.type ===2 && <Grid item xs={12} sm={12}>
-                <TextField
+              { dataUsuario.type === 2 && <Grid item xs={ 12 } sm={ 12 }>
+                <CustomInput
+                  { ...props }
+                  size='small'
+                  className={ classes.input }
+
                   variant="outlined"
                   disabled
                   fullWidth
                   id="business"
                   label="Company"
-                  value={dataUsuario.company}
+                  value={ dataUsuario.company }
                   name="business"
                 />
-              </Grid>}
-              <Grid item xs={12}>
-                <TextField
+              </Grid> }
+              <Grid item xs={ 12 }>
+                <CustomInput
+                  { ...props }
+                  size='small'
+                  className={ classes.input }
+
                   variant="outlined"
                   disabled
                   fullWidth
                   id="email"
-                  label="Email Address"
+                  label="Email"
                   name="email"
-                  value={dataUsuario.email}
+                  value={ dataUsuario.email }
                   autoComplete="email"
                 />
               </Grid>
-              <Grid item xs={12}>
-                <TextField
+              <Grid item xs={ 12 }>
+                <CustomInput
+                  { ...props }
+                  size='small'
+                  className={ classes.input }
+                  error={errors.password!==null}
+            helperText={errors.password}
                   variant="outlined"
                   required
                   fullWidth
@@ -219,11 +285,16 @@ const Register: React.FC<RegisterProps> = () => {
                   id="password"
                   value={ dataUsuario.password }
                   autoComplete="current-password"
-                   onChange={ onChangeInput }
+                  onChange={ onChangeInput }
                 />
               </Grid>
-               <Grid item xs={12}>
-                <TextField
+              <Grid item xs={ 12 }>
+                <CustomInput
+                  { ...props }
+                  size='small'
+                  className={ classes.input }
+                  error={errors.confirmPassword!==null}
+                  helperText={errors.confirmPassword}
                   variant="outlined"
                   required
                   fullWidth
@@ -232,27 +303,29 @@ const Register: React.FC<RegisterProps> = () => {
                   type="password"
                   id="password"
                   autoComplete="current-password"
-                  value={dataUsuario.confirmPassword}
-                   onChange={ onChangeInput }
+                  value={ dataUsuario.confirmPassword }
+                  onChange={ onChangeInput }
                 />
               </Grid>
-            
+
             </Grid>
+            <Box display="flex" justifyContent="center" >
+
             <Button
               type="submit"
-              fullWidth
               variant="contained"
-              color="primary"
-              className={classes.submit}
-            >
-              Send Confirmatiom
+              color="secondary"
+              className={ classes.submit }
+              >
+              Send Confirmation
             </Button>
-          
+              </Box>
+
           </form>
         </div>
-      
-      </Container>
-    </Layout>
+
+      </div>
+    </>
   );
 };
 
@@ -271,10 +344,21 @@ const useStyles = makeStyles((theme) => ({
   form: {
     width: "100%", // Fix IE 11 issue.
     marginTop: theme.spacing(3),
+    maxWidth: '35rem',
+    minWidth: '35%',
+
   },
   submit: {
-    margin: theme.spacing(3, 0, 2),
+    margin: theme.spacing(3,0,2),
+    color: 'white',
+    minWidth: '10rem',
+  
+    paddingTop: '0.55rem',
+    textTransform: 'capitalize'
   },
+  input: {
+    marginBottom: theme.spacing(1),
+  }
 }));
 
 const initialState = () => {
@@ -285,7 +369,7 @@ const initialState = () => {
     email: '',
     password: '',
     confirmPassword: '',
-    type:null
+    type: null
   }
 }
 
@@ -294,6 +378,7 @@ const initialState = () => {
 const initialErrors = () => {
   return {
     name: null,
+    lastname: null,
     password: null,
     confirmPassword: null,
     email: null,

@@ -1,4 +1,4 @@
-import { IsNotEmpty,IsString,IsUUID } from "class-validator";
+import {  IsNotEmpty,IsString,IsUUID } from "class-validator";
 import { createContext } from "react";
 
 
@@ -13,6 +13,8 @@ export class DeleteAssetDto {
   constructor (uuid: string) {
     this.uuid = uuid;
   }
+  @IsNotEmpty()
+  @IsUUID()
   uuid: string;
 }
 export type AssetsResponse = {
@@ -28,7 +30,8 @@ export type Asset =  {
     id: number,
     name: string
   },
-  url:string
+  url:string,
+  uuid:string
 }
 
 
@@ -36,7 +39,19 @@ interface AssetsContextInterface {
   deleteAsset: Function;
   successCreate: Function;
   getAssetsUser: Function;
-  assets:AssetsResponse
+  openPreviewer:Function;
+  closePreviewer:Function;
+  selectAsset:Function;
+  prevPreview:Function,
+  nextPreview:Function,
+
+  assets:AssetsResponse,
+  currentAsset:Asset,
+  previewIsImage:boolean,
+  isPreviewerOpened:boolean,
+  currentAssets:Asset[],
+  loading:boolean
+
 }
 
 

@@ -252,12 +252,15 @@ export class UpdateUserDTO {
   constructor({
     name,
     avatar,
-    thumbnail
+    thumbnail,
+    roomImage
   }) {
     this.name=name
     this.avatar=avatar
     this.thumbnail=thumbnail
+    this.roomImage = roomImage;
   }
+
   @IsOptional()  
   @IsString()
   name: string;
@@ -271,6 +274,10 @@ export class UpdateUserDTO {
   @IsString()
   @MaxLength(150)
   thumbnail: string;
+
+  @IsOptional()  
+  @IsString()
+  roomImage: string;
 
  
 }
@@ -319,14 +326,53 @@ export class DeleteOrSuspendUserDTO {
   @IsOptional()
   @IsBoolean()
   status: boolean;
+}
+
+export interface SendEmailInfoProps {
+  surname: string;
+  name:string,
+  email: string;
+  company: string;
+  phone: string;
+};
+export class SendEmailInfo implements SendEmailInfoProps{
+  constructor({name,surname,company,email,phone}:SendEmailInfoProps) {
+    this.name= name
+    this.surname = surname
+    this.company = company
+    this.email = email
+    this.phone = phone
+  } 
+
+  @IsString()
+  @IsNotEmpty()
+  @IsEmail()
+  readonly email: string;
+  @IsString()
+  @IsNotEmpty()
+  readonly name: string;
+  @IsString()
+  @IsNotEmpty()
+  readonly surname: string;
+  @IsString()
+  @IsNotEmpty()
+  readonly company: string;
+  @IsString()
+  @IsNotEmpty()
+  readonly phone: string;
 
 }
+
+
 interface UserContextInterface {
   resetPass: Function;
   logUser: Function;
   confirmPass: Function;
   passRecover: Function;
   inviteUser: Function;
+  isGuest:boolean;
+  isAdmin:boolean;
+  isSuperAdmin:boolean;
   addUserAdm: Function;
   deleteUserAdm: Function;
   updateUserAdm: Function;
@@ -342,6 +388,7 @@ interface UserContextInterface {
   getAdminChildDetail: Function;
   getUserChildDetail: Function;
   validateToken: Function;
+  sendInformationForm:Function;
   updateName: Function;
   profile: Profile;
   childrens:Childrens,

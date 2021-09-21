@@ -1,7 +1,25 @@
 const logo = 'https://ocupath.fra1.digitaloceanspaces.com/app/logo.png'
 const logo2x = 'https://ocupath.fra1.digitaloceanspaces.com/app/logo2x.svg'
+const logosvg = 'https://ocupath.fra1.digitaloceanspaces.com/app/multi.svg'
 const upload = 'https://ocupath.fra1.digitaloceanspaces.com/app/Group%20348.svg'
+const dropimages = 'https://ocupath.fra1.digitaloceanspaces.com/app/dropimages.svg'
+const dropimages360 = 'https://ocupath.fra1.digitaloceanspaces.com/app/dropimages360.svg'
+const dropvideo = 'https://ocupath.fra1.digitaloceanspaces.com/app/dropvideos.svg'
+const dropvideo360 = 'https://ocupath.fra1.digitaloceanspaces.com/app/dropvideos360.svg'
+const landing1 = 'https://ocupath.fra1.digitaloceanspaces.com/app/landing1.png'
+const landing2 = 'https://ocupath.fra1.digitaloceanspaces.com/app/landing2.png'
+const landing3 = 'https://ocupath.fra1.digitaloceanspaces.com/app/landing3.png'
+const landing4 = 'https://ocupath.fra1.digitaloceanspaces.com/app/landing.png'
+const landingLogin = 'https://ocupath.fra1.digitaloceanspaces.com/app/login.png'
+const godown = 'https://ocupath.fra1.digitaloceanspaces.com/app/godown.png'
+const sidequest = 'https://ocupath.fra1.digitaloceanspaces.com/app/sidequest.png'
+const steam = 'https://ocupath.fra1.digitaloceanspaces.com/app/steam.png'
+const logichiquito = 'https://ocupath.fra1.digitaloceanspaces.com/app/logochiquito.png'
+const powered = 'https://ocupath.fra1.digitaloceanspaces.com/app/powered.png'
+const preload = '/assets/images/preload.png'
 
+
+//logging
 export enum LOG_A {
   RESET_PASS_SUCCESS = "RESET_PASS_SUCCESS",
   CONFIRM_PASS_SUCCESS = "CONFIRM_PASS_SUCCESS",
@@ -11,6 +29,7 @@ export enum LOG_A {
   LOGIN_ERROR = "LOGIN_ERROR",
   CLOSE_SESION = "CLOSE_SESION",
 }
+//admins
 export enum AD_A {
   REGISTER_ADM_SUCCES = "REGISTER_ADM_SUCCES",
   DELETE_ADM_SUCCESS = "DELETE_ADM_SUCCESS",
@@ -19,6 +38,7 @@ export enum AD_A {
   ADMIN_CHILD_DETAIL = "ADMIN_CHILD_DETAIL",
   USER_CHILD_DETAIL = "USER_CHILD_DETAIL",
 }
+//Users-Guest
 export enum US_A {
   CHILD_DETAIL="CHILD_DETAIL",
   UPDATE_NAME="UPDATE_NAME",
@@ -31,10 +51,20 @@ export enum US_A {
   UPDATE_PERIOD_SUCCESS="UPDATE_PERIOD_SUCCESS",
   CHILDRENS = "CHILDRENS",
 }
+//Assets
 export enum AS_A {
   CREATE_SUCCESS = "CREATE_SUCCESS",
   DELETE_SUCCESS = "DELETE_SUCCESS",
   GET_ASSETS = "GET_ASSETS",
+}
+//miscelanea
+export enum MIS {
+  OPEN_PREVIEWER = "OPEN_PREVIEWER",
+  CLOSE_PREVIEWER = "CLOSE_PREVIEWER",
+  SELECT_ASSET = "SELECT_ASSET",
+  NEXT_PREVIEW = "NEXT_PREVIEW",
+  PREV_PREVIEW = "PREV_PREVIEW",
+
 }
 
 
@@ -77,6 +107,9 @@ export const URLS = {
   urlUploadImage360:'api/upload/2',
   urlUploadVideo:'api/upload/3',
   urlUploadVideo360:'api/upload/4',
+  urlUploadRoom:'api/upload/6',
+  //emails
+  urlSendInformation:'api/sesion/info'
 };
 
 export const COMPANIES =0
@@ -113,6 +146,7 @@ export enum USERS_TYPES {
 
 
 export const COLORS = {
+  white:'#fff',
   gray:'#A8A8A8',
   GRAY_MEDIUM:'#C4C4C4',
   gray_header:'#767b8a',
@@ -123,11 +157,30 @@ export const COLORS = {
   blue_secondary:'#45A0C5',
   blue_selected:'#76D3F8',
   selected:'#2c3d71',
-  blue_header:'#32406a'
+  blue_header:'#32406a',
+  red_error:'#bb2929',
 }
 
 export const Images = {
+  drop:{
+    dropimages,
+    dropimages360,
+    dropvideo,
+    dropvideo360
+  },
   logo,
   logo2x,
-  upload
+  logosvg,
+  upload,
+  landing1,
+  landing2,
+  landing3,
+  landing4,
+  landingLogin,
+  godown,
+  sidequest,
+  steam,
+  logichiquito,
+  powered,
+  preload
 }

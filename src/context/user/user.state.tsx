@@ -13,6 +13,7 @@ import UserContext, {
   GetUserDetailDTO,
   InviteUserDTO,
   ResetPassword,
+  SendEmailInfo,
   UpdateUserAdminDTO,
   UpdateUserDTO,
 } from "./user.context";
@@ -20,7 +21,6 @@ import UserContext, {
 import { AD_A, US_A, LOG_A, URLS,USERS } from "../../types/index";
 import UserReducer, { Profile, User, UserStateType } from "./user.reducer";
 import { LoginDTO } from "../../types/types";
-import { validateResponse } from "../../config/utils";
 import { validateOrReject } from "class-validator";
 import NotificationsContext from "../notifications/notifications.context";
 
@@ -69,7 +69,7 @@ const UserState = ({ children }) => {
         `${URLS.reset}${passwordRecovery.email}`
         );
         setLoading(false)
-        if (validateResponse(response, LOG_A.RECOVER_PASS_SUCCESS)) {
+        console.log(response.data)
           if (response.data.status ===0) {
             sendAlert({
               type:'success',
@@ -86,14 +86,14 @@ const UserState = ({ children }) => {
               msg:"User does not exist"
             })
           }
-          if (response.data.status ===2) {
+          else if (response.data.status ===2) {
             sendAlert({
               type:'warning',
               msg:"We have not been able to contact this email"
             })
           }
+
           return response.data.status
-        }
       } catch (error) {
         sendAlert({
           type:'error',
@@ -151,6 +151,12 @@ const UserState = ({ children }) => {
           payload: data,
         });
       }
+      if (data.status===6) {
+        sendAlert({
+          type:'error',
+          msg:"You cannot select a date before today"
+        })
+      }
       if (data.status===5) {
         sendAlert({
           type:'error',
@@ -193,12 +199,12 @@ const UserState = ({ children }) => {
   };
   const getUserChildrens = async () => {
     try {
+      console.log("getUserChildrens")
       setLoading(true)
       const { data } = await axios.post(URLS.childrens);
       console.log({data})
       setLoading(false)
       if (data.status ===0) {
-       
         dispatch({
           type: US_A.CHILDRENS,
           payload: data,
@@ -222,7 +228,7 @@ const UserState = ({ children }) => {
       if (data.status ===0) {
         sendAlert({
           type:'success',
-          msg:'The invitation has been sent'
+          msg:'Successful registration'
         })
           router.push("/login");
       }
@@ -248,14 +254,41 @@ const UserState = ({ children }) => {
       console.error("** Error validating addUserAdm ** ", { error });
     }
   };
+  const addUser = async (createUserDTO: CreateUserDTO) => {
+    try {
+      await validateOrReject(createUserDTO);
+      const { data } = await axios.post(URLS.create, createUserDTO);
+      if (data.status ===0) {
+          sendAlert({
+            type:'success',
+            msg:'Successful registration'
+          })
+          dispatch({
+            type: US_A.REGISTER_SUCCES,
+            payload: data,
+          });
+          router.push("/login");
+
+      }
+      if (data.status ===2) {
+        sendAlert({
+          type:'warning',
+          msg:"The email already exists"
+        })
+      } 
+        
+    } catch (error) {
+      console.error("** Error validating addUser ** ", { error });
+    }
+  };
 
   const getUserDetail = async () => {
     try {
       
       setLoading(true)
       const { data } = await axios.get(URLS.userDetail);
-
       setLoading(false)
+      console.log("asdf=>",US_A.GET_USER_DETAIL,{data})
       if (data.status ===0) {
         dispatch({ type: US_A.GET_USER_DETAIL, payload: data.profile });
       }
@@ -269,14 +302,14 @@ const UserState = ({ children }) => {
     }
   };
   
-  const getUserChildDetail = async () => {
+  const getUserChildDetail = async (selectedUser:User) => {
     try {
-      const dto = new GetUserDetailDTO(state.selectedUser.uuid)
+      const dto = new GetUserDetailDTO(selectedUser.uuid)
       await validateOrReject(dto);
       setLoading(true)
       const { data } = await axios.post(URLS.userChildDetail, dto);
+      console.log(AD_A.USER_CHILD_DETAIL,{data})
       setLoading(false)
-  
       if (data.status ===0) {
         dispatch({ type: AD_A.USER_CHILD_DETAIL, payload: data });
       }
@@ -297,10 +330,6 @@ const UserState = ({ children }) => {
     }
   };
   const getAdminChildDetail = async (uuid) => {
-    sendAlert({
-      type:'success',
-      msg:'Prueba para ver color de notificación success'
-    })
     try {
       const dto = new GetAdminDetailDTO(uuid)
       console.log({dto})
@@ -316,12 +345,12 @@ const UserState = ({ children }) => {
   };
 
   const selectUser = async (user:User,type:number) => {
-    console.log("selectUser")
     try {
       dispatch({
         type: US_A.SELECT_USER,
         payload: {
-        user,type
+        user,
+        type
         },
       });
     } catch (error) {
@@ -343,7 +372,7 @@ const UserState = ({ children }) => {
         });
         sendAlert({
           type:'success',
-          msg:'User have been updated'
+          msg:'User has been updated'
         })
         return {status:data.status,name}
       }
@@ -453,34 +482,10 @@ console.log({deleteUserDTO})
     }
   };
 
-  const addUser = async (createUserDTO: CreateUserDTO) => {
-    try {
-      await validateOrReject(createUserDTO);
-      const { data } = await axios.post(URLS.create, createUserDTO);
-      if (data.status ===0) {
-          sendAlert({
-            type:'success',
-            msg:'Successful registration'
-          })
-          dispatch({
-            type: US_A.REGISTER_SUCCES,
-            payload: data,
-          });
-      }
-      if (data.status ===2) {
-        sendAlert({
-          type:'warning',
-          msg:"The email already exists"
-        })
-      } 
-        
-    } catch (error) {
-      console.error("** Error validating addUser ** ", { error });
-    }
-  };
+ 
   
   
-  const updateUser = async (updateUserDTO: UpdateUserDTO) => {
+   const updateUser = async (updateUserDTO: UpdateUserDTO) => {
     try {
       await validateOrReject(updateUserDTO);
       setLoading(true)
@@ -494,7 +499,7 @@ console.log({deleteUserDTO})
         });
         sendAlert({
           type:'success',
-          msg:'User have been updated'
+          msg:'User have has updated'
         })
       }
       return data.status
@@ -533,6 +538,7 @@ console.log({deleteUserDTO})
       await validateOrReject(loginDTO);
       setLoading(true)
       const {data} = await axios.post(URLS.login, loginDTO);
+      console.log({data})
       setLoading(false)
       if (data.status === 0) {
         tokenAuth(data.profile.token);
@@ -563,6 +569,21 @@ console.log({deleteUserDTO})
       })
     }
   };
+  const sendInformationForm = async (sendInformationDTO: SendEmailInfo):Promise<number>=> {
+    try {
+      await validateOrReject(sendInformationDTO);
+      setLoading(true)
+      const {data} = await axios.post(URLS.urlSendInformation, sendInformationDTO);
+      setLoading(false)
+      return data.status
+    } catch (error) {
+      setLoading(false)
+      sendAlert({
+        type:'warning',
+        msg:"Could send email"
+      })
+    }
+  };
 
 
 
@@ -587,6 +608,7 @@ console.log({deleteUserDTO})
         passRecover,
         suspendUser,
         updateName,
+        sendInformationForm,
         logUser,
         selectUser,
         getUserChildrens,
@@ -633,12 +655,19 @@ const initialState = () => {
       id: "",
       token: "",
       name: "",
+      roomImage:'',
       lastname: "",
       thumbnail:"",
       email: "",
-      type:0
+      type:0,
+      lastSuscription:{
+        invitations:0
+      }
     },
     type: 0,
+    isAdmin:false,
+    isGuest:false,
+    isSuperAdmin:false
   };
   return state;
 };

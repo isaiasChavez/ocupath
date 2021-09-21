@@ -5,6 +5,8 @@ import AskModal from '../general/AskModal';
 import UserDetailModal from './UserDetailModal';
 import { USERS,USERS_TYPES } from '../../types'
 import moment from 'moment'
+import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
+import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 import UserContext from '../../context/user/user.context';
 import { User } from '../../context/user/user.reducer';
 export interface TableCompaniesProps {
@@ -180,7 +182,6 @@ const TableCompanies: React.FC<TableCompaniesProps> = () => {
                   { getDataStatus(user.status).name }
                 </Box>
 
-                {/* color={ getDataStatus(user.status).color } */ }
               </StyledTableCell>
               <StyledTableCell align='center'>
                 { moment(user.lastSuscription.createdAt).format('L') }
@@ -195,32 +196,30 @@ const TableCompanies: React.FC<TableCompaniesProps> = () => {
                   inputProps={ { 'aria-label': 'secondary checkbox' } }
                 />
               </StyledTableCell>
-              <StyledTableCell align='right'>
-                <Button
-                  disabled={!user.isActive||loading}
-                  size='small'
-                  onClick={ () => {
+              <StyledTableCell align='center'>
+                <EditOutlinedIcon
+                style={{ 
+                  color:'#A6ABAF',
+                  cursor:'pointer'
+                }}
+                onClick={ () => {
                     if (user.isActive) {
                       onEdit(user)
                     }
                   } }
-                  color='primary'
-                  variant="outlined"
-                >
-                  Edit
-                </Button>
+                
+                />
+              
               </StyledTableCell>
-              <StyledTableCell align='right'>
-                { ' ' }
-                <Button
-                  disabled={loading}
-                  variant="outlined"
-                  size='small'
-                  onClick={ () => onDelete(user) }
-                  color='secondary'
-                >
-                  Delete
-                </Button>
+              <StyledTableCell align='center'>
+                <DeleteOutlineOutlinedIcon
+                style={{ 
+                  color:'#A6ABAF',
+                  cursor:'pointer'
+                }}
+                onClick={ () => onDelete(user) }
+                />
+            
               </StyledTableCell>
             </StyledTableRow>
           )) }
