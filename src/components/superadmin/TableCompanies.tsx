@@ -196,7 +196,7 @@ const TableCompanies: React.FC<TableCompaniesProps> = () => {
                   inputProps={ { 'aria-label': 'secondary checkbox' } }
                 />
               </StyledTableCell>
-              <StyledTableCell align='right'>
+              <StyledTableCell align='center'>
                 <EditOutlinedIcon
                 style={{ 
                   color:'#A6ABAF',
@@ -211,7 +211,7 @@ const TableCompanies: React.FC<TableCompaniesProps> = () => {
                 />
               
               </StyledTableCell>
-              <StyledTableCell align='right'>
+              <StyledTableCell align='center'>
                 <DeleteOutlineOutlinedIcon
                 style={{ 
                   color:'#A6ABAF',

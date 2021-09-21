@@ -220,6 +220,7 @@ const FormEdit: React.FC<FormEditProps> = ({ type, toggleEditAvatar }) => {
                 onClick={onSubmit}
                 variant='contained'
                 color='secondary'
+                disableElevation
               >
                 Save
               </ButtonSave>
@@ -318,6 +319,7 @@ const RightSide = () => {
       <Box
         maxHeight='8rem'
         minHeight='8rem'
+        minWidth='100%'
         width='100%'
         display="flex"
         justifyContent="center"
@@ -393,6 +395,7 @@ const RightSide = () => {
             variant='contained'
             onClick={handleUpload}
             className={classes.submit}
+            disableElevation
           >
             <span
               className='ITCAvantGardeStdBkSemiBold'
