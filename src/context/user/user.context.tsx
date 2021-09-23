@@ -390,7 +390,6 @@ interface UserContextInterface {
   getUserChildDetail: Function;
   validateToken: Function;
   sendInformationForm:Function;
-  updateName: Function;
   profile: Profile;
   childrens:Childrens,
   selectedUser:User;

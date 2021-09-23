@@ -319,6 +319,7 @@ const UserState = ({ children }) => {
       console.error("** Error validating addUserAdm ** ", { error });
     }
   };
+
   
   const getUserChildDetail = async (selectedUser:User) => {
     try {
@@ -376,35 +377,7 @@ const UserState = ({ children }) => {
     }
   };
 
-  const updateName =async (name:string): Promise<{status:number,name:string}> => {
-    try {
-      const changeNameDTO = new ChangeName(name)
-      await validateOrReject(changeNameDTO);
-      setLoading(true)
-      const { data } = await axios.post(URLS.updateName, changeNameDTO);
-      setLoading(false)
-      if (data.status ===0) {
-        dispatch({
-          type: US_A.UPDATE_SUCCESS,
-          payload: name,
-        });
-        sendAlert({
-          type:'success',
-          msg:'User has been updated'
-        })
-        return {status:data.status,name}
-      }
-      return null
-    } catch (error) {
-      setLoading(false)
-      sendAlert({
-        type:'error',
-        msg:error.message,
-      })
-      console.error("** Error validating deleteUserAdm ** ", { error });
-    }
-  }
-  
+ 
 
   const deleteUserAdm = async () => {
     try {
@@ -499,10 +472,6 @@ console.log({deleteUserDTO})
       console.error("** Error validating suspendUser ** ", { error });
     }
   };
-
- 
-  
-  
    const updateUser = async (updateUserDTO: UpdateUserDTO) => {
     try {
       await validateOrReject(updateUserDTO);
@@ -625,7 +594,6 @@ console.log({deleteUserDTO})
         inviteUser,
         passRecover,
         suspendUser,
-        updateName,
         sendInformationForm,
         logUser,
         selectUser,

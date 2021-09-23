@@ -25,7 +25,7 @@ interface FormEditProps {
 }
 
 const FormEdit: React.FC<FormEditProps> = ({ type, toggleEditAvatar }) => {
-  const { profile, updateName, loading,isSuperAdmin } = useContext(UserContext)
+  const { profile,updateUser, loading,isSuperAdmin } = useContext(UserContext)
   const classes = useStyles()
   const [isBlocked, setIsBlocked] = useState(true)
   const [error, setError] = useState('')
@@ -33,9 +33,13 @@ const FormEdit: React.FC<FormEditProps> = ({ type, toggleEditAvatar }) => {
   const [name, setName] = useState(profile.name)
 
   const handleUnlock = () => {
+
     setIsBlocked(!isBlocked)
     setError('')
     setHasError(false)
+    if (!isBlocked) {
+      setName(profile.name) 
+    }
   }
   const onChange = e => {
     setHasError(false)
@@ -44,9 +48,11 @@ const FormEdit: React.FC<FormEditProps> = ({ type, toggleEditAvatar }) => {
   }
   useEffect(() => {
     setName(profile.name)
-  }, [])
+  }, [profile.name])
 
   const validateName = () => {
+    const pattern = new RegExp('^[A-Z]+$', 'i');
+
     let isValid = true
     if (!name || name.trim().length === 0 || name.trim().length >= 100) {
       setHasError(true)
@@ -61,18 +67,33 @@ const FormEdit: React.FC<FormEditProps> = ({ type, toggleEditAvatar }) => {
       setError('They must be at least 5 characters.')
       isValid = false
     }
+    else if (!pattern.test(name)) {
+      setHasError(true)
+      setError('You cannot include strange characters or numbers')
+      isValid = false
+    }
     return isValid
   }
 
   const onSubmit = async () => {
     if (validateName()) {
-      const res = await updateName(name.trim())
-      if (res.status === 0) {
-        setName(res.name)
+
+      const updateUserDto = new UpdateUserDTO({
+        avatar: null,
+        name: name.trim(),
+        thumbnail: null,
+        roomImage: null
+      })
+      const status = await updateUser(updateUserDto)
+
+      if (status === 0) {
+        setName(name.trim())
       } else {
         setName(profile.name)
       }
-      handleUnlock()
+      setIsBlocked(!isBlocked)
+      setError('')
+      setHasError(false)
     }
   }
   const Header = () => {
@@ -185,6 +206,7 @@ const FormEdit: React.FC<FormEditProps> = ({ type, toggleEditAvatar }) => {
                   onChange={onChange}
                   placeholder={profile.name}
                   value={name}
+                  defaultValue={name}
                   required
                   id='cardName'
                   variant='outlined'

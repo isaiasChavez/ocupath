@@ -93,7 +93,6 @@ export const URLS = {
   suspendAdm: "/api/user/suspendadmin",
   suspendUser:'/api/user/suspenduser',
   deleteAdm: "api/user/deleteadmin",
-  updateName: "api/user/name",
   //Usuarios
   create: "api/sesion/user",
   update: "api/user",

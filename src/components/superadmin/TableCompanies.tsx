@@ -122,7 +122,7 @@ const TableCompanies: React.FC<TableCompaniesProps> = () => {
         handleClose={ toggleSuspendUserModal }
         okText='Sure'
         cancelText='Cancel'
-        title='Suspend User'
+        title= {selectedUser.isActive ? 'Suspend User':'Activate user'} 
         subtitle={ `Are you sure you want to  ${selectedUser.isActive ? 'suspend' : 'activate'} ${selectedUser ? 'to ' + selectedUser.name + '?' : 'this user?'}` }
       />
       <Table size="medium">
