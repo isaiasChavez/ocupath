@@ -28,7 +28,6 @@ import withAuth from '../../src/auth/WithAuth'
 
 export const CustomInput = withStyles({
   root: {
-
     borderColor: 'white',
     color: 'white',
     '& input:valid + fieldset': {
@@ -78,6 +77,55 @@ export const CustomInput = withStyles({
 
   }
 })(TextField)
+export const CustomInputWithValidations = withStyles({
+  root: {
+  
+    
+    '& .MuiOutlinedInput-root.Mui-error': {
+      color: COLORS.red_error,
+      '& fieldset': {
+        borderColor: COLORS.red_error,
+        color: COLORS.red_error,
+      },
+      '& p': {
+        color: COLORS.red_error,
+      }
+    },
+  },
+  fieldset:{
+
+  }
+})(TextField)
+export const propsCustomInput = {
+  FormHelperTextProps: {
+    style: {
+      color: '#bb2929'
+    }
+  },
+  InputLabelProps: {
+    style: {
+      color: 'white',
+      fontFamily: 'font2'
+    }
+  },
+  InputProps: {
+    style: {
+      color: 'white',
+      fontFamily: 'font2'
+    }
+  },
+}
+export const propsCustomInputErrors = {
+  FormHelperTextProps: {
+    style: {
+      color: '#bb2929'
+    }
+  },
+}
+ 
+
+
+
 export const CustomInputDos = withStyles({
   root: {
     '& input:valid + fieldset': {},
@@ -132,7 +180,7 @@ const Login: React.FC<LoginProps> = () => {
   const onSubmit = async e => {
     e.preventDefault()
     if (validateFields()) {
-      let dto = new ReuestSesionDTO(loginState.email,loginState.password)
+      let dto = new ReuestSesionDTO(loginState.email.trim(),loginState.password)
       const data = await logUser(dto)
       if (data) {
         validateResponse(data)
@@ -172,7 +220,7 @@ const Login: React.FC<LoginProps> = () => {
     if (!password) {
       newErrors.password = 'Enter a value'
     }
-    if (!verifyEmail(email)) {
+    if (!verifyEmail(email.trim())) {
       newErrors.email = 'Enter a valid email'
       isValid = false
     }
@@ -229,11 +277,10 @@ const Login: React.FC<LoginProps> = () => {
           </Box>
           <form className={ classes.form } onSubmit={ onSubmit }>
             <Typography component='h3' style={ { textAlign: 'center' } }>
-              <Box color="white" fontSize="1.25rem" m={ 1 }>
+              <Box color="white" fontSize="1.2rem" m={ 1 }>
                 Fill the information below to enter your profile{ ' ' }
               </Box>
             </Typography>
-            <Box width="100%" mb={ 2 } >
               <CustomInput
                 disabled={ loading }
                 margin='normal'
@@ -266,21 +313,59 @@ const Login: React.FC<LoginProps> = () => {
                 } }
                 variant='outlined'
               />
-            </Box>
-            <CustomInputDos size='small' fullWidth variant='outlined'>
-              <InputLabel
-                style={ { color: 'white' } }
-                htmlFor='outlined-adornment-password'
-              >
-                Password
-              </InputLabel>
-              <OutlinedInput
+              <CustomInput
+                disabled={ loading }
+                margin='normal'
+                fullWidth
+                onChange={ onChange }
+                id='outlined-adornment-password'
+                label='Password'
+                value={ loginState.password }
+                required
+                error={ errors.password !== null }
+                name='password'
+                type="password"
+
+                autoComplete='current-password'
+                helperText={ errors.password }
+                size='small'
+                style={ {
+                  color: 'white'
+                } }
+                FormHelperTextProps={ {
+                  style: {
+                    color: '#bb2929'
+                  }
+                } }
+
+                InputLabelProps={ {
+                  style: {
+                    color: 'white',
+                    fontFamily: 'font2'
+                  }
+                } }
+                InputProps={ {
+                  style: {
+                    color: 'white',
+                    fontFamily: 'font2'
+                  }
+                } }
+                variant='outlined'
+              />
+                {/* <CustomInputDos size='small' fullWidth variant='outlined'>
+                  <InputLabel
+                    style={ { color: 'white' } }
+                    htmlFor='outlined-adornment-password'
+                  >
+                    Password
+                  </InputLabel> */}
+              {/* <OutlinedInput
                 disabled={ loading }
                 id='outlined-adornment-password'
                 type={ loginState.showPassword ? 'text' : 'password' }
                 value={ loginState.password }
                 name='password'
-
+                
                 error={ errors.password !== null }
                 required
                 style={ {
@@ -308,11 +393,9 @@ const Login: React.FC<LoginProps> = () => {
                   </InputAdornment>
                 }
                 labelWidth={ 70 }
-              />
-            </CustomInputDos>
-            <Box mt={ 0.5 } ml={ 1 } fontSize="0.75rem" fontFamily="font2" fontWeight="fontWeightLight" color="#bb2929">
-              { errors.password }
-            </Box>
+              /> */}
+            {/* </CustomInputDos> */}
+      
             <div
               style={ {
                 display: 'flex',
@@ -321,7 +404,7 @@ const Login: React.FC<LoginProps> = () => {
                 flexDirection: 'column'
               } }
             >
-              <Box mt={ 6 } mb={ 2 }>
+              <Box mt={ 6 } >
 
                 <Link
                   style={ {
@@ -353,7 +436,7 @@ const Login: React.FC<LoginProps> = () => {
                     color: 'white',
                     fontSize: '1rem',
                     textTransform: 'capitalize',
-                    fontFamily: 'font2'
+                    fontFamily: 'font3'
                   } }
                 >
                   Login

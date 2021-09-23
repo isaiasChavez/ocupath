@@ -32,13 +32,9 @@ uuid:string,
 };
 export const decifreToken = (token: string) => {
   try {
-    console.log({token})
     const jwtDecoded = jwt.verify(token, 'ocupath');
-    console.log({jwtDecoded})
     return {status:true,jwtDecoded}
   } catch (error) {
-    alert("Error validating the token")
-    console.log({error})
     return {status:false,jwtDecoded:null}
   }
 };

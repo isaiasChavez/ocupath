@@ -9,6 +9,7 @@ import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 import UserContext from '../../context/user/user.context';
 import { User } from '../../context/user/user.reducer';
+import { Empty } from 'antd';
 export interface TableCompaniesProps {
 
 }
@@ -224,6 +225,9 @@ const TableCompanies: React.FC<TableCompaniesProps> = () => {
               </StyledTableCell>
             </StyledTableRow>
           )) }
+             {rows.length===0&&<Box position="absolute" bottom={0} display='flex' width='100%' height="80%" justifyContent="center" alignItems="center">
+            <Empty description="You have not added any user yet"/>
+            </Box>}
         </TableBody>
        {rows.length>8&& <TablePagination
 

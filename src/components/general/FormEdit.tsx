@@ -1,36 +1,33 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React,{ useContext,useEffect,useState } from 'react'
 import {
   Typography,
-  TextField,
-  Grid,
-  Avatar,
   Box,
   Button,
   makeStyles,
   withStyles,
-  LinearProgress
 } from '@material-ui/core'
-import { Images, URLS, USERS,USERS_TYPES } from '../../types/index'
+import { Images,URLS,USERS,USERS_TYPES } from '../../types/index'
 import EditIcon from '@material-ui/icons/Edit'
-import UserContext, { UpdateUserDTO } from '../../context/user/user.context'
+import UserContext,{ UpdateUserDTO } from '../../context/user/user.context'
 import clienteAxios from '../../config/axios'
 import NotificationsContext from '../../context/notifications/notifications.context'
-import { useDropzone } from 'react-dropzone'
-import { Config } from '../../config'
-import { Image, Spin, Upload } from 'antd'
+import { Image,Spin,Upload } from 'antd'
+import { CustomInputWithValidations,propsCustomInputErrors } from '../../../pages/login'
 
 interface FormEditProps {
   type: number
   toggleEditAvatar: Function
 }
 
-const FormEdit: React.FC<FormEditProps> = ({ type, toggleEditAvatar }) => {
-  const { profile,updateUser, loading,isSuperAdmin } = useContext(UserContext)
+const FormEdit: React.FC<FormEditProps> = ({ type,toggleEditAvatar }) => {
+  const { profile,updateUser,loading,isSuperAdmin } = useContext(UserContext)
   const classes = useStyles()
-  const [isBlocked, setIsBlocked] = useState(true)
-  const [error, setError] = useState('')
-  const [hasError, setHasError] = useState(false)
-  const [name, setName] = useState(profile.name)
+  const [isBlocked,setIsBlocked] = useState(true)
+  const [error,setError] = useState('')
+  const [hasError,setHasError] = useState(false)
+  const [name,setName] = useState(profile.name)
+
+  const {type:typeLoggued} = profile
 
   const handleUnlock = () => {
 
@@ -38,7 +35,7 @@ const FormEdit: React.FC<FormEditProps> = ({ type, toggleEditAvatar }) => {
     setError('')
     setHasError(false)
     if (!isBlocked) {
-      setName(profile.name) 
+      setName(profile.name)
     }
   }
   const onChange = e => {
@@ -48,10 +45,10 @@ const FormEdit: React.FC<FormEditProps> = ({ type, toggleEditAvatar }) => {
   }
   useEffect(() => {
     setName(profile.name)
-  }, [profile.name])
+  },[profile.name])
 
   const validateName = () => {
-    const pattern = new RegExp('^[A-Z]+$', 'i');
+    const pattern = new RegExp('^[A-Z]+$','i');
 
     let isValid = true
     if (!name || name.trim().length === 0 || name.trim().length >= 100) {
@@ -109,27 +106,26 @@ const FormEdit: React.FC<FormEditProps> = ({ type, toggleEditAvatar }) => {
     }
     return (
       <Typography gutterBottom>
-        <Box fontSize={32} fontWeight='fontWeightBold'>
-          {headerText}
+        <Box fontSize={ 32 } fontWeight='fontWeightBold'>
+          { headerText }
         </Box>
       </Typography>
     )
   }
-  console.log({isSuperAdmin})
   return (
-    <Box width={'100%'} className={classes.root} pl={3}>
+    <Box width={ '100%' } className={ classes.root } pl={ 3 }>
       <Header />
       <Box
         height='6%'
         display='flex'
         alignItems='center'
-        fontSize={18}
+        fontSize={ 18 }
         fontWeight='fontWeightBold'
       >
         Information
       </Box>
       <Box height='94%' display='flex'>
-        <Box height='100%' minWidth='12rem' width='14%' mr={8}>
+        <Box height='100%' minWidth='12rem' width='14%' mr={ 8 }>
           <Box
             display='flex'
             justifyContent='space-between'
@@ -139,20 +135,20 @@ const FormEdit: React.FC<FormEditProps> = ({ type, toggleEditAvatar }) => {
             <Box
               textAlign='left'
               width='100%'
-              fontSize={16}
+              fontSize={ 16 }
               fontWeight='fontWeightBold'
             >
-              <h4 className={classes.information}>Avatar</h4>
+              <h4 className={ classes.information }>Avatar</h4>
             </Box>
             <Box width='100%' display='flex' justifyContent='center'>
               <Image
-                src={profile.thumbnail}
-                className={classes.large}
-                preview={false}
-                alt={profile.name}
+                src={ profile.thumbnail }
+                className={ classes.large }
+                preview={ false }
+                alt={ profile.name }
                 placeholder={
                   <Box
-                    flex={1}
+                    flex={ 1 }
                     width='100%'
                     height='100%'
                     display='flex'
@@ -164,13 +160,14 @@ const FormEdit: React.FC<FormEditProps> = ({ type, toggleEditAvatar }) => {
                 }
               />
             </Box>
-           
+
             <Button
-              fullWidth={true}
+              fullWidth={ true }
               variant='outlined'
+              disabled={loading}
               color='secondary'
-              onClick={() => toggleEditAvatar()}
-              className={classes.buttonEdit}
+              onClick={ () => toggleEditAvatar() }
+              className={ classes.buttonEdit }
               size='large'
             >
               Edit Avatar
@@ -181,45 +178,49 @@ const FormEdit: React.FC<FormEditProps> = ({ type, toggleEditAvatar }) => {
             flexDirection='column'
             justifyContent='space-between'
           >
-            <Box my={1} alignItems='center' display='flex'>
-              <h3 className={classes.information}>
+            <Box my={ 1 } alignItems='center' display='flex'>
+              <h3 className={ classes.information }>
                 Personal information
                 <EditIcon
-                  onClick={handleUnlock}
+                  onClick={ handleUnlock }
                   color='primary'
-                  style={{
+                  style={ {
                     marginLeft: '0.4rem',
                     position: 'relative',
                     fontSize: '1.2rem',
                     cursor: 'pointer'
-                  }}
+                  } }
                 />
               </h3>
             </Box>
             <Box>
-              <Box mb={4}>
-                <TextField
+              <Box mb={ 4 }>
+                <CustomInputWithValidations
+                  { ...propsCustomInputErrors }
+
                   size='small'
-                  error={hasError}
-                  helperText={error}
+                  error={ hasError }
+                  helperText={ error }
                   datatype='text'
-                  onChange={onChange}
-                  placeholder={profile.name}
-                  value={name}
-                  defaultValue={name}
+                  onChange={ onChange }
+                  placeholder={ profile.name }
+                  value={ name }
+                  defaultValue={ name }
                   required
                   id='cardName'
                   variant='outlined'
-                  disabled={loading || isBlocked}
+                  disabled={ loading || isBlocked }
                   label='NickName'
                   fullWidth
                 />
               </Box>
-              <TextField
+              <CustomInputWithValidations
+                { ...propsCustomInputErrors }
+
                 size='small'
-                value={profile.email}
+                value={ profile.email }
                 variant='outlined'
-                disabled={true}
+                disabled={ true }
                 required
                 label='E-mail'
                 fullWidth
@@ -227,13 +228,13 @@ const FormEdit: React.FC<FormEditProps> = ({ type, toggleEditAvatar }) => {
             </Box>
           </Box>
 
-          {!isBlocked && (
-            <Box mt={5} width='100%'>
+          { !isBlocked && (
+            <Box mt={ 5 } width='100%'>
               <ButtonSave
-                disabled={loading}
-                fullWidth={true}
+                disabled={ loading }
+                fullWidth={ true }
                 size='large'
-                onClick={onSubmit}
+                onClick={ onSubmit }
                 variant='contained'
                 color='secondary'
                 disableElevation
@@ -241,9 +242,9 @@ const FormEdit: React.FC<FormEditProps> = ({ type, toggleEditAvatar }) => {
                 Save
               </ButtonSave>
             </Box>
-          )}
+          ) }
         </Box>
-        {type!==USERS_TYPES.SUPER_ADMIN&&<RightSide />}
+        { typeLoggued !== USERS_TYPES.SUPER_ADMIN && <RightSide /> }
       </Box>
     </Box>
   )
@@ -251,19 +252,19 @@ const FormEdit: React.FC<FormEditProps> = ({ type, toggleEditAvatar }) => {
 
 const RightSide = () => {
   const classes = useStyles()
-  const [files, setFiles] = useState([])
-  const { updateUser, profile, loading } = useContext(UserContext)
-  const [urlPreview, setUrlPreview] = useState<ArrayBuffer | string>(null)
+  const [files,setFiles] = useState([])
+  const { updateUser,profile,loading } = useContext(UserContext)
+  const [urlPreview,setUrlPreview] = useState<ArrayBuffer | string>(null)
   const { sendAlert } = useContext(NotificationsContext)
-  const [imageRoom, setImageRoom] = useState(Images.preload)
-  
+  const [imageRoom,setImageRoom] = useState(Images.preload)
+
   const handleUpload = async () => {
     try {
       console.log("handle")
       const selectedFile = files[0]
       const formData = new FormData()
-      formData.append('upload', selectedFile)
-      const { data } = await clienteAxios.post(URLS.urlUploadRoom, formData)
+      formData.append('upload',selectedFile)
+      const { data } = await clienteAxios.post(URLS.urlUploadRoom,formData)
       const updateUserDto = new UpdateUserDTO({
         avatar: null,
         name: null,
@@ -285,17 +286,17 @@ const RightSide = () => {
   }
 
   const props = {
-    accept:'image/png, image/jpeg',
+    accept: 'image/png, image/jpeg',
     beforeUpload: file => {
-      const okFiles= ['image/png','image/jpeg','image/jpg']
+      const okFiles = ['image/png','image/jpeg','image/jpg']
       console.log(file.type)
       if (!okFiles.includes(file.type)) {
 
         sendAlert({
-        type: 'warning',
-        msg: 'Only .png / .jpg'
-      })
-        return 
+          type: 'warning',
+          msg: 'Only .png / .jpg'
+        })
+        return
       }
 
       const reader = new FileReader()
@@ -306,7 +307,7 @@ const RightSide = () => {
       setFiles([...files,file])
       return okFiles.includes(file.type) ? true : Upload.LIST_IGNORE
     },
-          multiple: false,
+    multiple: false,
     onChange: info => {
       console.log(info.fileList)
     }
@@ -316,18 +317,18 @@ const RightSide = () => {
     const imageRoomUser: HTMLImageElement = document.createElement('img')
     imageRoomUser.onload = () => setImageRoom(imageRoomUser.src)
     imageRoomUser.src = profile.roomImage
-  }, [profile.roomImage])
+  },[profile.roomImage])
 
   return (
-    <Box pl={8} height='100%' minWidth='12rem' width='20%'>
+    <Box pl={ 8 } height='100%' minWidth='12rem' width='20%'>
       <Box
         textAlign='left'
         width='100%'
-        fontSize={16}
-        mb={2}
+        fontSize={ 16 }
+        mb={ 2 }
         fontWeight='fontWeightBold'
       >
-        <h4 className={classes.information}>Logo</h4>
+        <h4 className={ classes.information }>Logo</h4>
       </Box>
       <Box fontFamily='font2'>
         Select your company logo image. This will be displayed within the virtual reality environmet as shown in the image below
@@ -341,30 +342,30 @@ const RightSide = () => {
         justifyContent="center"
         borderRadius='0.25rem'
         overflow='hidden'
-        mt={1}
-        mb={1}
+        mt={ 1 }
+        mb={ 1 }
       >
         <img
-          src={imageRoom}
-          style={{ height: '100%',width:'100%', objectFit: 'contain' }}
+          src={ imageRoom }
+          style={ { height: '100%',width: '100%',objectFit: 'contain' } }
           alt='Room image'
         />
       </Box>
-      <Box display='flex' width="100%"  justifyContent='center'>
-        <Upload showUploadList={false} listType='picture' {...props}>
+      <Box display='flex' width="100%" justifyContent='center'>
+        <Upload showUploadList={ false } listType='picture' { ...props }>
           <Button
             size='large'
             color='secondary'
             fullWidth
             variant='outlined'
-            className={classes.submit}
+            className={ classes.submit }
             disableElevation
           >
             <span
               className='ITCAvantGardeStdBkSemiBold'
-              style={{
+              style={ {
                 textTransform: 'capitalize'
-              }}
+              } }
             >
               Upload logo
             </span>
@@ -372,33 +373,33 @@ const RightSide = () => {
         </Upload>
       </Box>
 
-      {urlPreview && (
+      { urlPreview && (
         <>
           <Box
             textAlign='left'
             width='100%'
-            fontSize={16}
-            mb={2}
-            mt={2}
+            fontSize={ 16 }
+            mb={ 2 }
+            mt={ 2 }
             fontWeight='fontWeightBold'
           >
-            <h4 className={classes.information}>Your logo</h4>
+            <h4 className={ classes.information }>Your logo</h4>
           </Box>
           <Box
-          maxHeight='8rem'
-        minHeight='8rem'
-        width='100%'
-        display="flex"
-        justifyContent="center"
-        borderRadius='0.25rem'
-        overflow='hidden'
-        mt={1}
-        mb={1}
+            maxHeight='8rem'
+            minHeight='8rem'
+            width='100%'
+            display="flex"
+            justifyContent="center"
+            borderRadius='0.25rem'
+            overflow='hidden'
+            mt={ 1 }
+            mb={ 1 }
           >
             <img
-              style={{ height: '100%', objectFit: 'contain' }}
+              style={ { height: '100%',objectFit: 'contain' } }
 
-              src={urlPreview as string}
+              src={ urlPreview as string }
               alt='Default app image'
             />
           </Box>
@@ -406,25 +407,25 @@ const RightSide = () => {
             size='large'
             color='secondary'
             type='submit'
-            disabled={loading}
+            disabled={ loading }
             fullWidth
             variant='contained'
-            onClick={handleUpload}
-            className={classes.submit}
+            onClick={ handleUpload }
+            className={ classes.submit }
             disableElevation
           >
             <span
               className='ITCAvantGardeStdBkSemiBold'
-              style={{
+              style={ {
                 color: 'white',
                 textTransform: 'capitalize'
-              }}
+              } }
             >
               Save
             </span>
           </Button>
         </>
-      )}
+      ) }
     </Box>
   )
 }
@@ -452,7 +453,7 @@ const useStyles = makeStyles(theme => ({
     textTransform: 'capitalize'
   },
   submit: {
-    margin: theme.spacing(2, 0, 0),
+    margin: theme.spacing(2,0,0),
     minWidth: '14.2rem',
     width: '100%',
     paddingTop: '0.45rem'

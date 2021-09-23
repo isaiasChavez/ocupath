@@ -84,45 +84,7 @@ const RecoveryIndex: React.FC<RecoveryProps> = () => {
   }));
   const classes = useStyles();
   return (
-    <Layout>
-      <Head>
-        <title>Ocupath - Login </title>
-      </Head>
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <div className={classes.paper}>
-          <Typography component="h1" variant="h5">
-            Ingrese su nueva contraseña
-          </Typography>
-          <form onSubmit={onSubmit} className={classes.form}>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              onChange={onChange}
-              id="password"
-              label="password"
-              name="password"
-              autoComplete="password"
-              autoFocus
-              error={errors.password.length !== 0}
-              helperText={errors.password}
-            />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              color="primary"
-              className={classes.submit}
-            >
-              <Link href="/panel">
-                <span className={classes.button}>Enviar</span>
-              </Link>
-            </Button>
-          </form>
-        </div>
-      </Container>
-    </Layout>
+    <></>
   );
 };
 export default withAuth(RecoveryIndex);

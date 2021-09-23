@@ -155,7 +155,7 @@ const DropZone: React.FC<DropZoneProps> = ({
           </Box>
         </Box>
       )}
-      {isEmpty && !loading && (
+      {isEmpty && !loading && !isDragActive&& (
         <Box
           className='animate-fadein'
           position='absolute'

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React,{ useContext,useEffect,useState } from 'react'
 import {
   withStyles,
   Theme,
@@ -23,17 +23,18 @@ import Button from '@material-ui/core/Button'
 import InviteModal from '../general/InviteModal'
 import UserDetailModal from '../superadmin/UserDetailModal'
 import AskModal from '../general/AskModal'
-import { COMPANIES, GUEST, USERS, USERS_TYPES } from '../../types'
+import { COMPANIES,GUEST,USERS,USERS_TYPES } from '../../types'
 import UserContext from '../../context/user/user.context'
 import moment from 'moment'
 import { User } from '../../context/user/user.reducer'
-import { Box, Switch, Tooltip } from '@material-ui/core'
-export interface TableAdminProps {}
+import { Box,Switch,Tooltip } from '@material-ui/core'
+import { Empty, Spin } from 'antd'
+export interface TableAdminProps { }
 
 const TableAdmin: React.FC<TableAdminProps> = () => {
   const classes = useStyles()
-  const [currentTab, setCurrentTab] = useState<number>(COMPANIES)
-  const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
+  const [currentTab,setCurrentTab] = useState<number>(COMPANIES)
+  const handleChange = (event: React.ChangeEvent<{}>,newValue: number) => {
     setCurrentTab(newValue)
   }
   const {
@@ -49,28 +50,28 @@ const TableAdmin: React.FC<TableAdminProps> = () => {
   } = useContext(UserContext)
   useEffect(() => {
     getUserChildrens()
-  }, [])
+  },[])
   const rows = childrens.users
-  const [rowsPerPage, setRowsPerPage] = useState(5)
-  const [page, setPage] = React.useState(0)
-  const [isOpenInviteModal, setIsOpenInviteModal] = useState<boolean>(false)
-  const [isOpenUserDetailModal, setIsOpenUserDetailModal] = useState<boolean>(
+  const [rowsPerPage,setRowsPerPage] = useState(5)
+  const [page,setPage] = React.useState(0)
+  const [isOpenInviteModal,setIsOpenInviteModal] = useState<boolean>(false)
+  const [isOpenUserDetailModal,setIsOpenUserDetailModal] = useState<boolean>(
     false
   )
-  const [isOpenDeleteUserModal, setIsOpenDeleteUserModal] = useState<boolean>(
+  const [isOpenDeleteUserModal,setIsOpenDeleteUserModal] = useState<boolean>(
     false
   )
-  const [isOpenSuspendUserModal, setIsOpenSuspendUserModal] = useState<boolean>(
+  const [isOpenSuspendUserModal,setIsOpenSuspendUserModal] = useState<boolean>(
     false
   )
 
-  const handleChangePage = (event: unknown, newPage: number) => {
+  const handleChangePage = (event: unknown,newPage: number) => {
     setPage(newPage)
   }
   const handleChangeRowsPerPage = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    setRowsPerPage(parseInt(event.target.value, 10))
+    setRowsPerPage(parseInt(event.target.value,10))
     setPage(0)
   }
   const handleCloseInviteModal = () => {
@@ -97,106 +98,106 @@ const TableAdmin: React.FC<TableAdminProps> = () => {
 
   const onSuspend = (dataUser: User) => {
     setIsOpenSuspendUserModal(true)
-    selectUser(dataUser, USERS.GUEST)
+    selectUser(dataUser,USERS.GUEST)
   }
   const onDelete = (dataUser: User) => {
     toggleDeleteUserModal()
-    selectUser(dataUser, USERS.GUEST)
+    selectUser(dataUser,USERS.GUEST)
   }
- 
-  const availableRows =  Math.ceil(rows.length /rowsPerPage)
+
+  const availableRows = Math.ceil(rows.length / rowsPerPage)
+  const isEmptyVisible = !loading && rows.length === 0
+  const isLoaderVisible = loading && rows.length === 0
 
   return (
     <Box display='flex' height='100%'>
-      {isOpenInviteModal && (
+      { isOpenInviteModal && (
         <InviteModal
-          type={1}
-          isOpen={isOpenInviteModal}
-          handleClose={handleCloseInviteModal}
-          handleOpen={handleOpenInviteModal}
+          type={ 1 }
+          isOpen={ isOpenInviteModal }
+          handleClose={ handleCloseInviteModal }
+          handleOpen={ handleOpenInviteModal }
         />
-      )}
+      ) }
       <UserDetailModal
-        isOpen={isOpenUserDetailModal}
-        handleClose={handleCloseUserDetailModal}
-        type={USERS_TYPES.GUEST}
+        isOpen={ isOpenUserDetailModal }
+        handleClose={ handleCloseUserDetailModal }
+        type={ USERS_TYPES.GUEST }
       />
       <AskModal
-        isOpen={isOpenDeleteUserModal}
-        handleClose={toggleDeleteUserModal}
-        handleOk={() => {
+        isOpen={ isOpenDeleteUserModal }
+        handleClose={ toggleDeleteUserModal }
+        handleOk={ () => {
           deleteUser()
           toggleDeleteUserModal()
-        }}
+        } }
         okText='Sure'
         cancelText='Cancel'
         title='Delete User'
-        subtitle={`Are you sure you want to delete ${
-          selectedUser ? 'to ' + selectedUser.name + '?' : 'this user?'
-        }`}
+        subtitle={ `Are you sure you want to delete ${selectedUser ? 'to ' + selectedUser.name + '?' : 'this user?'
+          }` }
       />
       <AskModal
-        isOpen={isOpenSuspendUserModal}
-        handleClose={toggleSuspendUserModal}
-        handleOk={() => {
+        isOpen={ isOpenSuspendUserModal }
+        handleClose={ toggleSuspendUserModal }
+        handleOk={ () => {
           suspendUser()
           toggleSuspendUserModal()
-        }}
+        } }
         okText='Sure'
         cancelText='Cancel'
         title='Suspend User'
-        subtitle={`Are you sure you want to ${
-          selectedUser.isActive ? 'suspend' : 'activate'
-        }  ${selectedUser ? 'to ' + selectedUser.name + '?' : 'this user?'}`}
+        subtitle={ `Are you sure you want to ${selectedUser.isActive ? 'suspend' : 'activate'
+          }  ${selectedUser ? 'to ' + selectedUser.name + '?' : 'this user?'}` }
       />
-      <Paper className={classes.demo1}>
+      <Paper className={ classes.demo1 }>
         <AntTabs
-          value={currentTab}
-          onChange={handleChange}
+          value={ currentTab }
+          onChange={ handleChange }
           aria-label='ant example'
         >
           <AntTab label='Guests' />
           <Box
             width='100%'
-            mx={2}
+            mx={ 2 }
             display='flex'
             alignItems='center'
             justifyContent='flex-end'
           >
             <Box
-              flex={1}
+              flex={ 1 }
               textAlign='center'
               fontSize='1rem'
               fontFamily='font2'
-              style={{ color: 'rgba(122, 134, 143, 1)' }}
+              style={ { color: 'rgba(122, 134, 143, 1)' } }
             >
-              Your plan includes {profile.lastSuscription.invitations}{' '}
+              Your plan includes { profile.lastSuscription.invitations }{ ' ' }
               invitations
             </Box>
-            <Tooltip  title="Delete a user before inviting more" placement="bottom">
-          <div>
+            <Tooltip title="Delete a user before inviting more" placement="bottom">
+              <div>
 
-            <Button
-              disabled={loading||!canAddMoreChilds}
-              className={classes.buttonNew}
-              onClick={handleOpenInviteModal}
-              variant='contained'
-              color='primary'
-              >
-              New guest
-            </Button>
-                </div>
-              </Tooltip>
+                <Button
+                  disabled={ loading || !canAddMoreChilds }
+                  className={ classes.buttonNew }
+                  onClick={ handleOpenInviteModal }
+                  variant='contained'
+                  color='primary'
+                >
+                  New guest
+                </Button>
+              </div>
+            </Tooltip>
           </Box>
         </AntTabs>
         <TableContainer
-          component={Paper}
-          style={{
+          component={ Paper }
+          style={ {
             height: '92.4%',
             position: 'relative'
-          }}
+          } }
         >
-          {rows.length > 0 ? (
+          { rows.length > 0 ? (
             <Table aria-label='customized table'>
               <TableHead>
                 <TableRow>
@@ -210,44 +211,50 @@ const TableAdmin: React.FC<TableAdminProps> = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows.map((user, i) => (
-                  <StyledTableRow key={user.name + i}>
+                { rows.map((user,i) => (
+                  <StyledTableRow key={ user.name + i }>
                     <StyledTableCell align='center' component='th' scope='user'>
-                      {user.name}
+                      { user.name }
                     </StyledTableCell>
                     <StyledTableCell align='center'>
-                      {user.email}
+                      { user.email }
                     </StyledTableCell>
                     <StyledTableCell align='center'>
-                      {moment(user.lastSuscription.finishedAt).from(moment())}
+                      { moment(user.lastSuscription.finishedAt).from(moment()) }
                     </StyledTableCell>
-                    <StyledTableCell  align='center'>
+                    <StyledTableCell align='center'>
                       <Switch
-                        checked={user.isActive}
-                        disabled={loading}
-                        onChange={() => {
+                        checked={ user.isActive }
+                        disabled={ loading }
+                        onChange={ () => {
                           onSuspend(user)
-                        }}
+                        } }
                         name='checkedA'
                         color='secondary'
-                        inputProps={{ 'aria-label': 'secondary checkbox' }}
+                        inputProps={ { 'aria-label': 'secondary checkbox' } }
                       />
                     </StyledTableCell>
                     <StyledTableCell align='center'>
                       <DeleteOutlineOutlinedIcon
-                        style={{
+                        style={ {
                           color: '#A6ABAF',
                           cursor: 'pointer'
-                        }}
-                        onClick={() => {
+                        } }
+                        onClick={ () => {
                           if (!loading) {
                             onDelete(user)
                           }
-                        }}
+                        } }
                       />
                     </StyledTableCell>
                   </StyledTableRow>
-                ))}
+                )) }
+                {/* { isEmptyVisible && <Box position="absolute" bottom={ 0 } display='flex' width='100%' height="80%" justifyContent="center" alignItems="center">
+                  <Empty description="You have not added any user yet" />
+                </Box> }
+                { isLoaderVisible||true && <Box position="absolute" bottom={ 0 } display='flex' width='100%' height="80%" justifyContent="center" alignItems="center">
+                <Spin size="large" />
+                </Box> } */}
               </TableBody>
               {/* <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
@@ -262,28 +269,26 @@ const TableAdmin: React.FC<TableAdminProps> = () => {
             <Box
               className='animate-fadein'
               position='absolute'
-              zIndex={40}
+              zIndex={ 40 }
               display='flex'
               justifyContent='center'
               alignItems='center'
-              mb={1.3}
-              top={0}
-              left={0}
-              right={0}
-              bottom={0}
-              style={{
+              mb={ 1.3 }
+              top={ 0 }
+              left={ 0 }
+              right={ 0 }
+              bottom={ 0 }
+              style={ {
                 backgroundColor: 'rgba(255,255,255,0.4)'
-              }}
+              } }
             >
               <Box display='flex' flexDirection='column'>
-                {!loading && (
-                  <Box mt={2} fontSize={12}>
-                    You have not added any user
-                  </Box>
-                )}
+                { loading ? <Spin size="large" />: (
+                   <Empty description="You have not added any user yet" />
+                ) }
               </Box>
             </Box>
-          )}
+          ) }
         </TableContainer>
       </Paper>
     </Box>
@@ -323,11 +328,11 @@ const AntTab = withStyles((theme: Theme) =>
     },
     selected: {}
   })
-)((props: StyledTabProps) => <Tab disableRipple {...props} />)
+)((props: StyledTabProps) => <Tab disableRipple { ...props } />)
 
 interface StyledTabsProps {
   value: number
-  onChange: (event: React.ChangeEvent<{}>, newValue: number) => void
+  onChange: (event: React.ChangeEvent<{}>,newValue: number) => void
 }
 
 interface StyledTabProps {
@@ -351,7 +356,8 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   demo1: {
     maxWidth: '100%',
-    minWidth: '100%'
+    minWidth: '100%',
+    position: 'relative'
   }
 }))
 

@@ -8,7 +8,7 @@ import { notification } from 'antd'
 import { makeStyles, Box, Grid } from '@material-ui/core'
 import HeaderLogin from '../src/components/login/HeaderLogin'
 import { Images } from '../src/types'
-import { CustomInput } from './login'
+import { CustomInput,propsCustomInputErrors } from './login'
 import { useContext, useEffect, useState } from 'react'
 import Head from 'next/head'
 import withAuth from '../src/auth/WithAuth'
@@ -392,6 +392,7 @@ function FormInformation () {
       <Grid container spacing={2}>
         <Grid item xs={12} sm={6}>
           <CustomInput
+          {...propsCustomInputErrors}
             error={errors.name !== null}
             helperText={errors.name}
             autoComplete='fname'
@@ -410,6 +411,7 @@ function FormInformation () {
         </Grid>
         <Grid item xs={12} sm={6}>
           <CustomInput
+          {...propsCustomInputErrors}
             error={errors.surname !== null}
             helperText={errors.surname}
             variant='outlined'
@@ -427,6 +429,7 @@ function FormInformation () {
         </Grid>
         <Grid item xs={12}>
           <CustomInput
+            {...propsCustomInputErrors}
             error={errors.company !== null}
             onChange={onChange}
             label='Company'
@@ -444,6 +447,7 @@ function FormInformation () {
         </Grid>
         <Grid item xs={12}>
           <CustomInput
+          {...propsCustomInputErrors}
             error={errors.email !== null}
             onChange={onChange}
             helperText={errors.email}
@@ -461,6 +465,7 @@ function FormInformation () {
         </Grid>
         <Grid item xs={12}>
           <CustomInput
+          {...propsCustomInputErrors}
             error={errors.phone !== null}
             helperText={errors.phone}
             onChange={onChange}

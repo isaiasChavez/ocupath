@@ -19,6 +19,7 @@ import { verifyEmail } from '../../config/utils'
 import UserContext,{ InviteUserDTO } from '../../context/user/user.context'
 import NotificationsContext from '../../context/notifications/notifications.context'
 import { validateOrReject } from 'class-validator'
+import { CustomInputWithValidations, propsCustomInputErrors } from '../../../pages/login'
 
 export interface InviteModalProps {
   handleOpen: MouseEventHandler
@@ -279,7 +280,8 @@ const InviteModal: React.FC<InviteModalProps> = ({
         </Box>
         { type === COMPANIES && (
           <Box mb={ 2 } mt={ 1 }>
-            <TextField
+              <CustomInputWithValidations
+                  { ...propsCustomInputErrors }
               size='small'
               helperText={ errors.company }
               error={ errors.company !== null }
@@ -298,7 +300,8 @@ const InviteModal: React.FC<InviteModalProps> = ({
         ) }
         { type === GUEST && (
           <Box my={ 2 }>
-            <TextField
+            <CustomInputWithValidations
+                  { ...propsCustomInputErrors }
               size='small'
               variant='outlined'
               helperText={ errors.name }
@@ -318,7 +321,8 @@ const InviteModal: React.FC<InviteModalProps> = ({
         ) }
 
         <Box>
-          <TextField
+        <CustomInputWithValidations
+                  { ...propsCustomInputErrors }
             size='small'
             required
             helperText={ errors.email }
@@ -349,7 +353,8 @@ const InviteModal: React.FC<InviteModalProps> = ({
               Plan
             </Box>
             <Box mb={ 2 }>
-              <TextField
+            <CustomInputWithValidations
+                  { ...propsCustomInputErrors }
                 size='small'
                 name='invitations'
                 variant='outlined'
@@ -432,7 +437,8 @@ const InviteModal: React.FC<InviteModalProps> = ({
             Total cost
           </Box>
           <Box mb={ 4 } width='46%'>
-            <TextField
+          <CustomInputWithValidations
+                  { ...propsCustomInputErrors }
               size='small'
               required
               onChange={ onChangeInput }

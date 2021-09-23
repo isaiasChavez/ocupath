@@ -25,6 +25,7 @@ import { decifreToken,verifyPassword } from "../../src/config/utils";
 import HeaderSimple from "../../src/components/general/HeaderSimple";
 import { CustomInput } from "../login";
 import { CircularProgress } from "@material-ui/core";
+import { Result } from "antd";
 
 export interface RegisterProps { }
 
@@ -40,11 +41,14 @@ const Register: React.FC<RegisterProps> = () => {
   const classes = useStyles();
   useEffect(() => {
     if (id) {
-      console.log({ id })
       const status = decifreToken(id as string)
       if (status.status) {
+
         console.log(status.jwtDecoded.token)
         getDataRegister(status.jwtDecoded.token);
+      }else{
+        setIsLoading(false)
+        setIsViewBlocked(true)
       }
 
     }
@@ -137,7 +141,14 @@ const Register: React.FC<RegisterProps> = () => {
   };
 
   if (isViewBlocked && !isLoading) {
-    return <div>¡No puedes estár aquí!</div>
+    return (<Box  display="flex" height="100vh" width="100vw" justifyContent="center" alignItems="center">
+
+    <Result
+    status="403"
+    title="403"
+    subTitle="Sorry, you are not authorized to access this page."
+    />
+    </Box>)
   }
   if (isLoading) {
     return <Box style={{
@@ -147,6 +158,7 @@ const Register: React.FC<RegisterProps> = () => {
 
     </Box>
   }
+
   const props = {
     FormHelperTextProps: {
       style: {
@@ -166,6 +178,7 @@ const Register: React.FC<RegisterProps> = () => {
       }
     },
   }
+
 
   return (
     <>

@@ -205,7 +205,6 @@ const UserState = ({ children }) => {
   };
   const getUserChildrens = async () => {
     try {
-      console.log("getUserChildrens")
       setLoading(true)
       const { data } = await axios.post(URLS.childrens);
       console.log({data})

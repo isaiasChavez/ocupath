@@ -24,6 +24,7 @@ import { USERS, USERS_TYPES } from '../../types/'
 import { User } from '../../context/user/user.reducer'
 import UserDetailModal from '../superadmin/UserDetailModal'
 import AskModal from './AskModal'
+import { Empty } from 'antd'
 
 export interface TableGuestProps {}
 
@@ -140,7 +141,7 @@ const TableGuest: React.FC<TableGuestProps> = () => {
             <StyledTableCell align='center'>Delete</StyledTableCell>
           </TableRow>
         </TableHead>
-        <TableBody>
+        <TableBody >
           {rows.map(row => (
             <StyledTableRow key={row.name}>
               <StyledTableCell align='center' component='th' scope='row'>
@@ -214,6 +215,9 @@ const TableGuest: React.FC<TableGuestProps> = () => {
             </StyledTableRow>
           ))}
         </TableBody>
+          {rows.length===0&&<Box position="absolute" bottom={0} display='flex' width='100%' height="80%" justifyContent="center" alignItems="center">
+            <Empty description="You have not added any user yet"/>
+            </Box>}
         {rows.length > 8 && (
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}

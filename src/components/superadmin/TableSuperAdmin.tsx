@@ -132,6 +132,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   demo1: {
     maxWidth: '100%',
     minWidth: '100%',
+    position:'relative',
   },
   buttonNew:{
     height: '55%', marginRight:'1rem',
