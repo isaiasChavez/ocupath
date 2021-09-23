@@ -174,7 +174,7 @@ const TableAdmin: React.FC<TableAdminProps> = () => {
               Your plan includes { profile.lastSuscription.invitations }{ ' ' }
               invitations
             </Box>
-            <Tooltip title="Delete a user before inviting more" placement="bottom">
+            <Tooltip title= {canAddMoreChilds?'':'Delete a user before inviting more'}  placement="bottom">
               <div>
 
                 <Button
