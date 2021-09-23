@@ -8,19 +8,16 @@ import {
 } from '@material-ui/core/styles'
 import Paper from '@material-ui/core/Paper'
 import Tabs from '@material-ui/core/Tabs'
-import { Image, Space } from 'antd'
+import {  Space, Spin } from 'antd'
 import { Popover, Button as ButtonAnt } from 'antd'
 
 import Tab from '@material-ui/core/Tab'
-import GridList from '@material-ui/core/GridList'
-import GridListTile from '@material-ui/core/GridListTile'
 import { COLORS, FILES, URLS, FILES_TYPES, Images } from '../../types'
 import Grid from '@material-ui/core/Grid'
-import { Box, Button, Card, CircularProgress } from '@material-ui/core'
+import { Box, Button,  CircularProgress } from '@material-ui/core'
 import clienteAxios from '../../config/axios'
 import AssetsContext, {
   Asset,
-  CreateAssetDTO
 } from '../../context/assets/assets.context'
 import NotificationsContext from '../../context/notifications/notifications.context'
 import { useDropzone } from 'react-dropzone'
@@ -241,10 +238,17 @@ const Img: React.FC<ImgProps> = ({ loading, setLoading }) => {
 
   const onDrop = useCallback((acceptedFiles, errors) => {
     errors.map(error => {
-      sendAlert({
-        type: 'warning',
-        msg: error.errors[0].message
-      })
+      if (error.errors[0].code==="file-too-large") {
+        sendAlert({
+          type: 'warning',
+          msg: `File is larger than ${Config.MAX_IMAGE_SIZE/Config.constants.MB} mb` 
+        })  
+      }else{
+        sendAlert({
+          type: 'warning',
+          msg: error.errors[0].message
+        })
+      }
     })
     if (errors.length > 0) {
       return
@@ -377,10 +381,19 @@ const ImageGrid = ({
   const [isDeleteHoverd, setIsDeleteHoverd] = useState(false)
   const [isImageHovered, setIsImageHoverd] = useState(false)
   const classes = useStyles()
-
   const assetIsVideo =
     asset.typeAsset.id === FILES_TYPES.VIDEO ||
     asset.typeAsset.id === FILES_TYPES.VIDEO_360
+
+  const [currentImage, setCurrentImage] = useState(null)
+
+
+  useEffect(() => {
+    const heavyImage: HTMLImageElement = document.createElement('img')
+    heavyImage.onload = () => setCurrentImage(heavyImage.src)
+    heavyImage.src = assetIsVideo ? asset.thumbnail : asset.url
+
+  }, [assetIsVideo ? asset.thumbnail : asset.url])
 
   const onDeleteAsset = () => {
     deleteAsset(asset.uuid)
@@ -462,14 +475,30 @@ const ImageGrid = ({
           </Popover>
         </Box>
       )}
-      <img
+      {currentImage?<img
         style={{
           width: '100%',
           minHeight: '100%',
           objectFit: 'cover'
         }}
+        alt="Image"
+        title="Image"
         src={assetIsVideo ? asset.thumbnail : asset.url}
-      />
+      />:
+      <div  style={{
+        width: '100%',
+        minHeight: '100%',
+        objectFit: 'cover',
+        display: 'flex',
+        justifyContent:'center',
+        alignItems: 'center'
+      }}> 
+        <Spin />
+
+    </div>
+      }
+      
+
     </div>
   )
 }
@@ -511,10 +540,17 @@ const Img360: React.FC<Img360Props> = ({ loading, setLoading }) => {
   }
   const onDrop = useCallback((acceptedFiles, errors) => {
     errors.map(error => {
-      sendAlert({
-        type: 'warning',
-        msg: error.errors[0].message
-      })
+      if (error.errors[0].code==="file-too-large") {
+        sendAlert({
+          type: 'warning',
+          msg: `File is larger than ${Config.MAX_IMAGE360_SIZE/Config.constants.MB} mb` 
+        })  
+      }else{
+        sendAlert({
+          type: 'warning',
+          msg: error.errors[0].message
+        })
+      }
     })
     if (errors.length > 0) {
       return
@@ -531,7 +567,7 @@ const Img360: React.FC<Img360Props> = ({ loading, setLoading }) => {
     onDrop,
     accept: 'image/jpeg, image/png',
     maxFiles: 1,
-    maxSize: Config.MAX_IMAGE_SIZE,
+    maxSize: Config.MAX_IMAGE360_SIZE,
     noClick: true,
     validator: nameLengthValidator,
     multiple: false,
@@ -651,15 +687,12 @@ const Video: React.FC<VideoProps> = ({ loading, setLoading }) => {
   }, [])
   const onDrop = useCallback((acceptedFiles, errors) => {
     errors.map(error => {
-      console.log({error})
       if (error.errors[0].code==="file-too-large") {
         sendAlert({
           type: 'warning',
-          msg: `File is larger than ${Config.MAX_VIDEO_SIZE/8e+6} mb` 
+          msg: `File is larger than ${Config.MAX_VIDEO_SIZE/Config.constants.MB} mb` 
         })  
       }else{
-
-        
         sendAlert({
           type: 'warning',
           msg: error.errors[0].message
@@ -904,11 +937,17 @@ const Video360: React.FC<Video360Props> = ({ loading, setLoading }) => {
 
   const onDrop = useCallback((acceptedFiles, errors) => {
     errors.map(error => {
-      console.log({error})
-      sendAlert({
-        type: 'warning',
-        msg: error.errors[0].message
-      })
+      if (error.errors[0].code==="file-too-large") {
+        sendAlert({
+          type: 'warning',
+          msg: `File is larger than ${Config.MAX_VIDEO_SIZE/Config.constants.MB} mb` 
+        })  
+      }else{
+        sendAlert({
+          type: 'warning',
+          msg: error.errors[0].message
+        })
+      }
     })
     if (errors.length > 0) {
       return

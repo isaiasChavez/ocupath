@@ -27,7 +27,7 @@ import { COMPANIES, GUEST, USERS, USERS_TYPES } from '../../types'
 import UserContext from '../../context/user/user.context'
 import moment from 'moment'
 import { User } from '../../context/user/user.reducer'
-import { Box, Switch } from '@material-ui/core'
+import { Box, Switch, Tooltip } from '@material-ui/core'
 export interface TableAdminProps {}
 
 const TableAdmin: React.FC<TableAdminProps> = () => {
@@ -44,7 +44,8 @@ const TableAdmin: React.FC<TableAdminProps> = () => {
     loading,
     deleteUser,
     selectUser,
-    selectedUser
+    selectedUser,
+    canAddMoreChilds
   } = useContext(UserContext)
   useEffect(() => {
     getUserChildrens()
@@ -103,6 +104,7 @@ const TableAdmin: React.FC<TableAdminProps> = () => {
     selectUser(dataUser, USERS.GUEST)
   }
  
+  const availableRows =  Math.ceil(rows.length /rowsPerPage)
 
   return (
     <Box display='flex' height='100%'>
@@ -171,15 +173,20 @@ const TableAdmin: React.FC<TableAdminProps> = () => {
               Your plan includes {profile.lastSuscription.invitations}{' '}
               invitations
             </Box>
+            <Tooltip  title="Delete a user before inviting more" placement="bottom">
+          <div>
+
             <Button
-              disabled={loading}
+              disabled={loading||!canAddMoreChilds}
               className={classes.buttonNew}
               onClick={handleOpenInviteModal}
               variant='contained'
               color='primary'
-            >
+              >
               New guest
             </Button>
+                </div>
+              </Tooltip>
           </Box>
         </AntTabs>
         <TableContainer
@@ -242,14 +249,14 @@ const TableAdmin: React.FC<TableAdminProps> = () => {
                   </StyledTableRow>
                 ))}
               </TableBody>
-              <TablePagination
+              {/* <TablePagination
                 rowsPerPageOptions={[5, 10, 25]}
-                count={rows.length}
+                count={availableRows}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onChangePage={handleChangePage}
                 onChangeRowsPerPage={handleChangeRowsPerPage}
-              />
+              /> */}
             </Table>
           ) : (
             <Box

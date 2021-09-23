@@ -200,7 +200,8 @@ const TableCompanies: React.FC<TableCompaniesProps> = () => {
                 <EditOutlinedIcon
                 style={{ 
                   color:'#A6ABAF',
-                  cursor:'pointer'
+                  opacity:user.isActive?1:0.5,
+                  cursor:user.isActive?'pointer':'default',
                 }}
                 onClick={ () => {
                     if (user.isActive) {

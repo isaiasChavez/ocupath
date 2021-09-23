@@ -50,6 +50,7 @@ export type Profile = {
   }
 };
 export type UserStateType = {
+  canAddMoreChilds:boolean,
   selectedUser: User,
   typeSelectedUser: number,
   profile: Profile;
@@ -153,19 +154,20 @@ const userReducer = (state: UserStateType,action: Actions): UserStateType => {
       };
       return newState
     case US_A.CHILDRENS:
-      console.log("CHILDRENS")
-    const isAdminnn = payload.profile.type ===USERS_TYPES.ADMIN
+
+    const isAdminnn = payload.profile.type === USERS_TYPES.ADMIN
+
     let canAddMoreChilds:boolean
+    
     console.log({isAdminnn})
     if (isAdminnn) {
+      const maxAvailableInvitations = state.profile.lastSuscription.invitations 
       const totalChildrensAdded = payload.childrens.admins.length + payload.childrens.users.length
-      canAddMoreChilds =  totalChildrensAdded >=  state.profile.lastSuscription.invitations
+      canAddMoreChilds =  totalChildrensAdded < maxAvailableInvitations  
+      console.log(state.profile.lastSuscription.invitations)
+      console.log({totalChildrensAdded,canAddMoreChilds})
     }
-  
-    /* const childrensss= {
-          admins,
-          users
-        }, */
+
     return {
         ...state,
         profile:{
@@ -174,7 +176,7 @@ const userReducer = (state: UserStateType,action: Actions): UserStateType => {
         },
         type: payload.profile.type,
         childrens: payload.childrens,
-        
+        canAddMoreChilds
       };
     case US_A.SELECT_USER:
       console.log({payload})

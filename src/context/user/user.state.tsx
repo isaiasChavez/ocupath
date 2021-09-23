@@ -163,6 +163,12 @@ const UserState = ({ children }) => {
           msg:"Operation not allowed"
         })
       }
+      if (data.status===405) {
+        sendAlert({
+          type:'error',
+          msg:"Operation not allowed"
+        })
+      }
       if (data.status===3) {
         sendAlert({
           type:'warning',
@@ -270,12 +276,24 @@ const UserState = ({ children }) => {
           router.push("/login");
 
       }
+      if (data.status ===3) {
+        sendAlert({
+          type:'error',
+          msg:"The person who invites you cannot invite more people, please contact him"
+        })
+      } 
       if (data.status ===2) {
         sendAlert({
           type:'warning',
           msg:"The email already exists"
         })
       } 
+      if (data.status ===1) {
+        sendAlert({
+          type:'warning',
+          msg:"We couldn't find an invitation for you"
+        })
+      }
         
     } catch (error) {
       console.error("** Error validating addUser ** ", { error });
@@ -624,6 +642,7 @@ console.log({deleteUserDTO})
 
 const initialState = () => {
   let state: UserStateType = {
+    canAddMoreChilds:false,
     selectedUser:{
       name:'',
       avatar:'',

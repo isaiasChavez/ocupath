@@ -21,6 +21,7 @@ import UserContext, {
 } from '../../context/user/user.context'
 import { Avatar, Box, Button, CircularProgress } from '@material-ui/core'
 import moment from 'moment'
+import { Spin } from 'antd'
 
 export interface UserDetailModalProps {
   handleClose: Function
@@ -116,7 +117,7 @@ const UserDetailModal: React.FC<UserDetailModalProps> = ({
                   justifyContent='center'
                   alignItems='center'
                 >
-                  <CircularProgress color='secondary' />
+                  <Spin size="large" />
                 </Box>
               ) : (
                 <>
@@ -195,8 +196,16 @@ const DataAdmin: React.FC<DataAdminProps> = ({
   type
 }) => {
   const { selectedUser } = useContext(UserContext)
+  const [currentImage, setCurrentImage] = useState(null)
 
   const classes = useStyles()
+
+  useEffect(() => {
+    const heavyImage: HTMLImageElement = document.createElement('img')
+    heavyImage.onload = () => setCurrentImage(heavyImage.src)
+    heavyImage.src = selectedUser.thumbnail
+
+  }, [selectedUser.thumbnail])
 
   return (
     <>
@@ -223,11 +232,15 @@ const DataAdmin: React.FC<DataAdminProps> = ({
               >
                 Avatar
               </Box>
-              <Avatar
+             {currentImage? <Avatar
                 src={selectedUser.thumbnail}
                 alt='Remy Sharp'
                 className={classes.avatar}
-              ></Avatar>
+              ></Avatar>:
+              <Box display="flex" justifyContent="center" alignItems="center" className={classes.avatar} >
+              <Spin />
+              </Box>
+              }
             </Box>
             <Box
               pb={2}

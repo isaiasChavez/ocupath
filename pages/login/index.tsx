@@ -146,7 +146,7 @@ const Login: React.FC<LoginProps> = () => {
       password: null
     }
     if (res.status === 1) {
-      newErrors.email = "Email does't exist"
+      newErrors.email = "We cannot find an active account with this email"
     }
     if (res.status === 2) {
       newErrors.password = 'Invalid password'

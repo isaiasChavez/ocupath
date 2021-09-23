@@ -1,22 +1,22 @@
-import React, {
+import React,{
   MouseEventHandler,
   useContext,
   useEffect,
   useState
 } from 'react'
-import { Button, TextField, Box } from '@material-ui/core'
+import { Button,TextField,Box } from '@material-ui/core'
 import MomentUtils from '@date-io/moment'
-import { COMPANIES, GUEST } from '../../types'
+import { COMPANIES,GUEST,USERS_TYPES } from '../../types'
 import moment from 'moment'
 import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker
 } from '@material-ui/pickers'
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
+import { makeStyles,Theme,createStyles } from '@material-ui/core/styles'
 import Modal from '@material-ui/core/Modal'
-import { NewUserDTO, NewUserErrors } from '../../types/types'
+import { NewUserDTO,NewUserErrors } from '../../types/types'
 import { verifyEmail } from '../../config/utils'
-import UserContext, { InviteUserDTO } from '../../context/user/user.context'
+import UserContext,{ InviteUserDTO } from '../../context/user/user.context'
 import NotificationsContext from '../../context/notifications/notifications.context'
 import { validateOrReject } from 'class-validator'
 
@@ -33,17 +33,19 @@ const InviteModal: React.FC<InviteModalProps> = ({
   isOpen,
   type
 }) => {
+
   const MIN_INVITATIONS = 1
   const MAX_INVITATIONS = 1000
   const today = new Date()
-  const [startedAt, setStartDate] = useState<string>(moment(today).toISOString())
-  const [finishedAt, setFinishDate] = useState<string>(moment(today).toISOString())
-  const [dataNewUser, setDataNewUser] = useState<NewUserDTO>(initialState(type))
-  const [errors, setErrors] = useState<NewUserErrors>(initialErrors())
-  const { inviteUser, selectedUser, loading } = useContext(UserContext)
+  const [startedAt,setStartDate] = useState<string>(moment(today).toISOString())
+  const [finishedAt,setFinishDate] = useState<string>(moment(today).toISOString())
+  const [dataNewUser,setDataNewUser] = useState<NewUserDTO>(initialState(type))
+  const [errors,setErrors] = useState<NewUserErrors>(initialErrors())
+  const { inviteUser,selectedUser,loading,profile } = useContext(UserContext)
+  const { type: typeUserLogged } = profile
   const { sendAlert } = useContext(NotificationsContext)
-   const isInviteCompany = type === COMPANIES
-    const isInviteGuest = type === GUEST
+  const isInviteCompany = type === COMPANIES
+  const isInviteGuest = type === GUEST
   const handleDateStartChange = e => {
     setErrors(initialErrors())
     if (moment(e.format()).isAfter(finishedAt)) {
@@ -52,25 +54,25 @@ const InviteModal: React.FC<InviteModalProps> = ({
         startedAt: `The date must be before the final.`
       })
     } else {
-      const newDate =new Date(e.format()).toISOString()
-      console.log("newDatestart: ",{newDate})
+      const newDate = new Date(e.format()).toISOString()
+      console.log("newDatestart: ",{ newDate })
       setStartDate(newDate)
     }
   }
   useEffect(() => {
     console.log({ dataNewUser })
-  }, [dataNewUser])
+  },[dataNewUser])
 
   const handleDateEndChange = e => {
     setErrors(initialErrors())
-    console.log({ e }, e.format())
+    console.log({ e },e.format())
     if (moment(e.format()).isBefore(startedAt)) {
       setErrors({
         ...errors,
         finishedAt: `The date must be after the start.`
       })
     } else {
-      const newDate =new Date(e.format()).toISOString() 
+      const newDate = new Date(e.format()).toISOString()
       setFinishDate(newDate)
     }
   }
@@ -83,51 +85,54 @@ const InviteModal: React.FC<InviteModalProps> = ({
     })
   }
 
-  const isCommondFieldsValid = (): {isOk:boolean,commondErrors:NewUserErrors} => {
+  const isCommondFieldsValid = (): { isOk: boolean,commondErrors: NewUserErrors } => {
     let isValid = true
     let newErrors: NewUserErrors = { ...errors }
-    if (!dataNewUser.email||dataNewUser.email.trim().length === 0) {
+    if (!dataNewUser.email || dataNewUser.email.trim().length === 0) {
       newErrors.email = 'Please enter a valid value'
       isValid = false
     }
+
     if (!verifyEmail(dataNewUser.email)) {
       newErrors.email = 'Please enter a valid value'
       isValid = false
     }
+    if (typeUserLogged === USERS_TYPES.SUPER_ADMIN) {
+      if (!moment(startedAt).isValid() || moment(startedAt).isAfter(finishedAt)) {
+        newErrors.startedAt = `You must select a date`
+        isValid = false
+      }
 
-    if (!moment(startedAt).isValid() || moment(startedAt).isAfter(finishedAt)) {
-      newErrors.startedAt = `You must select a date`
-      isValid = false
-    }
+      if (
+        !moment(finishedAt).isValid() ||
+        moment(finishedAt).isBefore(startedAt)
+      ) {
+        newErrors.finishedAt = `You must select a date`
+        isValid = false
+      }
 
-    if (
-      !moment(finishedAt).isValid() ||
-      moment(finishedAt).isBefore(startedAt)
-    ) {
-      newErrors.finishedAt = `You must select a date`
-      isValid = false
-    }
-    console.log({finishedAt,startedAt})
-    console.log(moment(finishedAt).isSame(startedAt))
-    if (moment(finishedAt).isSame(startedAt)) {
-      newErrors.finishedAt = `The dates must be different`
-      newErrors.startedAt = `The dates must be different`
-      isValid = false
-    }
+      console.log({ finishedAt,startedAt })
+      console.log(moment(finishedAt).isSame(startedAt))
+      if (moment(finishedAt).isSame(startedAt)) {
+        newErrors.finishedAt = `The dates must be different`
+        newErrors.startedAt = `The dates must be different`
+        isValid = false
+      }
 
-    if (!dataNewUser.cost||dataNewUser.cost <= 0) {
-      newErrors.cost = `You cannot put this value`
-      isValid = false
+      if (!dataNewUser.cost || dataNewUser.cost <= 0) {
+        newErrors.cost = `You cannot put this value`
+        isValid = false
+      }
     }
     return {
-      commondErrors:newErrors,
-      isOk:isValid
+      commondErrors: newErrors,
+      isOk: isValid
     }
   }
 
-  const validateCompany = (commondErrors:NewUserErrors): {isOk:boolean,errors:NewUserErrors} => {
+  const validateCompany = (commondErrors: NewUserErrors): { isOk: boolean,errors: NewUserErrors } => {
     let isValid = true
-    console.log({errors,dataNewUser})
+    console.log({ errors,dataNewUser })
     const newErrors: NewUserErrors = {
       ...commondErrors
     }
@@ -136,72 +141,79 @@ const InviteModal: React.FC<InviteModalProps> = ({
       isValid = false
     }
     if (dataNewUser.invitations <= MIN_INVITATIONS) {
-      newErrors.invitations = `Enter a minimum of ${MIN_INVITATIONS} ${
-        MIN_INVITATIONS === 1 ? 'invitation.' : 'invitations.'
-      }`
+      newErrors.invitations = `Enter a minimum of ${MIN_INVITATIONS} ${MIN_INVITATIONS === 1 ? 'invitation.' : 'invitations.'
+        }`
       isValid = false
     }
     if (dataNewUser.invitations > MAX_INVITATIONS) {
       newErrors.invitations = `You can only choose up to ${MAX_INVITATIONS} invitations.`
       isValid = false
     }
- 
-    return{
-      isOk:isValid,
-      errors:newErrors
+
+    return {
+      isOk: isValid,
+      errors: newErrors
     }
   }
 
-  const validateGuest = (commondErrors:NewUserErrors): {isOk:boolean,errors:NewUserErrors} => {
+  const validateGuest = (commondErrors: NewUserErrors): { isOk: boolean,errors: NewUserErrors } => {
     let isValid = true
     const newErrors: NewUserErrors = {
       ...commondErrors
     }
     if (dataNewUser.name.trim().length === 0) {
-      newErrors.name= 'Please enter a valid value' 
+      newErrors.name = 'Please enter a valid value'
       isValid = false
     }
 
     return {
-      isOk:isValid,
-      errors:newErrors
+      isOk: isValid,
+      errors: newErrors
     }
   }
 
   const handleSend = async () => {
-   
+
     let commondsFieldsAreValid: boolean
     let particularFieldsAreValid: boolean
     if (isInviteCompany) {
-      const {isOk,commondErrors} = isCommondFieldsValid()
+      const { isOk,commondErrors } = isCommondFieldsValid()
       commondsFieldsAreValid = isOk
-      const {isOk:isOkCompany,errors} = validateCompany(commondErrors)
-      particularFieldsAreValid= isOkCompany
+      const { isOk: isOkCompany,errors } = validateCompany(commondErrors)
+      particularFieldsAreValid = isOkCompany
       setErrors(errors)
     }
     if (isInviteGuest) {
-      const {isOk,commondErrors} = isCommondFieldsValid()
-      commondsFieldsAreValid=isOk
-      const {isOk:isOkGuest,errors} = validateGuest(commondErrors)
-      particularFieldsAreValid= isOkGuest
+      const { isOk,commondErrors } = isCommondFieldsValid()
+      commondsFieldsAreValid = isOk
+      const { isOk: isOkGuest,errors } = validateGuest(commondErrors)
+      particularFieldsAreValid = isOkGuest
       setErrors(errors)
     }
 
-    console.log({ particularFieldsAreValid, commondsFieldsAreValid,isInviteGuest })
 
     if (particularFieldsAreValid && commondsFieldsAreValid) {
       setErrors(initialErrors())
       try {
-        const inviteDTO:NewUserDTO = {
+        const inviteDTO: NewUserDTO = {
           ...dataNewUser,
           startedAt,
           finishedAt
         }
+
         if (isInviteGuest) {
           inviteDTO.invitations = 0
         }
-        
+        console.log(typeUserLogged,typeUserLogged === USERS_TYPES.ADMIN)
+        if (typeUserLogged === USERS_TYPES.ADMIN) {
+          inviteDTO.invitations = 0
+          inviteDTO.startedAt = new Date().toISOString()
+          inviteDTO.finishedAt = new Date().toISOString()
+          inviteDTO.cost = 1
+        }
+
         const newInvite = new InviteUserDTO(inviteDTO)
+        console.log({ newInvite })
         await validateOrReject(newInvite)
         inviteDTO.email = inviteDTO.email.toLowerCase()
 
@@ -233,20 +245,22 @@ const InviteModal: React.FC<InviteModalProps> = ({
       <Box
         height='12%'
         className='ITCAvantGardeStdBkBold'
-        my={1}
+        my={ 1 }
         display='flex'
         alignItems='center'
         justifyContent='center'
         fontWeight='fontWeightBold'
-        fontSize={28}
+        fontSize={ 28 }
       >
-        {headerText}
+        { headerText }
       </Box>
     )
   }
 
+
+
   const body = (
-    <Box borderRadius={8} className={classes.paper}>
+    <Box borderRadius={ 8 } className={ classes.paper }>
       <Header />
 
       <Box
@@ -256,215 +270,218 @@ const InviteModal: React.FC<InviteModalProps> = ({
         justifyContent='space-around'
       >
         <Box
-          mt={2}
-          fontSize={14}
+          mt={ 2 }
+          fontSize={ 14 }
           className='ITCAvantGardeStdBkBold'
           fontWeight='fontWeightBold'
         >
           Personal Information
         </Box>
-        {type === COMPANIES && (
-          <Box mb={2} mt={1}>
+        { type === COMPANIES && (
+          <Box mb={ 2 } mt={ 1 }>
             <TextField
               size='small'
-              helperText={errors.company}
-              error={errors.company !== null}
+              helperText={ errors.company }
+              error={ errors.company !== null }
               variant='outlined'
-              onChange={onChangeInput}
+              onChange={ onChangeInput }
               required
               type='string'
               name='company'
               id='company'
               label='Company'
-              disabled={loading}
+              disabled={ loading }
               fullWidth
-              value={dataNewUser.company}
+              value={ dataNewUser.company }
             />
           </Box>
-        )}
-        {type === GUEST && (
-          <Box my={2}>
+        ) }
+        { type === GUEST && (
+          <Box my={ 2 }>
             <TextField
               size='small'
               variant='outlined'
-              helperText={errors.name}
-              error={errors.name !== null}
-              onChange={onChangeInput}
+              helperText={ errors.name }
+              error={ errors.name !== null }
+              onChange={ onChangeInput }
               required
               type='string'
               name='name'
               id='name'
               label='Name'
-              value={dataNewUser.name}
+              value={ dataNewUser.name }
               fullWidth
               autoComplete='name'
-              disabled={loading}
+              disabled={ loading }
             />
           </Box>
-        )}
+        ) }
 
         <Box>
           <TextField
             size='small'
             required
-            helperText={errors.email}
-            error={errors.email !== null}
+            helperText={ errors.email }
+            error={ errors.email !== null }
             variant='outlined'
-            onChange={onChangeInput}
-            inputProps={{ style: { textTransform: "lowercase" } }}
+            onChange={ onChangeInput }
+            inputProps={ { style: { textTransform: "lowercase" } } }
 
             type='email'
             name='email'
             label='Email'
             fullWidth
-            value={dataNewUser.email}
-            disabled={loading}
+            value={ dataNewUser.email }
+            disabled={ loading }
           />
         </Box>
       </Box>
       <Box display='flex' flexDirection='column' justifyContent='space-around'>
-        {type === COMPANIES && (
+        { type === COMPANIES && (
           <>
             <Box
-              mt={2}
-              mb={1}
-              fontSize={14}
+              mt={ 2 }
+              mb={ 1 }
+              fontSize={ 14 }
               className='ITCAvantGardeStdBkBold'
               fontWeight='fontWeightBold'
             >
               Plan
             </Box>
-            <Box mb={2}>
+            <Box mb={ 2 }>
               <TextField
                 size='small'
                 name='invitations'
                 variant='outlined'
-                disabled={loading}
-                helperText={errors.invitations}
-                onChange={onChangeInput}
-                error={errors.invitations !== null}
+                disabled={ loading }
+                helperText={ errors.invitations }
+                onChange={ onChangeInput }
+                error={ errors.invitations !== null }
                 type='number'
                 required
                 placeholder='Number of invitations*'
-                value={dataNewUser.invitations ? dataNewUser.invitations : null}
+                value={ dataNewUser.invitations ? dataNewUser.invitations : null }
                 fullWidth
               />
             </Box>
           </>
-        )}
+        ) }
       </Box>
       <Box display='flex' flexDirection='column' justifyContent='space-around'>
-        <Box
-          mt={type === COMPANIES ? 0 : 2}
-          mb={2}
-          fontSize={14}
-          className='ITCAvantGardeStdBkBold'
-          fontWeight='fontWeightBold'
-        >
-          Period
-        </Box>
-        <Box mb={2}>
-          <MuiPickersUtilsProvider utils={MomentUtils}>
-            <Box display='flex'>
-              <Box width='100%' mr={2}>
-                <KeyboardDatePicker
-                  initialFocusedDate={today}
-                  size='small'
-                  fullWidth={true}
-                  autoOk
-                  variant='inline'
-                  inputVariant='outlined'
-                  label='Start'
-                  helperText={errors.startedAt}
-                  format='DD/MM/YYYY'
-                  value={startedAt}
-                  disablePast
-                  disabled={loading}
-                  maxDate={new Date('2025-01-01')}
-                  disableToolbar
-                  InputAdornmentProps={{ position: 'start' }}
-                  onChange={handleDateStartChange}
-                />
+        { typeUserLogged === USERS_TYPES.SUPER_ADMIN && <>
+          <Box
+            mt={ type === COMPANIES ? 0 : 2 }
+            mb={ 2 }
+            fontSize={ 14 }
+            className='ITCAvantGardeStdBkBold'
+            fontWeight='fontWeightBold'
+          >
+            Period
+          </Box>
+          <Box mb={ 2 }>
+            <MuiPickersUtilsProvider utils={ MomentUtils }>
+              <Box display='flex'>
+                <Box width='100%' mr={ 2 }>
+                  <KeyboardDatePicker
+                    initialFocusedDate={ today }
+                    size='small'
+                    fullWidth={ true }
+                    autoOk
+                    variant='inline'
+                    inputVariant='outlined'
+                    label='Start'
+                    helperText={ errors.startedAt }
+                    format='DD/MM/YYYY'
+                    value={ startedAt }
+                    disablePast
+                    disabled={ loading }
+                    maxDate={ new Date('2025-01-01') }
+                    disableToolbar
+                    InputAdornmentProps={ { position: 'start' } }
+                    onChange={ handleDateStartChange }
+                  />
+                </Box>
+                <Box width='100%' ml={ 2 }>
+                  <KeyboardDatePicker
+                    disablePast
+                    disabled={ loading }
+                    fullWidth={ true }
+                    disableToolbar
+                    maxDate={ new Date('2025-01-01') }
+                    autoOk
+                    variant='inline'
+                    size='small'
+                    inputVariant='outlined'
+                    label='Finish'
+                    helperText={ errors.finishedAt }
+                    format='DD/MM/YYYY'
+                    value={ finishedAt }
+                    InputAdornmentProps={ { position: 'start' } }
+                    onChange={ handleDateEndChange }
+                  />
+                </Box>
               </Box>
-              <Box width='100%' ml={2}>
-                <KeyboardDatePicker
-                  disablePast
-                  disabled={loading}
-                  fullWidth={true}
-                  disableToolbar
-                  maxDate={new Date('2025-01-01')}
-                  autoOk
-                  variant='inline'
-                  size='small'
-                  inputVariant='outlined'
-                  label='Finish'
-                  helperText={errors.finishedAt}
-                  format='DD/MM/YYYY'
-                  value={finishedAt}
-                  InputAdornmentProps={{ position: 'start' }}
-                  onChange={handleDateEndChange}
-                />
-              </Box>
-            </Box>
-          </MuiPickersUtilsProvider>
-        </Box>
-        <Box
-          mb={1}
-          fontSize={14}
-          className='ITCAvantGardeStdBkBold'
-          fontWeight='fontWeightBold'
-        >
-          Total cost
-        </Box>
-        <Box mb={4} width='46%'>
-          <TextField
-            size='small'
-            required
-            onChange={onChangeInput}
-            variant='outlined'
-            value={dataNewUser.cost}
-            error={errors.cost !== null}
-            name='cost'
-            helperText={errors.cost}
-            placeholder='Total cost'
-            fullWidth
-            disabled={loading}
-          />
-        </Box>
+            </MuiPickersUtilsProvider>
+          </Box>
+          <Box
+            mb={ 1 }
+            fontSize={ 14 }
+            className='ITCAvantGardeStdBkBold'
+            fontWeight='fontWeightBold'
+          >
+            Total cost
+          </Box>
+          <Box mb={ 4 } width='46%'>
+            <TextField
+              size='small'
+              required
+              onChange={ onChangeInput }
+              variant='outlined'
+              value={ dataNewUser.cost }
+              error={ errors.cost !== null }
+              name='cost'
+              helperText={ errors.cost }
+              placeholder='Total cost'
+              fullWidth
+              disabled={ loading }
+            />
 
-        <Box display='flex' justifyContent='space-around'>
-          <Box mr={2} width='100%'>
+          </Box>
+        </> }
+
+        <Box display='flex' justifyContent='space-around' mt={ typeUserLogged === USERS_TYPES.SUPER_ADMIN ? 0 : 2 }>
+          <Box mr={ 2 } width='100%'>
             <Button
-              fullWidth={true}
+              fullWidth={ true }
               size='large'
-              onClick={() => {
+              onClick={ () => {
                 if (!loading) {
                   handleClose()
                 }
-              }}
-              className={classes.buttons}
+              } }
+              className={ classes.buttons }
               color='secondary'
               variant='outlined'
-              disabled={loading}
-              style={{
+              disabled={ loading }
+              style={ {
                 textTransform: 'capitalize'
-              }}
+              } }
             >
               Cancel
             </Button>
           </Box>
-          <Box ml={2} width='100%'>
+          <Box ml={ 2 } width='100%'>
             <Button
-              onClick={handleSend}
-              fullWidth={true}
+              onClick={ handleSend }
+              fullWidth={ true }
               size='large'
               color='secondary'
               variant='contained'
-              style={{
+              style={ {
                 textTransform: 'capitalize',
                 color: 'white'
-              }}
-              disabled={loading}
+              } }
+              disabled={ loading }
             >
               send
             </Button>
@@ -477,22 +494,22 @@ const InviteModal: React.FC<InviteModalProps> = ({
   return (
     <>
       <Modal
-        open={isOpen}
-        onClose={() => {
+        open={ isOpen }
+        onClose={ () => {
           if (!loading) {
             handleClose()
           }
-        }}
-        style={{
+        } }
+        style={ {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center'
-        }}
+        } }
         className='animate-fadein'
         aria-labelledby='simple-modal-title'
         aria-describedby='simple-modal-description'
       >
-        {body}
+        { body }
       </Modal>
     </>
   )
@@ -507,7 +524,7 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '468px',
       maxHeight: '100vh',
       backgroundColor: theme.palette.background.paper,
-      padding: theme.spacing(2, 4, 3)
+      padding: theme.spacing(2,4,3)
     },
     buttons: {
       borderColor: '#45A0C5'

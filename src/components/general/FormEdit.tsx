@@ -10,7 +10,7 @@ import {
   withStyles,
   LinearProgress
 } from '@material-ui/core'
-import { Images, URLS, USERS } from '../../types/index'
+import { Images, URLS, USERS,USERS_TYPES } from '../../types/index'
 import EditIcon from '@material-ui/icons/Edit'
 import UserContext, { UpdateUserDTO } from '../../context/user/user.context'
 import clienteAxios from '../../config/axios'
@@ -143,13 +143,7 @@ const FormEdit: React.FC<FormEditProps> = ({ type, toggleEditAvatar }) => {
                 }
               />
             </Box>
-            {/* <Avatar
-               src={profile.thumbnail}
-             src=""
-              alt={profile.name}
-
-              className={classes.large}
-            /> */}
+           
             <Button
               fullWidth={true}
               variant='outlined'
@@ -227,7 +221,7 @@ const FormEdit: React.FC<FormEditProps> = ({ type, toggleEditAvatar }) => {
             </Box>
           )}
         </Box>
-        {!isSuperAdmin&&<RightSide />}
+        {type!==USERS_TYPES.SUPER_ADMIN&&<RightSide />}
       </Box>
     </Box>
   )

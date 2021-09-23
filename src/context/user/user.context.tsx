@@ -372,6 +372,7 @@ interface UserContextInterface {
   inviteUser: Function;
   isGuest:boolean;
   isAdmin:boolean;
+  canAddMoreChilds:boolean;
   isSuperAdmin:boolean;
   addUserAdm: Function;
   deleteUserAdm: Function;
