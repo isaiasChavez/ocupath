@@ -47,6 +47,8 @@ const InviteModal: React.FC<InviteModalProps> = ({
   const { sendAlert } = useContext(NotificationsContext)
   const isInviteCompany = type === COMPANIES
   const isInviteGuest = type === GUEST
+
+
   const handleDateStartChange = e => {
     setErrors(initialErrors())
     if (moment(e.format()).isAfter(finishedAt)) {
@@ -56,13 +58,9 @@ const InviteModal: React.FC<InviteModalProps> = ({
       })
     } else {
       const newDate = new Date(e.format()).toISOString()
-      console.log("newDatestart: ",{ newDate })
       setStartDate(newDate)
     }
   }
-  useEffect(() => {
-    console.log({ dataNewUser })
-  },[dataNewUser])
 
   const handleDateEndChange = e => {
     setErrors(initialErrors())

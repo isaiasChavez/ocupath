@@ -406,7 +406,11 @@ export class AddNewSuscriptionSuscriptionDTO  {
     adminUuidToUpdate,
     guestUuidToUpdate
   }) {
-    this.invitations = parseInt(invitations);
+    if (!this.invitations) {
+      this.invitations = 0
+    }else{
+      this.invitations = parseInt(invitations);
+    }
     this.cost = parseFloat(cost);
     this.startedAt = startedAt;
     this.finishedAt = finishedAt;
@@ -432,7 +436,6 @@ export class AddNewSuscriptionSuscriptionDTO  {
   @IsNumber()
   @IsNotEmpty()
   typeToUpdate: number;
-
   @IsUUID()
   @IsNotEmpty()
   @IsOptional()

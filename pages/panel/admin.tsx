@@ -3,7 +3,6 @@ import Grid from '@material-ui/core/Grid'
 import { useState } from 'react'
 export interface AdminProps {}
 import { COLORS } from '../../src/types/index'
-import EditUser from '../../src/components/general/EditUser'
 import TableAdmin from '../../src/components/admin/TableAdmin'
 import TableFiles from '../../src/components/general/TableFiles'
 import { USERS } from '../../src/types/index'
@@ -11,6 +10,8 @@ import AppBarCms from '../../src/components/general/AppBarCms'
 import Head from 'next/head'
 import withAuth from '../../src/auth/WithAuth'
 import SideBar from '../../src/components/general/SideBar'
+import Profile from '../../src/components/general/Profile'
+import HeadCustom from '../../src/layouts/HeadCustom'
 const PROFILE = 0
 const USER = 1
 const FILES = 2
@@ -23,7 +24,7 @@ const AdminModAdmin = () => {
     switch (currentTab) {
       case PROFILE:
         return (
-          <EditUser
+          <Profile
             isEditingAvatar={isEditingAvatar}
             setIsEditingAvatar={setIsEditingAvatar}
             type={USERS.ADMIN}
@@ -39,13 +40,9 @@ const AdminModAdmin = () => {
   }
   return (
     <>
-      <Head>
+      <HeadCustom>
         <title>Multivrsity | Admin</title>
-        <meta
-          name='viewport'
-          content='minimum-scale=1, initial-scale=1, width=device-width'
-        />
-      </Head>
+      </HeadCustom>
       <div className={classes.root}>
         <div className={classes.inner}>
           <AppBarCms />

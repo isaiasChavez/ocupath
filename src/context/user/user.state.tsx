@@ -485,7 +485,7 @@ console.log({deleteUserDTO})
         });
         sendAlert({
           type:'success',
-          msg:'User have has updated'
+          msg:'User has been updated'
         })
       }
       return data.status
@@ -500,21 +500,23 @@ console.log({deleteUserDTO})
   };
  
 
-  const addNewPeriod = async (addNewSuscriptionSuscriptionDTO: AddNewSuscriptionSuscriptionDTO) => {
+  const addNewPeriod = async (addNewSuscriptionSuscriptionDTO: AddNewSuscriptionSuscriptionDTO):Promise<number> => {
     try {
 
       setLoading(true)
       await validateOrReject(addNewSuscriptionSuscriptionDTO);
-      setLoading(false)
       
       const { data } = await axios.put(URLS.addPeriod, addNewSuscriptionSuscriptionDTO);
       console.log("addNewPeriod:",{data})
       if (data.status ===0) {
         await getUserChildrens()
       }
+      setLoading(false)
+      return data.status
     } catch (error) {
       setLoading(false)
       console.error("** Error validating updateUser ** ", { error });
+      return 1
     }
   };
 

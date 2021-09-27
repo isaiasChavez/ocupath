@@ -14,12 +14,12 @@ import NotificationsContext from '../../context/notifications/notifications.cont
 import { Image,Spin,Upload } from 'antd'
 import { CustomInputWithValidations,propsCustomInputErrors } from '../../../pages/login'
 
-interface FormEditProps {
+interface UserSectionProps {
   type: number
-  toggleEditAvatar: Function
+  toggleAvatarSection: Function
 }
 
-const FormEdit: React.FC<FormEditProps> = ({ type,toggleEditAvatar }) => {
+const UserSection: React.FC<UserSectionProps> = ({ type,toggleAvatarSection }) => {
   const { profile,updateUser,loading,isSuperAdmin } = useContext(UserContext)
   const classes = useStyles()
   const [isBlocked,setIsBlocked] = useState(true)
@@ -113,13 +113,14 @@ const FormEdit: React.FC<FormEditProps> = ({ type,toggleEditAvatar }) => {
     )
   }
   return (
-    <Box width={ '100%' } className={ classes.root } pl={ 3 }>
+    <Box width={ '100%' } className={ classes.root } pl={ 3 } >
       <Header />
       <Box
         height='6%'
         display='flex'
         alignItems='center'
-        fontSize={ 18 }
+        fontSize={ 20 }
+        mb={2}
         fontWeight='fontWeightBold'
       >
         Information
@@ -166,7 +167,7 @@ const FormEdit: React.FC<FormEditProps> = ({ type,toggleEditAvatar }) => {
               variant='outlined'
               disabled={loading}
               color='secondary'
-              onClick={ () => toggleEditAvatar() }
+              onClick={ () => toggleAvatarSection() }
               className={ classes.buttonEdit }
               size='large'
             >
@@ -178,15 +179,17 @@ const FormEdit: React.FC<FormEditProps> = ({ type,toggleEditAvatar }) => {
             flexDirection='column'
             justifyContent='space-between'
           >
-            <Box my={ 1 } alignItems='center' display='flex'>
+            <Box my={ 3 } alignItems='center' position="relative"  display='flex'>
               <h3 className={ classes.information }>
                 Personal information
                 <EditIcon
                   onClick={ handleUnlock }
                   color='primary'
                   style={ {
-                    marginLeft: '0.4rem',
-                    position: 'relative',
+                    position: 'absolute',
+                    right:0,
+                    top:'50%',
+                    transform:'translateY(-80%)',
                     fontSize: '1.2rem',
                     cursor: 'pointer'
                   } }
@@ -194,7 +197,7 @@ const FormEdit: React.FC<FormEditProps> = ({ type,toggleEditAvatar }) => {
               </h3>
             </Box>
             <Box>
-              <Box mb={ 4 }>
+              <Box mb={ 5 }>
                 <CustomInputWithValidations
                   { ...propsCustomInputErrors }
 
@@ -319,19 +322,25 @@ const RightSide = () => {
     imageRoomUser.src = profile.roomImage
   },[profile.roomImage])
 
+  useEffect(() => {
+    if (urlPreview) {
+      handleUpload()
+    }
+  }, [urlPreview])
+
+
   return (
-    <Box pl={ 8 } height='100%' minWidth='12rem' width='20%'>
+    <Box pl={ 8 } height='100%' minWidth='18rem' width='20%'>
       <Box
         textAlign='left'
         width='100%'
-        fontSize={ 16 }
         mb={ 2 }
         fontWeight='fontWeightBold'
       >
-        <h4 className={ classes.information }>Logo</h4>
+        <h4 className={ classes.information }>Customize your workspace</h4>
       </Box>
-      <Box fontFamily='font2'>
-        Select your company logo image. This will be displayed within the virtual reality environmet as shown in the image below
+      <Box fontFamily='font2' fontSize='0.8rem' >
+      Upload your logo, it will be displayed in the locations shown in the example.
       </Box>
       <Box
         maxHeight='8rem'
@@ -346,10 +355,47 @@ const RightSide = () => {
         mb={ 1 }
       >
         <img
-          src={ imageRoom }
+          src={Images.preview}
           style={ { height: '100%',width: '100%',objectFit: 'contain' } }
           alt='Room image'
         />
+      </Box>
+         <Box
+        textAlign='left'
+        width='100%'
+        fontSize={ 16 }
+        mt={3}
+        mb={ 2 }
+        fontWeight='fontWeightBold'
+      >
+        <h4 className={ classes.information }>Logo</h4>
+      </Box>
+      <Box fontFamily='font2' fontSize='0.8rem'>
+        Select your company logo image. This will be displayed within the virtual reality environmet as shown in the image below
+      </Box>
+      <Box
+        maxHeight='8rem'
+        minHeight='8rem'
+        minWidth='100%'
+        width='100%'
+        position="relative"
+        display="flex"
+        justifyContent="center"
+        borderRadius='0.25rem'
+        overflow='hidden'
+        mt={ 1 }
+        mb={ 1 }
+      >
+        <img
+          src={ imageRoom }
+          style={ { height: '100%',width: '100%',objectFit: 'contain',opacity:loading?0.8:1} }
+          alt='Room image'
+        />
+        {/* {loading&&<Box position='absolute' top="50%" left="50%" style={{
+          transform:'translateX(-50%) translateY(-50%)'
+        }}>
+        <Spin size="large"/>
+        </Box>} */}
       </Box>
       <Box display='flex' width="100%" justifyContent='center'>
         <Upload showUploadList={ false } listType='picture' { ...props }>
@@ -360,6 +406,7 @@ const RightSide = () => {
             variant='outlined'
             className={ classes.submit }
             disableElevation
+            disabled={loading}
           >
             <span
               className='ITCAvantGardeStdBkSemiBold'
@@ -373,59 +420,7 @@ const RightSide = () => {
         </Upload>
       </Box>
 
-      { urlPreview && (
-        <>
-          <Box
-            textAlign='left'
-            width='100%'
-            fontSize={ 16 }
-            mb={ 2 }
-            mt={ 2 }
-            fontWeight='fontWeightBold'
-          >
-            <h4 className={ classes.information }>Your logo</h4>
-          </Box>
-          <Box
-            maxHeight='8rem'
-            minHeight='8rem'
-            width='100%'
-            display="flex"
-            justifyContent="center"
-            borderRadius='0.25rem'
-            overflow='hidden'
-            mt={ 1 }
-            mb={ 1 }
-          >
-            <img
-              style={ { height: '100%',objectFit: 'contain' } }
-
-              src={ urlPreview as string }
-              alt='Default app image'
-            />
-          </Box>
-          <Button
-            size='large'
-            color='secondary'
-            type='submit'
-            disabled={ loading }
-            fullWidth
-            variant='contained'
-            onClick={ handleUpload }
-            className={ classes.submit }
-            disableElevation
-          >
-            <span
-              className='ITCAvantGardeStdBkSemiBold'
-              style={ {
-                color: 'white',
-                textTransform: 'capitalize'
-              } }
-            >
-              Save
-            </span>
-          </Button>
-        </>
-      ) }
+     
     </Box>
   )
 }
@@ -442,7 +437,8 @@ const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
     height: '100%',
-    flexDirection: 'column'
+    flexDirection: 'column',
+    overflowY:'scroll'
   },
   information: {
     justifyContent: 'flex-end',
@@ -474,4 +470,4 @@ const useStyles = makeStyles(theme => ({
     fontWeight: 'bold'
   }
 }))
-export default FormEdit
+export default UserSection

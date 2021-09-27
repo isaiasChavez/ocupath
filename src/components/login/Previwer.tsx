@@ -6,7 +6,7 @@ import SkipPreviousOutlinedIcon from '@material-ui/icons/SkipPreviousOutlined'
 import CloseIcon from '@material-ui/icons/Close'
 import AssetsContext, { Asset } from '../../context/assets/assets.context'
 import { FILES_TYPES } from '../../types'
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import MaxViewer from '../general/MaxViewer'
 
 interface PreviewProps {}
@@ -20,6 +20,8 @@ const Previwer: React.FC<PreviewProps> = () => {
     deleteAsset,
     loading
   } = useContext(AssetsContext)
+  const videoRef = useRef();
+  const previousUrl = useRef(currentAsset.url);
 
   const nameImage = () => {
     let newName
@@ -49,6 +51,15 @@ const Previwer: React.FC<PreviewProps> = () => {
   if(currentAssets.length===0){
      closePreviewer()
   }
+  useEffect(() => {
+    if (previousUrl.current !== currentAsset.url) {
+      if (videoRef&&videoRef.current) {
+        const videoElement:HTMLVideoElement = videoRef?.current
+        videoElement.load();
+      }
+    }
+  }, [currentAsset.url]);
+
 
   return (
     <>
@@ -114,7 +125,7 @@ const Previwer: React.FC<PreviewProps> = () => {
                 display='flex'
                 justifyContent='center'
               >
-                <Box position='relative' height='100%' maxWidth='80%'>
+                <Box position='relative' height='100%' maxWidth='80%' className='animate-fadein' >
                   {previewIsImage ? (
                     <img
                       src={
@@ -132,10 +143,12 @@ const Previwer: React.FC<PreviewProps> = () => {
                     />
                   ) : (
                     <video
+                      ref={videoRef}
                       controls
                       style={{
                         height: '100%'
                       }}
+                      key={currentAsset.url}
                     >
                       <source src={currentAsset.url} type='video/mp4' />
                       Tu navegador no soporta vídeos

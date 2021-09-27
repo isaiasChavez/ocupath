@@ -123,15 +123,15 @@ const userReducer = (
         ...payload
       }
     case MIS.SELECT_ASSET:
-      console.log({payload})
+      console.log(MIS.SELECT_ASSET,{payload})
       return {
         ...state,
         currentAsset:payload
       }
     case MIS.NEXT_PREVIEW:
-
       let indice = state.currentAssets.findIndex((asset:Asset) => asset.uuid === state.currentAsset.uuid);
       console.log({indice})
+      console.log(MIS.NEXT_PREVIEW,indice)
       
       return {
         ...state,

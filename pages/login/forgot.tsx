@@ -12,6 +12,7 @@ import { COLORS } from "../../src/types";
 import { CustomInput } from ".";
 import HeaderSimple from "../../src/components/general/HeaderSimple";
 import withAuth from "../../src/auth/WithAuth";
+import HeadCustom from "../../src/layouts/HeadCustom";
 export interface ForgotProps {}
 
 const Forgot: React.FC<ForgotProps> = () => {
@@ -87,13 +88,9 @@ const Forgot: React.FC<ForgotProps> = () => {
 
   return (
     <>
-      <Head>
+      <HeadCustom>
         <title>Multivrsity | Recover</title>
-        <meta
-          name='viewport'
-          content='minimum-scale=1, initial-scale=1, width=device-width'
-        />
-      </Head>
+      </HeadCustom>
     
      <HeaderSimple isLogin={false}/>
     <div style={ {

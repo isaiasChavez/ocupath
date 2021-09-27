@@ -2,13 +2,13 @@ import React,{ useContext,useEffect,useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import ArrowBack from '@material-ui/icons/ArrowBack';
-import FormEdit from './FormEdit';
+import UserSection from './UserSection';
 import { COLORS } from '../../types';
 import UserContext,{ UpdateUserDTO } from '../../context/user/user.context';
 import { Button,IconButton,Box, LinearProgress   } from '@material-ui/core';
 import AskModal from './AskModal';
 import axios from 'axios';
-const EditUser: React.FC<EditUserProps> = ({ type ,isEditingAvatar,setIsEditingAvatar}) => {
+const Profile: React.FC<ProfileProps> = ({ type ,isEditingAvatar,setIsEditingAvatar}) => {
   const { getUserDetail } = useContext(UserContext)
   const classes = useStyles();
   
@@ -16,20 +16,20 @@ const EditUser: React.FC<EditUserProps> = ({ type ,isEditingAvatar,setIsEditingA
     getUserDetail()
   },[])
 
-  const toggleEditAvatar = () => {
+  const toggleAvatarSection = () => {
     setIsEditingAvatar(!isEditingAvatar)
   }
 
   return (
     <Card className={ classes.root }>
-      { !isEditingAvatar && <FormEdit toggleEditAvatar={ toggleEditAvatar } type={ type } /> }
-      { isEditingAvatar && <EditAvatar toggleEditAvatar={ toggleEditAvatar } /> }
+      { !isEditingAvatar && <UserSection toggleAvatarSection={ toggleAvatarSection } type={ type } /> }
+      { isEditingAvatar && <AvatarSection toggleAvatarSection={ toggleAvatarSection } /> }
     </Card>
   );
 }
 
 
-const EditAvatar = ({ toggleEditAvatar }) => {
+const AvatarSection = ({ toggleAvatarSection }) => {
   const iframeUrl = "https://ocupath.readyplayer.me/"
   const thumbnailUrl = "https://render.readyplayer.me/render"
   const classes = useStyles();
@@ -64,7 +64,7 @@ const EditAvatar = ({ toggleEditAvatar }) => {
       const status = await updateUser(updateUserDto)
       setloading(false)
       if(status===0){
-        toggleEditAvatar()
+        toggleAvatarSection()
       }
       
     } catch (error) {
@@ -94,7 +94,7 @@ const EditAvatar = ({ toggleEditAvatar }) => {
       />
       <div className={ classes.rootIframe } >
         <div className={ classes.header }>
-          <IconButton onClick={ toggleEditAvatar } aria-label="delete">
+          <IconButton onClick={ toggleAvatarSection } aria-label="delete">
             <ArrowBack />
           </IconButton>
         </div>
@@ -170,13 +170,13 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 
-interface EditUserProps {
+interface ProfileProps {
   type: number,
   isEditingAvatar:boolean,
   setIsEditingAvatar:Function,
 }
 export interface EditCardProps {
   type: number,
-  toggleEditAvatar: any,
+  toggleAvatarSection: any,
 }
-export default EditUser
+export default Profile

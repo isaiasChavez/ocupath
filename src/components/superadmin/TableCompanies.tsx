@@ -92,8 +92,15 @@ const TableCompanies: React.FC<TableCompaniesProps> = () => {
     setRowsPerPage(parseInt(event.target.value,10))
     setPage(0)
   }
+  const costFormated =(cost:string):string=>{
+    let costNumber =  parseInt(cost)
+    if ( costNumber % 1 === 0) {
+      return `${cost}.00`
+    }
 
-  
+    return cost
+  }
+
 
   return (
     <>
@@ -167,7 +174,7 @@ const TableCompanies: React.FC<TableCompaniesProps> = () => {
                   <div>
                     $
                   </div>
-                  { user.lastSuscription.cost }
+                  { costFormated(user.lastSuscription.cost)  }
                 </Box>
               </StyledTableCell>
               <StyledTableCell align='center'>
@@ -229,7 +236,7 @@ const TableCompanies: React.FC<TableCompaniesProps> = () => {
             <Empty description="You have not added any user yet"/>
             </Box>}
         </TableBody>
-       {rows.length>8&& <TablePagination
+       {/* {rows.length>8&& <TablePagination
 
           align="center"
           rowsPerPageOptions={ [5,10,25] }
@@ -238,7 +245,7 @@ const TableCompanies: React.FC<TableCompaniesProps> = () => {
           page={ page }
           onChangePage={ handleChangePage }
           onChangeRowsPerPage={ handleChangeRowsPerPage }
-        />}
+        />} */}
       </Table>
 
     </>

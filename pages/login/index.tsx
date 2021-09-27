@@ -25,6 +25,7 @@ import { withStyles } from '@material-ui/styles'
 import { Visibility,VisibilityOff } from '@material-ui/icons'
 import HeaderSimple from '../../src/components/general/HeaderSimple'
 import withAuth from '../../src/auth/WithAuth'
+import HeadCustom from '../../src/layouts/HeadCustom';
 
 export const CustomInput = withStyles({
   root: {
@@ -243,13 +244,9 @@ const Login: React.FC<LoginProps> = () => {
 
   return (
     <>
-      <Head>
+      <HeadCustom>
         <title>Multivrsity | Login</title>
-        <meta
-          name='viewport'
-          content='minimum-scale=1, initial-scale=1, width=device-width'
-        />
-      </Head>
+      </HeadCustom>
       <div
         style={ {
           height: '100vh',

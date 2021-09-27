@@ -4,7 +4,6 @@ import {
   animateScroll as Scroll
 } from 'react-scroll'
 import { notification } from 'antd'
-
 import { makeStyles, Box, Grid } from '@material-ui/core'
 import HeaderLogin from '../src/components/login/HeaderLogin'
 import { Images } from '../src/types'
@@ -12,13 +11,12 @@ import { CustomInput,propsCustomInputErrors } from './login'
 import { useContext, useEffect, useState } from 'react'
 import Head from 'next/head'
 import withAuth from '../src/auth/WithAuth'
-
 import UserContext, {
   SendEmailInfoProps
 } from '../src/context/user/user.context'
 import { verifyEmail } from '../src/config/utils'
-/* import ScrollReveal from 'scrollreveal'
- */
+import HeadCustom from '../src/layouts/HeadCustom'
+
 export interface NavigationProps {
   isPanel: boolean | null
 }
@@ -26,22 +24,16 @@ export interface NavigationProps {
 const Home= () => {
   const classes = useStyles()
   const scroll = Scroll.animateScroll;
-
-  /*   ScrollReveal().reveal('.headline');
-   */
   useEffect(() => {
 
     window.scrollTo(0, 0);
   }, [])
   return (
     <>
-      <Head>
+      <HeadCustom>
         <title>Multivrsity</title>
-        <meta
-          name='viewport'
-          content='minimum-scale=1, initial-scale=1, width=device-width'
-        />
-      </Head>
+
+      </HeadCustom>
       <Box height='100vh' className={classes.root}>
         <HeaderLogin />
         <Element name='landing' className='element'>

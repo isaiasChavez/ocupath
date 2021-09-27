@@ -6,12 +6,13 @@ import TableFiles from '../../src/components/general/TableFiles'
 export interface AdminProps { }
 import Head from 'next/head'
 import { COLORS } from '../../src/types/index'
-import EditUser from '../../src/components/general/EditUser'
 import { USERS } from '../../src/types/index'
 import theme from '../../src/theme'
 import AppBarCms from '../../src/components/general/AppBarCms'
 import withAuth from '../../src/auth/WithAuth'
 import SideBar from '../../src/components/general/SideBar'
+import Profile from '../../src/components/general/Profile'
+import HeadCustom from '../../src/layouts/HeadCustom'
 const drawerWidth = 240
 const PROFILE = 0
 const FILES = 2
@@ -33,13 +34,9 @@ const UserMod = () => {
 
   return (
     <>
-    <Head>
+    <HeadCustom>
         <title>Multivrsity | Guest</title>
-        <meta
-          name='viewport'
-          content='minimum-scale=1, initial-scale=1, width=device-width'
-        />
-      </Head>
+      </HeadCustom>
     <div className={ classes.root }>
       <div className={ classes.inner }>
         <AppBarCms/>
@@ -49,7 +46,7 @@ const UserMod = () => {
         <main className={ classes.content }>
           <Grid justify="center" alignItems="center" direction="row" container style={ { height: '88%' } } >
             <Grid item xs={ 12 } md={ 11 } lg={ 11 } style={ { height: '100%' } } >
-            {currentTab === PROFILE && <EditUser  isEditingAvatar={isEditingAvatar} setIsEditingAvatar={setIsEditingAvatar}type={USERS.GUEST} />}
+            {currentTab === PROFILE && <Profile  isEditingAvatar={isEditingAvatar} setIsEditingAvatar={setIsEditingAvatar}type={USERS.GUEST} />}
               { currentTab === FILES && <TableFiles />}
             </Grid>
           </Grid>
