@@ -7,7 +7,6 @@ import MomentUtils from '@date-io/moment'
 import { MIN_INVITATIONS, MAX_INVITATIONS } from '../../config'
 import Skeleton from 'react-loading-skeleton'
 import NumberFormat from 'react-number-format'
-
 import { COLORS, USERS_TYPES } from '../../types/'
 import {
   KeyboardDatePicker,
@@ -21,12 +20,13 @@ import UserContext, {
 } from '../../context/user/user.context'
 import { Avatar, Box, Button, CircularProgress } from '@material-ui/core'
 import moment from 'moment'
-import { Spin,Button as ButtonAnt } from 'antd'
+import { Spin, Button as ButtonAnt } from 'antd'
 import {
   CustomInputWithValidations,
   propsCustomInputErrors,
 } from '../../../pages/login'
 import { NewPeriodErrors } from '../../types/types'
+import { Close } from '@material-ui/icons'
 
 export interface UserDetailModalProps {
   handleClose: Function
@@ -67,13 +67,100 @@ const UserDetailModal: React.FC<UserDetailModalProps> = ({
   isOpen,
   type,
 }) => {
-  const {  selectedUser } = useContext(UserContext)
+  const { selectedUser,loading } = useContext(UserContext)
 
   const [hasNewPeriod, setHasNewPeriod] = useState(false)
 
   const onClickNewPeriod = () => {
     setHasNewPeriod(!hasNewPeriod)
   }
+
+  const costFormated = (cost: string): string => {
+    let costNumber = parseInt(cost)
+    if (costNumber % 1 === 0) {
+      return `$ ${cost}.00`
+    }
+
+    return `$ ${cost}`
+  }
+
+  
+
+  const body =  <>
+  <Box
+    m={1.5}
+    style={{
+      position: 'absolute',
+      top: 0,
+      right: 0,
+      opacity: 0.5,
+    }}
+  >
+    <Close
+      style={{
+        cursor: 'pointer',
+      }}
+      onClick={() => {
+        setHasNewPeriod(false)
+        handleClose()
+      }}
+    />
+  </Box>
+  <Box className="animate-fadein" width="100%" height="100%" p={3}>
+      <Box
+        fontSize={24}
+        mb={2}
+        className="ITCAvantGardeStdBkBold"
+        fontWeight="fontWeightBold"
+      >
+        {type === USERS_TYPES.ADMIN
+          ? 'Company detail'
+          : 'Guest detail'}
+      </Box>
+      <DataAdmin
+        type={type}
+        hasNewPeriod={hasNewPeriod}
+        onClickNewPeriod={onClickNewPeriod}
+      >
+        <DataNewPeriod
+          onClickNewPeriod={onClickNewPeriod}
+          typeToUpdate={type}
+          setHasNewPeriod={setHasNewPeriod}
+          handleClose={handleClose}
+        />
+      </DataAdmin>
+      <Box
+        width="100%"
+        display="flex"
+        p={3}
+        justifyContent="flex-end"
+        alignItems="center"
+      >
+        <Box width="50%" display="flex" mb={ hasNewPeriod?8:0}>
+          <Box width="50%">
+            <Box
+              className="ITCAvantGardeStdBkSemiBold"
+              fontWeight="fontWeightBold"
+              pt={2}
+              pb={2}
+            >
+              Grand total:
+            </Box>
+          </Box>
+          <Box width="50%" display="flex" justifyContent="flex-end">
+            <Box
+              className="ITCAvantGardeStdBkSemiBold"
+              fontWeight="fontWeightBold"
+              pt={2}
+              pb={2}
+            >
+              {costFormated(selectedUser.totalCost)}
+            </Box>
+          </Box>
+        </Box>
+      </Box>
+  </Box>
+    </>
 
   return (
     <>
@@ -107,63 +194,13 @@ const UserDetailModal: React.FC<UserDetailModalProps> = ({
               borderRadius: '10px',
               position: 'relative',
             }}
-          >
-            <Box width="100%" height="100%" p={3}>
-                <>
-                  <Box
-                    fontSize={24}
-                    mb={2}
-                    className="ITCAvantGardeStdBkBold"
-                    fontWeight="fontWeightBold"
-                  >
-                    {type === USERS_TYPES.ADMIN
-                      ? 'Company detail'
-                      : 'Guest detail'}
-                  </Box>
-                  <DataAdmin
-                    type={type}
-                    hasNewPeriod={hasNewPeriod}
-                    onClickNewPeriod={onClickNewPeriod}
-                  >
-                    <DataNewPeriod
-                      onClickNewPeriod={onClickNewPeriod}
-                      typeToUpdate={type}
-                      setHasNewPeriod={setHasNewPeriod}
-                      handleClose={handleClose}
-                    />
-                  </DataAdmin>
-                  <Box
-                    width="100%"
-                    display="flex"
-                    p={3}
-                    justifyContent="flex-end"
-                    alignItems="center"
-                  >
-                    <Box width="50%" display="flex">
-                      <Box width="50%">
-                        <Box
-                          className="ITCAvantGardeStdBkSemiBold"
-                          fontWeight="fontWeightBold"
-                          pt={2}
-                          pb={2}
-                        >
-                          Grand total:
-                        </Box>
-                      </Box>
-                      <Box width="50%" display="flex" justifyContent="flex-end">
-                        <Box
-                          className="ITCAvantGardeStdBkSemiBold"
-                          fontWeight="fontWeightBold"
-                          pt={2}
-                          pb={2}
-                        >
-                          $ {selectedUser.totalCost}
-                        </Box>
-                      </Box>
-                    </Box>
-                  </Box>
-                </>
+            >
+            {loading?
+            <Box display='flex' position='absolute' top={0} bottom={0} left={0} right={0}justifyContent='center' alignItems="center">
+              <Spin size="large"/>
             </Box>
+            :body}
+           
           </Paper>
         </Box>
       </Modal>
@@ -196,7 +233,7 @@ const DataAdmin: React.FC<DataAdminProps> = ({
 
   return (
     <>
-      <Box width="100%" position="relative">
+      <Box width="100%">
         <Box display="flex" width="100%">
           <Box
             width="50%"
@@ -401,14 +438,8 @@ const DataAdmin: React.FC<DataAdminProps> = ({
             {selectedUser.suscriptionWaiting && (
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={12}>
-                  <Box mb={2}>
-                    <Typography
-                      variant="h6"
-                      gutterBottom
-                      className={classes.title}
-                    >
+                  <Box mb={2} fontFamily="font3">
                       Siguiente periodo
-                    </Typography>
                   </Box>
                   <Grid container spacing={3}>
                     <Grid item xs={6} direction="row">
@@ -478,7 +509,7 @@ const DataNewPeriod = ({
   handleClose,
   onClickNewPeriod,
 }) => {
-  const { selectedUser, addNewPeriod,loading } = useContext(UserContext)
+  const { selectedUser, addNewPeriod, loading } = useContext(UserContext)
 
   const [dataNewPeriod, setDataNewPeriod] = useState({
     invitations: null,
@@ -496,8 +527,12 @@ const DataNewPeriod = ({
   }
   const today = new Date()
   const [errors, setErrors] = useState(initialErrors())
-  const [startedAt,setStartDate] = useState<string>(moment(today).toISOString())
-  const [finishedAt,setFinishDate] = useState<string>(moment(today).toISOString())
+  const [startedAt, setStartDate] = useState<string>(
+    moment(today).toISOString(),
+  )
+  const [finishedAt, setFinishDate] = useState<string>(
+    moment(today).toISOString(),
+  )
 
   const handleDateStartChange = (e) => {
     setErrors(initialErrors())
@@ -533,7 +568,7 @@ const DataNewPeriod = ({
     const newErrors: NewPeriodErrors = {
       ...commondErrors,
     }
-    if (!dataNewPeriod.invitations ) {
+    if (!dataNewPeriod.invitations) {
       newErrors.invitations = `Please fill this value`
       isValid = false
     } else if (dataNewPeriod.invitations <= MIN_INVITATIONS) {
@@ -541,7 +576,7 @@ const DataNewPeriod = ({
         MIN_INVITATIONS === 1 ? 'invitation.' : 'invitations.'
       }`
       isValid = false
-    }else if (dataNewPeriod.invitations > MAX_INVITATIONS) {
+    } else if (dataNewPeriod.invitations > MAX_INVITATIONS) {
       newErrors.invitations = `You can only choose up to ${MAX_INVITATIONS} invitations.`
       isValid = false
     }
@@ -588,7 +623,7 @@ const DataNewPeriod = ({
     if (!dataNewPeriod.cost) {
       newErrors.cost = `Please fill this value`
       isValid = false
-    }else if ( dataNewPeriod.cost <= 0) {
+    } else if (dataNewPeriod.cost <= 0) {
       newErrors.cost = `You cannot put this value`
       isValid = false
     }
@@ -601,7 +636,7 @@ const DataNewPeriod = ({
     }
   }
   const handleSend = async (e) => {
-    console.log("handleSend",{e})
+    console.log('handleSend', { e })
     e.preventDefault()
     let commondsFieldsAreValid: boolean
     let particularFieldsAreValid: boolean
@@ -624,17 +659,19 @@ const DataNewPeriod = ({
     }
 
     if (particularFieldsAreValid && commondsFieldsAreValid) {
-      const newPeriodDTO: AddNewSuscriptionSuscriptionDTO = new AddNewSuscriptionSuscriptionDTO({
-        ...dataNewPeriod,
-        startedAt,
-        finishedAt,
-        typeToUpdate,
-        adminUuidToUpdate: isNewPeriodAdmin ? selectedUser.uuid : null,
-        guestUuidToUpdate: isNewPeriodGuest ? selectedUser.uuid : null,
-      }) 
+      const newPeriodDTO: AddNewSuscriptionSuscriptionDTO = new AddNewSuscriptionSuscriptionDTO(
+        {
+          ...dataNewPeriod,
+          startedAt,
+          finishedAt,
+          typeToUpdate,
+          adminUuidToUpdate: isNewPeriodAdmin ? selectedUser.uuid : null,
+          guestUuidToUpdate: isNewPeriodGuest ? selectedUser.uuid : null,
+        },
+      )
       const status = await addNewPeriod(newPeriodDTO)
-      console.log({status})
-      if (status ===0) {
+      console.log({ status })
+      if (status === 0) {
         setErrors(initialErrors())
         setHasNewPeriod(false)
         handleClose()
@@ -688,8 +725,7 @@ const DataNewPeriod = ({
                   format="DD/MM/YYYY"
                   name="startedAt"
                   value={startedAt}
-                  error={errors.startedAt!==null}
-
+                  error={errors.startedAt !== null}
                   InputAdornmentProps={{ position: 'start' }}
                   onChange={handleDateStartChange}
                   helperText={errors.startedAt}
@@ -708,7 +744,7 @@ const DataNewPeriod = ({
                   helperText={errors.finishedAt}
                   name="finishedAt"
                   fullWidth={true}
-                  error={errors.finishedAt!==null}
+                  error={errors.finishedAt !== null}
                   autoOk
                   variant="inline"
                   size="small"
@@ -741,34 +777,45 @@ const DataNewPeriod = ({
           </Box>
         </Grid>
       </Grid>
-      <Box width="100%" mt={2} display="flex" justifyContent="space-around">
+      <Box
+        mt={2}
+        position="absolute"
+        right={20}
+        bottom={30}
+        display="flex"
+        justifyContent="space-around"
+      >
         <ButtonAnt
           color="primary"
-          style={{ 
+          style={{
             color: 'white',
             backgroundColor: COLORS.blue_primary,
-            border:'none',
-            borderRadius:'4px',
-            minHeight:'2.4rem',
+            border: 'none',
+            borderRadius: '4px',
+            minHeight: '2.4rem',
             textTransform: 'capitalize',
-            width: '48%'}}
-            type="primary"
-            onClick={onClickNewPeriod}
-            >
+            marginRight: '1rem',
+            width: '12rem',
+          }}
+          type="primary"
+          onClick={onClickNewPeriod}
+        >
           Cancel
         </ButtonAnt>
         <ButtonAnt
-        loading={loading}
-        type="primary"
-        color="secondary"
-        style={{ 
-            border:'none',
+          loading={loading}
+          type="primary"
+          color="secondary"
+          style={{
+            border: 'none',
             color: 'white',
             backgroundColor: COLORS.blue_secondary,
-            borderRadius:'4px',
-            minHeight:'2.4rem',
+            borderRadius: '4px',
+            boxShadow: '1px 1px 22px -10px rgba(0,0,0,0.75)',
+            minHeight: '2.4rem',
             textTransform: 'capitalize',
-            width: '48%'}}
+            width: '12rem',
+          }}
           onClick={handleSend}
         >
           Save

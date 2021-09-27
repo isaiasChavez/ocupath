@@ -349,15 +349,16 @@ const UserState = ({ children }) => {
   };
   const getAdminChildDetail = async (uuid) => {
     try {
+      setLoading(true)
       const dto = new GetAdminDetailDTO(uuid)
       console.log({dto})
       await validateOrReject(dto);
       const { data } = await axios.post(URLS.adminChildDetail, dto);
+      setLoading(false)
       console.log({data},AD_A.ADMIN_CHILD_DETAIL)
       dispatch({ type: AD_A.ADMIN_CHILD_DETAIL, payload: data });
-
-
     } catch (error) {
+      setLoading(false)
       console.error("** Error validating addUserAdm ** ", { error });
     }
   };

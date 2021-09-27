@@ -78,10 +78,10 @@ const TableCompanies: React.FC<TableCompaniesProps> = () => {
     toggleDeleteUserModal()
     selectUser(dataUser,USERS.ADMIN)
   }
-  const onEdit = (dataUser: User) => {
-    handleToggleDetailModal()
+  const  onEdit = async(dataUser: User) => {
     selectUser(dataUser,USERS.ADMIN)
     getAdminChildDetail(dataUser.uuid)
+    handleToggleDetailModal()
   }
   const handleChangePage = (event: unknown,newPage: number) => {
     setPage(newPage)

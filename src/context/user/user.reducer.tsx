@@ -30,7 +30,7 @@ export type User = {
   lastSuscription: Suscription,
   suscriptionWaiting:Suscription|null,
   status:Status
-  totalCost:number|undefined,
+  totalCost:undefined|string,
 }
 export type Childrens = {
   admins: User[],
