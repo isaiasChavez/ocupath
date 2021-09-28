@@ -58,7 +58,8 @@ export type UserStateType = {
   childrens: Childrens,
   isSuperAdmin:boolean,
   isAdmin:boolean,
-  isGuest:boolean
+  isGuest:boolean,
+  tokenError: string|null,
 };
 
 type Actions =
@@ -122,7 +123,11 @@ const userReducer = (state: UserStateType,action: Actions): UserStateType => {
       };
     case LOG_A.INVITE_USER_SUCCESS:
       console.log(LOG_A.INVITE_USER_SUCCESS,{ payload });
-      if (payload.status === 0) {
+      if (payload.status === 3) {
+        return {
+          ...state,
+          tokenError:payload.token
+        };
       }
       return {
         ...state,

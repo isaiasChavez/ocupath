@@ -1,4 +1,4 @@
-import { Box, LinearProgress } from '@material-ui/core'
+import { Box, IconButton, LinearProgress } from '@material-ui/core'
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined'
 import FullscreenIcon from '@material-ui/icons/Fullscreen'
 import SkipNextOutlinedIcon from '@material-ui/icons/SkipNextOutlined'
@@ -95,26 +95,31 @@ const Previwer: React.FC<PreviewProps> = () => {
               {nameImage()}
             </Box>
             <Box flex='0.08' display='flex' justifyContent='center'>
+              <IconButton>
+
               <DeleteOutlineOutlinedIcon
                 style={{
                   color: '#FFF',
-                  cursor: 'pointer',
                   marginRight: '1rem',
                   opacity:loading?0.5:1
                 }}
                 onClick={() => {
                   if (!loading) {
-                  onDeleteAsset()  
+                    onDeleteAsset()  
                   }
-                  }}
-              />
+                }}
+                />
+                </IconButton>
+                <IconButton>
+                  
               <CloseIcon
                 onClick={() => closePreviewer()}
                 style={{
                   color: '#FFF',
                   cursor: 'pointer'
                 }}
-              />
+                />
+                </IconButton>
             </Box>
           </Box>
           <Box width='100%' height='80%' style={{ backgroundColor: '#282828' }}>
@@ -261,6 +266,9 @@ function BottomControls () {
         >
         <Box></Box>
         <Box>
+        <IconButton>
+
+
           <SkipPreviousOutlinedIcon
             onClick={() => {
               if (!isTheFirst&&!loading) {
@@ -272,7 +280,10 @@ function BottomControls () {
               opacity: isTheFirst ? 0 : 1,
               cursor: isTheFirst ? 'default' : 'pointer'
             }}
-          />
+            />
+            </IconButton>
+            <IconButton>
+
           <SkipNextOutlinedIcon
             onClick={() => {
               if (!isTheLast&&!loading) {
@@ -286,6 +297,7 @@ function BottomControls () {
               cursor: isTheLast ? 'default' : 'pointer'
             }}
             />
+            </IconButton>
         </Box>
         <Box>
           <FullscreenIcon onClick={openMaxViewer} style={stylesIcons} />

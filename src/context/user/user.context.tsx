@@ -396,6 +396,7 @@ interface UserContextInterface {
   selectedUser:User;
   type: number;
   loading:boolean
+  tokenError:string|null
 }
 export class AddNewSuscriptionSuscriptionDTO  {
   constructor({

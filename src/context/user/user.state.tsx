@@ -173,8 +173,12 @@ const UserState = ({ children }) => {
       if (data.status===3) {
         sendAlert({
           type:'warning',
-          msg:"There is not a email whith this address"
+          msg:"The invitation has been registered but an error occurred while sending the email"
         })
+        dispatch({
+          type: LOG_A.INVITE_USER_SUCCESS,
+          payload: data,
+        });
       }
       if (data.status===8) {
         sendAlert({
@@ -681,7 +685,8 @@ const initialState = () => {
     type: 0,
     isAdmin:false,
     isGuest:false,
-    isSuperAdmin:false
+    isSuperAdmin:false,
+    tokenError:null
   };
   return state;
 };

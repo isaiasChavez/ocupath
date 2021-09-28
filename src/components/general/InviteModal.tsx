@@ -43,7 +43,7 @@ const InviteModal: React.FC<InviteModalProps> = ({
   const [finishedAt,setFinishDate] = useState<string>(moment(today).toISOString())
   const [dataNewUser,setDataNewUser] = useState<NewUserDTO>(initialState(type))
   const [errors,setErrors] = useState<NewUserErrors>(initialErrors())
-  const { inviteUser,selectedUser,loading,profile } = useContext(UserContext)
+  const { inviteUser,selectedUser,loading,profile,tokenError } = useContext(UserContext)
   const { type: typeUserLogged } = profile
   const { sendAlert } = useContext(NotificationsContext)
   const isInviteCompany = type === COMPANIES
@@ -518,6 +518,7 @@ const InviteModal: React.FC<InviteModalProps> = ({
             </Button>
           </Box>
         </Box>
+          {tokenError}
       </Box>
     </Box>
   )
