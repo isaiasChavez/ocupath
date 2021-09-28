@@ -287,6 +287,9 @@ const Home= () => {
               title='Powered by inmersys'
             />
           </Box>
+          <Box style={{color: 'white', opacity: 0.6, fontFamily: 'font3'}} fontSize='0.6rem' position="fixed" bottom={0} right={0}>
+                v1.0
+          </Box>
         </Box>
       </Box>
     </>
