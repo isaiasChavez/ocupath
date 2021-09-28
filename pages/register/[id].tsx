@@ -25,7 +25,8 @@ import { decifreToken,verifyPassword } from "../../src/config/utils";
 import HeaderSimple from "../../src/components/general/HeaderSimple";
 import { CustomInput } from "../login";
 import { CircularProgress } from "@material-ui/core";
-import { Result } from "antd";
+import { Result, Spin } from "antd";
+import HeadCustom from "../../src/layouts/HeadCustom";
 
 export interface RegisterProps { }
 
@@ -154,7 +155,7 @@ const Register: React.FC<RegisterProps> = () => {
     return <Box style={{
       backgroundColor:COLORS.blue_primary
     }} height="100vh" width="100vw" display="flex" justifyContent="center" alignItems="center">
-      <CircularProgress color="secondary" />
+     <Spin size="large" />
 
     </Box>
   }
@@ -182,6 +183,10 @@ const Register: React.FC<RegisterProps> = () => {
 
   return (
     <>
+    
+    <HeadCustom>
+        <title>Multivrsity - Register </title>
+      </HeadCustom>
       <HeaderSimple isLogin={ false } />
       <div
         style={ {

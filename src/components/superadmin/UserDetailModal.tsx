@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from 'react'
-import Typography from '@material-ui/core/Typography'
 import Grid from '@material-ui/core/Grid'
 import Paper from '@material-ui/core/Paper'
 // import CustomInputWithValidations from '@material-ui/core/CustomInputWithValidations'
@@ -16,9 +15,9 @@ import {
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import Modal from '@material-ui/core/Modal'
 import UserContext, {
-  AddNewSuscriptionSuscriptionDTO,
+  AddNewSuscriptionSuscriptionDTO, DeleteSuscriptionSuscriptionDTO,
 } from '../../context/user/user.context'
-import { Avatar, Box, Button, CircularProgress } from '@material-ui/core'
+import { Avatar, Box, Button, IconButton } from '@material-ui/core'
 import moment from 'moment'
 import { Spin, Button as ButtonAnt } from 'antd'
 import {
@@ -27,6 +26,7 @@ import {
 } from '../../../pages/login'
 import { NewPeriodErrors } from '../../types/types'
 import { Close } from '@material-ui/icons'
+import AskModal from '../general/AskModal'
 
 export interface UserDetailModalProps {
   handleClose: Function
@@ -88,7 +88,7 @@ const UserDetailModal: React.FC<UserDetailModalProps> = ({
 
   const body =  <>
   <Box
-    m={1.5}
+    m={0.5}
     style={{
       position: 'absolute',
       top: 0,
@@ -96,6 +96,10 @@ const UserDetailModal: React.FC<UserDetailModalProps> = ({
       opacity: 0.5,
     }}
   >
+    <IconButton
+                disabled={loading}
+                
+                 color="primary" aria-label="upload picture" component="span">
     <Close
       style={{
         cursor: 'pointer',
@@ -104,7 +108,8 @@ const UserDetailModal: React.FC<UserDetailModalProps> = ({
         setHasNewPeriod(false)
         handleClose()
       }}
-    />
+      />
+      </IconButton>
   </Box>
   <Box className="animate-fadein" width="100%" height="100%" p={3}>
       <Box
@@ -220,9 +225,9 @@ const DataAdmin: React.FC<DataAdminProps> = ({
   onClickNewPeriod,
   type,
 }) => {
-  const { selectedUser } = useContext(UserContext)
+  const { selectedUser,deletePeriod } = useContext(UserContext)
   const [currentImage, setCurrentImage] = useState(null)
-
+  const [isDeleteSuscriptionModalVisible, setisDeleteSuscriptionModalVisible] = useState<boolean>(false)
   const classes = useStyles()
 
   useEffect(() => {
@@ -231,8 +236,46 @@ const DataAdmin: React.FC<DataAdminProps> = ({
     heavyImage.src = selectedUser.thumbnail
   }, [selectedUser.thumbnail])
 
+  const [loadingDelete, setLoadingDelete] = useState(false)
+
+  const toggleDeletePeriodModal = ()=>{
+    setisDeleteSuscriptionModalVisible(!isDeleteSuscriptionModalVisible)
+  }
+
+  const onDeletePeriod= async()=>{
+    try {
+
+      setisDeleteSuscriptionModalVisible(!isDeleteSuscriptionModalVisible)
+      const isNewPeriodAdmin = type === USERS_TYPES.ADMIN
+      const isNewPeriodGuest = type === USERS_TYPES.GUEST
+      setLoadingDelete(true)
+      const deleteSuscriptionSuscriptionDTO: DeleteSuscriptionSuscriptionDTO = new DeleteSuscriptionSuscriptionDTO(
+        {
+          typeToUpdate:type,
+          adminUuidToUpdate: isNewPeriodAdmin ? selectedUser.uuid : null,
+          guestUuidToUpdate: isNewPeriodGuest ? selectedUser.uuid : null,
+        },
+      )
+      await deletePeriod(deleteSuscriptionSuscriptionDTO)
+      setLoadingDelete(false)
+    } catch (error) {
+      setLoadingDelete(false)
+      
+    }
+  }
+
   return (
     <>
+     <AskModal
+        isOpen={isDeleteSuscriptionModalVisible}
+        handleClose={toggleDeletePeriodModal}
+        handleOk={() => onDeletePeriod()}
+        okText='Sure'
+        cancelText='Cancel'
+
+        title='Delete User'
+        subtitle={`Are you sure you want to delete this period `}
+      />
       <Box width="100%">
         <Box display="flex" width="100%">
           <Box
@@ -478,7 +521,7 @@ const DataAdmin: React.FC<DataAdminProps> = ({
                         />
                       </MuiPickersUtilsProvider>
                     </Grid>
-                    <Grid item xs={6}>
+                    <Grid   item xs={6}>
                       <CustomInputWithValidations
                         {...propsCustomInputErrors}
                         fullWidth
@@ -490,6 +533,23 @@ const DataAdmin: React.FC<DataAdminProps> = ({
                         name="totalCost"
                         label="Total Cost"
                       />
+                    </Grid>
+                    <Grid   item xs={6}>
+                      <Box  display="flex" justifyContent="center">
+
+                    <ButtonAnt
+                      className="animate-fadein"
+                      onClick={ toggleDeletePeriodModal}
+                      type="text"
+                      loading={loadingDelete}
+                      style={{
+                        color:COLORS.red_error,
+
+                      }}
+                      >
+                      Delete period --
+                    </ButtonAnt>
+                      </Box>
                     </Grid>
                     <Grid item xs={12}></Grid>
                   </Grid>

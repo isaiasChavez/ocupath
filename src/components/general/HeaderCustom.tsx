@@ -12,7 +12,7 @@ const HeaderCustom: React.FC<HeaderCustomProps> = () => {
 
  return (
     <div className={classes.bodyHeader}>
-        <h2>OCUPATH</h2>
+        <h2>Multivrsity</h2>
       <div className={classes.headerRight}>
 
         <button className={ classes.headerItem }>

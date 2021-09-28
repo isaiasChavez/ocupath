@@ -4,7 +4,7 @@ import React,{
   useEffect,
   useState
 } from 'react'
-import { Button,TextField,Box } from '@material-ui/core'
+import { Button,TextField,Box, IconButton } from '@material-ui/core'
 import MomentUtils from '@date-io/moment'
 import { COMPANIES,GUEST,USERS_TYPES } from '../../types'
 import moment from 'moment'
@@ -20,6 +20,7 @@ import UserContext,{ InviteUserDTO } from '../../context/user/user.context'
 import NotificationsContext from '../../context/notifications/notifications.context'
 import { validateOrReject } from 'class-validator'
 import { CustomInputWithValidations, propsCustomInputErrors } from '../../../pages/login'
+import { Close } from '@material-ui/icons'
 
 export interface InviteModalProps {
   handleOpen: MouseEventHandler
@@ -259,7 +260,33 @@ const InviteModal: React.FC<InviteModalProps> = ({
 
 
   const body = (
-    <Box borderRadius={ 8 } className={ classes.paper }>
+    <Box borderRadius={ 8 } position="relative" className={ classes.paper }>
+      <Box
+    m={0.5}
+    style={{
+      position: 'absolute',
+      top: 0,
+      right: 0,
+      opacity: 0.5,
+    }}
+  >
+    <IconButton
+                disabled={loading}
+                
+                 color="primary" aria-label="upload picture" component="span">
+
+    <Close
+      style={{
+        cursor: 'pointer',
+      }}
+      onClick={() => {
+        if (!loading) {
+          handleClose()
+        }
+      }}
+      />
+      </IconButton>
+  </Box>
       <Header />
 
       <Box

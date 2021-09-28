@@ -9,6 +9,7 @@ import UserContext, {
   CreateUserDTO,
   DeleteOrSuspendAdminUserDTO,
   DeleteOrSuspendUserDTO,
+  DeleteSuscriptionSuscriptionDTO,
   GetAdminDetailDTO,
   GetUserDetailDTO,
   InviteUserDTO,
@@ -516,7 +517,30 @@ console.log({deleteUserDTO})
       return data.status
     } catch (error) {
       setLoading(false)
-      console.error("** Error validating updateUser ** ", { error });
+      console.error("** Error validating addNewPeriod ** ", { error });
+      return 1
+    }
+  };
+
+  const deletePeriod = async (deleteSuscriptionSuscriptionDTO:DeleteSuscriptionSuscriptionDTO):Promise<number> => {
+    try {
+      await validateOrReject(deleteSuscriptionSuscriptionDTO);
+      console.log({deleteSuscriptionSuscriptionDTO})
+      const { data } = await axios.put(URLS.deletePeriod,deleteSuscriptionSuscriptionDTO);
+      console.log("deletePeriod:",{data})
+      if (data.status ===0) {
+        dispatch({
+          type: AD_A.DELETE_PERIOD,
+          payload: data,
+        });
+        sendAlert({
+          type:'success',
+          msg:'Suscription has been updated'
+        })
+      }
+      return data.status
+    } catch (error) {
+      console.error("** Error validating deletePeriod ** ", { error });
       return 1
     }
   };
@@ -603,6 +627,7 @@ console.log({deleteUserDTO})
         getUserDetail,
         getAdminChildDetail,
         getUserChildDetail,
+        deletePeriod
       }}
     >
       {children}
@@ -629,7 +654,7 @@ const initialState = () => {
         startedAt:""
       },
       suscriptionWaiting:null,
-      totalCost:0,
+      totalCost:'0',
       status:0,
       lastname:'',
       suscriptions:[],

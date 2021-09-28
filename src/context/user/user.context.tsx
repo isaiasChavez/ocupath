@@ -390,6 +390,7 @@ interface UserContextInterface {
   getUserChildDetail: Function;
   validateToken: Function;
   sendInformationForm:Function;
+  deletePeriod:Function;
   profile: Profile;
   childrens:Childrens,
   selectedUser:User;
@@ -447,7 +448,30 @@ export class AddNewSuscriptionSuscriptionDTO  {
   guestUuidToUpdate: string;
 }
 
+export class DeleteSuscriptionSuscriptionDTO {
+  constructor({
+    typeToUpdate,
+    adminUuidToUpdate,
+    guestUuidToUpdate,
+  }) {
+    this.typeToUpdate = typeToUpdate;
+    this.guestUuidToUpdate = guestUuidToUpdate;
+    this.adminUuidToUpdate = adminUuidToUpdate;
+  }
+  
+  @IsNumber()
+  @IsNotEmpty()
+  typeToUpdate: number;
+  @IsUUID()
+  @IsNotEmpty()
+  @IsOptional()
+  adminUuidToUpdate: string;
 
+  @IsUUID()
+  @IsNotEmpty()
+  @IsOptional()
+  guestUuidToUpdate: string;
+}
 
 
 const UserContext = createContext<UserContextInterface | null>(null);

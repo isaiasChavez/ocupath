@@ -5,6 +5,7 @@ import {
   Button,
   makeStyles,
   withStyles,
+  IconButton,
 } from '@material-ui/core'
 import { Images,URLS,USERS,USERS_TYPES } from '../../types/index'
 import EditIcon from '@material-ui/icons/Edit'
@@ -30,12 +31,14 @@ const UserSection: React.FC<UserSectionProps> = ({ type,toggleAvatarSection }) =
   const {type:typeLoggued} = profile
 
   const handleUnlock = () => {
-
-    setIsBlocked(!isBlocked)
-    setError('')
-    setHasError(false)
-    if (!isBlocked) {
-      setName(profile.name)
+    if (!loading) {
+      
+      setIsBlocked(!isBlocked)
+      setError('')
+      setHasError(false)
+      if (!isBlocked) {
+        setName(profile.name)
+      }
     }
   }
   const onChange = e => {
@@ -182,18 +185,28 @@ const UserSection: React.FC<UserSectionProps> = ({ type,toggleAvatarSection }) =
             <Box my={ 3 } alignItems='center' position="relative"  display='flex'>
               <h3 className={ classes.information }>
                 Personal information
+                <IconButton
+                size="small"
+                disabled={loading}
+                style={ {
+                  position: 'absolute',
+                  right:0,
+                  top:'50%',
+                  transform:'translateY(-80%)',
+                  cursor: 'pointer'
+                } }
+                 color="primary" aria-label="upload picture" component="span">
                 <EditIcon
+                  style={{
+                    fontSize: '1.2rem',
+                  }}
                   onClick={ handleUnlock }
                   color='primary'
-                  style={ {
-                    position: 'absolute',
-                    right:0,
-                    top:'50%',
-                    transform:'translateY(-80%)',
-                    fontSize: '1.2rem',
-                    cursor: 'pointer'
-                  } }
+                  
                 />
+
+                </IconButton>
+
               </h3>
             </Box>
             <Box>

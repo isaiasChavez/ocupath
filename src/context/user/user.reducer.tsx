@@ -72,6 +72,7 @@ type Actions =
   | { type: "CHILD_DETAIL"; payload: any }
   | { type: "ADMIN_CHILD_DETAIL"; payload: any }
   | { type: "USER_CHILD_DETAIL"; payload: any }
+  | { type: "DELETE_PERIOD"; payload: any }
   
 
   | { type: "UPDATE_NAME"; payload: any }
@@ -247,6 +248,16 @@ const userReducer = (state: UserStateType,action: Actions): UserStateType => {
       return {
         ...state,
       };
+      case AD_A.DELETE_PERIOD:
+
+      return {
+        ...state,
+        selectedUser:{
+          ...state.selectedUser,
+          suscriptionWaiting:null
+        }
+      };
+      
       case AD_A.ADMIN_CHILD_DETAIL:
   
         return {

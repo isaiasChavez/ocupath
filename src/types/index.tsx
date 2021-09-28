@@ -39,6 +39,7 @@ export enum AD_A {
   SUSPEND_ADM_SUCCESS = "SUSPEND_ADM_SUCCESS",
   ADMIN_CHILD_DETAIL = "ADMIN_CHILD_DETAIL",
   USER_CHILD_DETAIL = "USER_CHILD_DETAIL",
+  DELETE_PERIOD = "DELETE_PERIOD",
 }
 //Users-Guest
 export enum US_A {
@@ -99,6 +100,7 @@ export const URLS = {
   create: "api/sesion/user",
   update: "api/user",
   addPeriod: "api/user/addperiod",
+  deletePeriod: "api/user/deleteperiod",
   delete: "api/user/deleteuser",
   //Assets
   createAsset: "api/asset",
