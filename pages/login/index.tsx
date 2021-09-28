@@ -241,7 +241,6 @@ const Login: React.FC<LoginProps> = () => {
   }
 
   const classes = useStyles()
-  throw new Error("asdf")
   return (
     <>
       <HeadCustom>
