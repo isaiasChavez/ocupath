@@ -24,7 +24,7 @@ import EditOutlinedIcon from '@material-ui/icons/EditOutlined'
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined'
 import UserContext from '../../context/user/user.context'
 import { User } from '../../context/user/user.reducer'
-import { Empty } from 'antd'
+import { Empty, Spin } from 'antd'
 export interface TableCompaniesProps {}
 
 export const getDataStatus = (status): { color: any; name: string } => {
@@ -247,6 +247,7 @@ const TableCompanies: React.FC<TableCompaniesProps> = () => {
             </StyledTableRow>
           ))}
           {rows.length === 0 && (
+            
             <Box
               position="absolute"
               bottom={0}
@@ -256,7 +257,7 @@ const TableCompanies: React.FC<TableCompaniesProps> = () => {
               justifyContent="center"
               alignItems="center"
             >
-              <Empty description="You have not added any user yet" />
+              {loading?<Spin size="large"/>:<Empty description="You have not added any user yet" />}
             </Box>
           )}
         </TableBody>

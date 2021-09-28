@@ -24,6 +24,7 @@ export interface NavigationProps {
 const Home= () => {
   const classes = useStyles()
   const scroll = Scroll.animateScroll;
+  const version = 'v1.0.1'
   useEffect(() => {
 
     window.scrollTo(0, 0);
@@ -288,7 +289,7 @@ const Home= () => {
             />
           </Box>
           <Box style={{color: 'white', opacity: 0.6, fontFamily: 'font3'}} fontSize='0.6rem' position="fixed" bottom={0} right={0}>
-                v1.0
+                {version}
           </Box>
         </Box>
       </Box>

@@ -273,8 +273,8 @@ const DataAdmin: React.FC<DataAdminProps> = ({
         okText='Sure'
         cancelText='Cancel'
 
-        title='Delete User'
-        subtitle={`Are you sure you want to delete this period `}
+        title='Delete period'
+        subtitle={`Are you sure you want to delete this period?`}
       />
       <Box width="100%">
         <Box display="flex" width="100%">
