@@ -43,9 +43,7 @@ const Recovery: React.FC<RecoveryProps> = () => {
         }else{
           setCanViewThis(true)
         }
-        console.log({status})
       }
-      console.log({status})
     }
     validate()
   }, [token])

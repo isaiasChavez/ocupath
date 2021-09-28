@@ -13,11 +13,9 @@ const withAuth = (WrappedComponent) => {
     const routesBloquedWhenIsLogged=["/"]
     
     const isAFreeRoute = freeRoutes.includes(Router.pathname)
-    console.log({isAFreeRoute})
     useEffect(() => {
       const accessToken = localStorage.getItem(Config.TOKEN_NAME_INTERN);
       // if no accessToken was found,then we redirect to "/" page.
-      console.log({isAFreeRoute})
       if (!accessToken) {
         if (!isAFreeRoute) {
           Router.replace("/");
@@ -66,7 +64,6 @@ const withAuth = (WrappedComponent) => {
         }
       }
     }, []);
-    console.log({isAFreeRoute,verified})
 
     if (verified||isAFreeRoute) {
       return <WrappedComponent {...props} />;

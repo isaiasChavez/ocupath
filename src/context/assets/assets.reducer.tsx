@@ -30,11 +30,8 @@ const userReducer = (
 
   switch (action.type) {
     case AS_A.CREATE_SUCCESS:
-      console.log(AS_A.CREATE_SUCCESS, { payload })
-
       switch (payload.typeAsset.id) {
         case FILES_TYPES.IMG:
-          console.log('Si entró img')
           return {
             ...state,
             assets: {
@@ -43,7 +40,6 @@ const userReducer = (
             }
           }
         case FILES_TYPES.IMG_360:
-          console.log('Si entró img360')
           return {
             ...state,
             assets: {
@@ -52,7 +48,6 @@ const userReducer = (
             }
           }
         case FILES_TYPES.VIDEO:
-          console.log('Si entró video')
           return {
             ...state,
             assets: {
@@ -61,7 +56,6 @@ const userReducer = (
             }
           }
         case FILES_TYPES.VIDEO_360:
-          console.log('Si entró video360')
           return {
             ...state,
             assets: {
@@ -123,15 +117,12 @@ const userReducer = (
         ...payload
       }
     case MIS.SELECT_ASSET:
-      console.log(MIS.SELECT_ASSET,{payload})
       return {
         ...state,
         currentAsset:payload
       }
     case MIS.NEXT_PREVIEW:
       let indice = state.currentAssets.findIndex((asset:Asset) => asset.uuid === state.currentAsset.uuid);
-      console.log({indice})
-      console.log(MIS.NEXT_PREVIEW,indice)
       
       return {
         ...state,
@@ -139,7 +130,6 @@ const userReducer = (
       }
       case MIS.PREV_PREVIEW:
       let indiceCurrent = state.currentAssets.findIndex((asset:Asset) => asset.uuid === state.currentAsset.uuid);
-      console.log({payload})
       return {
         ...state,
         currentAsset:state.currentAssets[indiceCurrent-1] 

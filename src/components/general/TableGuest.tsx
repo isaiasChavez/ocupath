@@ -44,7 +44,6 @@ const TableGuest: React.FC<TableGuestProps> = () => {
     setIsOpenSuspendUserModal(!isOpenSuspendUserModal)
   }
   const handleToggleDetailModal = () => {
-    console.log('Togleando', { isOpenUserDetailModal })
     setIsOpenUserDetailModal(!isOpenUserDetailModal)
   }
 

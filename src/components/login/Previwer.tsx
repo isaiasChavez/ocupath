@@ -25,7 +25,6 @@ const Previwer: React.FC<PreviewProps> = () => {
 
   const nameImage = () => {
     let newName
-    console.log(currentAsset.url)
     if (previewIsImage) {
       newName = currentAsset.url.replace(
         'https://ocupath.fra1.digitaloceanspaces.com/image/',
@@ -46,7 +45,6 @@ const Previwer: React.FC<PreviewProps> = () => {
    const onDeleteAsset =()=>{
     deleteAsset(currentAsset.uuid)
   }
-  console.log({ currentAsset, previewIsImage })
 
   if(currentAssets.length===0){
      closePreviewer()

@@ -5,7 +5,6 @@ const clienteAxios = axios.create({
 });
 export const tokenAuth = (token) => {  
   if (token) {
-    console.log(Config.TOKEN_NAME_HEADER, { token });
     clienteAxios.defaults.headers.common[Config.TOKEN_NAME_HEADER] = token;
   } else {
     delete clienteAxios.defaults.headers.common[Config.TOKEN_NAME_HEADER];

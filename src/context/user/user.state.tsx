@@ -37,7 +37,6 @@ const UserState = ({ children }) => {
       await validateOrReject(resetPassword);
       setLoading(true)
       const { data } = await axios.put(URLS.recoverpass, resetPassword);
-      console.log({data})
       setLoading(false)
       if (data.status ===0) {
         sendAlert({
@@ -70,7 +69,6 @@ const UserState = ({ children }) => {
         `${URLS.reset}${passwordRecovery.email}`
         );
         setLoading(false)
-        console.log(response.data)
           if (response.data.status ===0) {
             sendAlert({
               type:'success',
@@ -110,7 +108,6 @@ const UserState = ({ children }) => {
       const url =  `${URLS.validateToken}${token}`
       const { data } = await axios.post( `${url}`, );
       setLoading(false)
-      console.log({data})
       return data.status
     } catch (error) {
       setLoading(false)
@@ -141,7 +138,6 @@ const UserState = ({ children }) => {
       setLoading(true)
       const { data } = await axios.post(URLS.invite,inviteUserDTO);
       setLoading(false)
-      console.log({data})
       if (data.status===0) {
         sendAlert({
           type:'success',
@@ -212,7 +208,6 @@ const UserState = ({ children }) => {
     try {
       setLoading(true)
       const { data } = await axios.post(URLS.childrens);
-      console.log({data})
       setLoading(false)
       if (data.status ===0||data.status ===2) {
         dispatch({
@@ -310,7 +305,6 @@ const UserState = ({ children }) => {
       setLoading(true)
       const { data } = await axios.get(URLS.userDetail);
       setLoading(false)
-      console.log("asdf=>",US_A.GET_USER_DETAIL,{data})
       if (data.status ===0) {
         dispatch({ type: US_A.GET_USER_DETAIL, payload: data.profile });
       }
@@ -331,7 +325,6 @@ const UserState = ({ children }) => {
       await validateOrReject(dto);
       setLoading(true)
       const { data } = await axios.post(URLS.userChildDetail, dto);
-      console.log(AD_A.USER_CHILD_DETAIL,{data})
       setLoading(false)
       if (data.status ===0) {
         dispatch({ type: AD_A.USER_CHILD_DETAIL, payload: data });
@@ -356,11 +349,9 @@ const UserState = ({ children }) => {
     try {
       setLoading(true)
       const dto = new GetAdminDetailDTO(uuid)
-      console.log({dto})
       await validateOrReject(dto);
       const { data } = await axios.post(URLS.adminChildDetail, dto);
       setLoading(false)
-      console.log({data},AD_A.ADMIN_CHILD_DETAIL)
       dispatch({ type: AD_A.ADMIN_CHILD_DETAIL, payload: data });
     } catch (error) {
       setLoading(false)
@@ -390,7 +381,6 @@ const UserState = ({ children }) => {
       const deleteAdminUserDTO = new DeleteOrSuspendAdminUserDTO(state.selectedUser.uuid,!state.selectedUser.isActive)
       await validateOrReject(deleteAdminUserDTO);
       const { data } = await axios.put(URLS.deleteAdm, deleteAdminUserDTO);
-      console.log({data})
       // dispatch({
       //   type: US_A.DELETE_SUCCESS,
       //   payload: data,
@@ -403,7 +393,6 @@ const UserState = ({ children }) => {
     try {
       const deleteUserDTO = new DeleteOrSuspendUserDTO(state.selectedUser.uuid,!state.selectedUser.isActive)
       await validateOrReject(deleteUserDTO);
-console.log({deleteUserDTO})
       const { data } = await axios.put(URLS.delete, deleteUserDTO);
       dispatch({
         type: US_A.DELETE_SUCCESS,
@@ -513,7 +502,6 @@ console.log({deleteUserDTO})
       await validateOrReject(addNewSuscriptionSuscriptionDTO);
       
       const { data } = await axios.put(URLS.addPeriod, addNewSuscriptionSuscriptionDTO);
-      console.log("addNewPeriod:",{data})
       if (data.status ===0) {
         await getUserChildrens()
       }
@@ -529,9 +517,7 @@ console.log({deleteUserDTO})
   const deletePeriod = async (deleteSuscriptionSuscriptionDTO:DeleteSuscriptionSuscriptionDTO):Promise<number> => {
     try {
       await validateOrReject(deleteSuscriptionSuscriptionDTO);
-      console.log({deleteSuscriptionSuscriptionDTO})
       const { data } = await axios.put(URLS.deletePeriod,deleteSuscriptionSuscriptionDTO);
-      console.log("deletePeriod:",{data})
       if (data.status ===0) {
         dispatch({
           type: AD_A.DELETE_PERIOD,
@@ -555,7 +541,6 @@ console.log({deleteUserDTO})
       await validateOrReject(loginDTO);
       setLoading(true)
       const {data} = await axios.post(URLS.login, loginDTO);
-      console.log({data})
       setLoading(false)
       if (data.status === 0) {
         tokenAuth(data.profile.token);

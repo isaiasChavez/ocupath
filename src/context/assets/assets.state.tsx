@@ -72,7 +72,6 @@ const UserState = ({ children }) => {
 
   const deleteAsset = async (uuid: string) => {
     const deleteAssetDto = new DeleteAssetDto(uuid)
-    console.log({deleteAssetDto})
     try {
       setLoading(true)
       await validateOrReject(deleteAssetDto)

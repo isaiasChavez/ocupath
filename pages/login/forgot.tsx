@@ -30,7 +30,6 @@ const Forgot: React.FC<ForgotProps> = () => {
     if (validateFields()) {
       let dto = new ResetPassword(loginState.email);
       const status =await passRecover(dto);
-      console.log({status})
       if (status===0) {
         setloginState({
           email:""

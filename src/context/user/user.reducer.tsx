@@ -112,17 +112,14 @@ const userReducer = (state: UserStateType,action: Actions): UserStateType => {
         isSuperAdmin
       };
     case LOG_A.CONFIRM_PASS_SUCCESS:
-      console.log(LOG_A.CONFIRM_PASS_SUCCESS,{ payload });
       return {
         ...state,
       };
     case LOG_A.RECOVER_PASS_SUCCESS:
-      console.log(LOG_A.RECOVER_PASS_SUCCESS,{ payload });
       return {
         ...state,
       };
     case LOG_A.INVITE_USER_SUCCESS:
-      console.log(LOG_A.INVITE_USER_SUCCESS,{ payload });
       if (payload.status === 3) {
         return {
           ...state,
@@ -133,12 +130,10 @@ const userReducer = (state: UserStateType,action: Actions): UserStateType => {
         ...state,
       };
     case LOG_A.LOGIN_ERROR:
-      console.log(LOG_A.LOGIN_ERROR,{ payload });
       return {
         ...state,
       };
     case LOG_A.CLOSE_SESION:
-      console.log(LOG_A.CLOSE_SESION,{ payload });
       return {
         ...state,
       };
@@ -147,7 +142,6 @@ const userReducer = (state: UserStateType,action: Actions): UserStateType => {
      const isAdminn = payload.type ===USERS_TYPES.ADMIN
       const isGuestt = payload.type ===USERS_TYPES.GUEST
       const isSuperAdminn = payload.type ===USERS_TYPES.SUPER_ADMIN
-      console.log({isAdminn,isGuestt,isSuperAdminn})
       let newState = {
         ...state,
         profile: {
@@ -169,11 +163,9 @@ const userReducer = (state: UserStateType,action: Actions): UserStateType => {
     }
     const isAdminnn = payload.profile.type === USERS_TYPES.ADMIN
     let canAddMoreChilds:boolean
-    console.log("!******************************")
     if (isAdminnn) {
       const maxAvailableInvitations = state.profile.lastSuscription.invitations 
       const totalChildrensAdded = payload.childrens.admins.length + payload.childrens.users.length
-      console.log({totalChildrensAdded})
       if (totalChildrensAdded ===0) {
         canAddMoreChilds=true
       }else{
@@ -192,19 +184,16 @@ const userReducer = (state: UserStateType,action: Actions): UserStateType => {
         canAddMoreChilds
       };
     case US_A.SELECT_USER:
-      console.log({payload})
       return {
         ...state,
         selectedUser: payload.user,
         typeSelectedUser: payload.type
       };
     case US_A.REGISTER_SUCCES:
-      console.log(US_A.REGISTER_SUCCES,{ payload });
       return {
         ...state,
       };
     case US_A.DELETE_SUCCESS:
-      console.log(US_A.DELETE_SUCCESS,{ payload });
       const newDelete = { ...state.childrens }
       newDelete.users = newDelete.users.filter(user => user.uuid !== payload.user.uuid)
       return {
@@ -212,7 +201,6 @@ const userReducer = (state: UserStateType,action: Actions): UserStateType => {
         childrens: newDelete
       };
     case US_A.PAUSE_SUCCESS:
-      console.log(US_A.PAUSE_SUCCESS,{ payload });
       const newChildrens = { ...state.childrens }
       newChildrens.users = newChildrens.users.map(user => {
         if (user.uuid === payload.user.uuid) {
@@ -228,7 +216,6 @@ const userReducer = (state: UserStateType,action: Actions): UserStateType => {
         childrens: newChildrens
       };
     case AD_A.SUSPEND_ADM_SUCCESS:
-      console.log(AD_A.SUSPEND_ADM_SUCCESS,{ payload });
       const newSupendAdmin = { ...state.childrens }
       newSupendAdmin.admins = newSupendAdmin.admins.map(admin => {
         if (admin.uuid === payload.admin.uuid) {
@@ -245,7 +232,6 @@ const userReducer = (state: UserStateType,action: Actions): UserStateType => {
         childrens: newSupendAdmin
       };
     case US_A.UPDATE_SUCCESS:
-      console.log(US_A.UPDATE_SUCCESS,{payload})
       return {
         ...state,
         profile:{
@@ -256,7 +242,6 @@ const userReducer = (state: UserStateType,action: Actions): UserStateType => {
 
       
       case US_A.CHILD_DETAIL:
-      console.log(US_A.CHILD_DETAIL,{ payload });
       return {
         ...state,
       };
@@ -280,8 +265,6 @@ const userReducer = (state: UserStateType,action: Actions): UserStateType => {
           }
         };
         case AD_A.USER_CHILD_DETAIL:
-          console.log("reducer")
-          console.log(AD_A.USER_CHILD_DETAIL,{ payload });
           return {
             ...state,
             selectedUser:{
@@ -290,18 +273,15 @@ const userReducer = (state: UserStateType,action: Actions): UserStateType => {
             }
           };
     case AD_A.DELETE_ADM_SUCCESS:
-      console.log(AD_A.DELETE_ADM_SUCCESS,{ payload });
       return {
         ...state,
       };
     case AD_A.REGISTER_ADM_SUCCES:
-      console.log(AD_A.REGISTER_ADM_SUCCES,{ payload });
       return {
         ...state,
       };
 
     case AD_A.UPDATE_ADM_SUCCESS:
-      console.log(AD_A.UPDATE_ADM_SUCCESS,{ payload });
       return {
         ...state,
       };

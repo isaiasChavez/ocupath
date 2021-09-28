@@ -21,12 +21,10 @@ uuid:string,
 }} => {
   try {
     const jwtDecoded = jwt.verify(token, 'ocupath');
-    console.log({jwtDecoded})
     tokenAuth(token)
     return {status:true,jwtDecoded}
   } catch (error) {
     alert("The token is no longer valid")
-    console.log({error})
     return {status:false,jwtDecoded:null}
   }
 };
@@ -106,7 +104,6 @@ export const getStatus = (id: number): Object => {
 
 export const validateResponse = (res: AxiosResponse, type: string): boolean => {
   const NOT_FOUND = 1;
-  console.log({res})
   let isValid: boolean = false;
   const { data } = res;
   const { status } = data;

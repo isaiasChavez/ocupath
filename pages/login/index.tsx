@@ -158,9 +158,7 @@ const Login: React.FC<LoginProps> = () => {
   })
 
   const { logUser,loading } = useContext(UserContext)
-  useEffect(() => {
-    console.log({ logUser })
-  },[])
+ 
 
   const [errors,setErrors] = useState({
     email: null,
@@ -225,7 +223,6 @@ const Login: React.FC<LoginProps> = () => {
       newErrors.email = 'Enter a valid email'
       isValid = false
     }
-    console.log({ newErrors })
     if (!isValid) {
       setErrors(newErrors)
     }

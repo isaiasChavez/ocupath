@@ -45,7 +45,6 @@ const Register: React.FC<RegisterProps> = () => {
       const status = decifreToken(id as string)
       if (status.status) {
 
-        console.log(status.jwtDecoded.token)
         getDataRegister(status.jwtDecoded.token);
       }else{
         setIsLoading(false)
@@ -73,7 +72,6 @@ const Register: React.FC<RegisterProps> = () => {
 
   const validateFields = (): boolean => {
     let isValid = true
-    console.log("Validando comunes")
     let newErrors = { ...errors }
     if (dataUsuario.name.trim().length === 0) {
       newErrors.name= "The field is empty"
@@ -95,7 +93,6 @@ const Register: React.FC<RegisterProps> = () => {
       newErrors.confirmPassword= "Passwords do not match",
       isValid = false
     }
-    console.log({isValid,newErrors})
       setErrors(newErrors)
     return isValid
   }
@@ -137,7 +134,6 @@ const Register: React.FC<RegisterProps> = () => {
       }
     } catch (error) {
       setIsLoading(false)
-      console.log({ error });
     }
   };
 

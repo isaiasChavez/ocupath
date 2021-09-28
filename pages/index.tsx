@@ -319,7 +319,6 @@ function FormInformation () {
   }
   const validateForm = (): boolean => {
     const { name, surname, company, email, phone } = formInformation
-    console.log({ formInformation })
     const newErrors: SendEmailInfoProps = { ...initialValues }
     let isValid = true
     if (!name || name.trim().length === 0) {
@@ -343,26 +342,21 @@ function FormInformation () {
       newErrors.phone = 'At least 10 digits'
       isValid = false
     }
-    console.log(!email)
     if (!email || email.trim().length === 0) {
-      console.log('SI!')
       newErrors.email = 'Please enter a valid value'
       isValid = false
     }
     if (!verifyEmail(email)) {
       newErrors.email = 'Please valid email'
     }
-    console.log({ newErrors })
     setErrors(newErrors)
     return isValid
   }
 
   const onSendEmail = async e => {
-    console.log({ e })
     e.preventDefault()
     if (validateForm()) {
       const status = await sendInformationForm(formInformation)
-      console.log({ status })
       if (status === 0) {
         notification.open({
           message: '¡Mail Sent Successfully!',

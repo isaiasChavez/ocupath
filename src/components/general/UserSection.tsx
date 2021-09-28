@@ -282,7 +282,6 @@ const RightSide = () => {
 
   const handleUpload = async () => {
     try {
-      console.log("handle")
       const selectedFile = files[0]
       const formData = new FormData()
       formData.append('upload',selectedFile)
@@ -299,7 +298,6 @@ const RightSide = () => {
         setUrlPreview(null)
       }
     } catch (error) {
-      console.log(error)
       sendAlert({
         type: 'error',
         msg: 'An error occurred while uploading the images'
@@ -311,7 +309,6 @@ const RightSide = () => {
     accept: 'image/png, image/jpeg',
     beforeUpload: file => {
       const okFiles = ['image/png','image/jpeg','image/jpg']
-      console.log(file.type)
       if (!okFiles.includes(file.type)) {
 
         sendAlert({
@@ -331,7 +328,6 @@ const RightSide = () => {
     },
     multiple: false,
     onChange: info => {
-      console.log(info.fileList)
     }
   }
 

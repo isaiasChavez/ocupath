@@ -29,7 +29,6 @@ interface StyledTabProps {
 }
 export interface TableFilesProps {}
 const nameLengthValidator = file => {
-  console.log({ file })
 
   if (file.name.length > Config.MAX_LENGTH_NAME_SIZE) {
     return {
@@ -292,7 +291,6 @@ const Img: React.FC<ImgProps> = ({ loading, setLoading }) => {
       }
     } catch (error) {
       setLoading(false)
-      console.log({ error })
       sendAlert({
         type: 'error',
         msg: 'An error occurred while uploading the images'
@@ -374,7 +372,6 @@ const ImageGrid = ({
   asset: Asset
   onOpenPreviewer: Function
 }) => {
-  console.log({asset})
   const {  deleteAsset } = useContext(AssetsContext)
 
   const [isPopperVisible, setIsPopperVisible] = useState<boolean>(false)
@@ -599,7 +596,6 @@ const Img360: React.FC<Img360Props> = ({ loading, setLoading }) => {
       }
     } catch (error) {
       setLoading(false)
-      console.log({ error })
       sendAlert({
         type: 'error',
         msg: 'An error occurred while uploading the image'
@@ -744,12 +740,10 @@ const Video: React.FC<VideoProps> = ({ loading, setLoading }) => {
           type: 'error',
           msg: 'Error uploading thumbnail'
         })
-        console.log({ error })
       }
     })
   }
   const onLoadMetadata = async () => {
-    console.log('onLoadMetadata')
     const _VIDEO = document.querySelector('#video-element') as HTMLVideoElement
     const _CANVAS = document.querySelector(
       '#canvas-element'
@@ -759,15 +753,12 @@ const Video: React.FC<VideoProps> = ({ loading, setLoading }) => {
     _VIDEO.currentTime = 3
   }
   const onTimeVideoIsUpdated = async () => {
-    console.log('onTimeVideoIsUpdated')
     const _VIDEO = document.querySelector('#video-element') as HTMLVideoElement
     const _CANVAS = document.querySelector(
       '#canvas-element'
     ) as HTMLCanvasElement
     const _CANVAS_CTX = _CANVAS.getContext('2d')
     _CANVAS_CTX.drawImage(_VIDEO, 0, 0, _VIDEO.videoWidth, _VIDEO.videoHeight)
-    console.log(_CANVAS.height)
-    console.log(_CANVAS.height !== 10)
     if (_CANVAS.height !== 10) {
       await uploadThumbnail()
     }
@@ -778,9 +769,7 @@ const Video: React.FC<VideoProps> = ({ loading, setLoading }) => {
       const formData = new FormData()
       formData.append('upload', selectedFile)
       setLoading(true)
-      console.log({thumbnail})
       const response = await clienteAxios.post(URLS.urlUploadVideo, formData)
-      console.log({response})
       setLoading(false)
 
       const DTO = {
@@ -788,10 +777,8 @@ const Video: React.FC<VideoProps> = ({ loading, setLoading }) => {
         typeAsset: FILES_TYPES.VIDEO,
         thumbnail
       }
-      console.log(DTO)
       const { data } = await clienteAxios.post(URLS.createAsset, DTO)
       setLoading(false)
-      console.log({ data })
 
       if (data.status === 0) {
         setFiles(null)
@@ -807,7 +794,6 @@ const Video: React.FC<VideoProps> = ({ loading, setLoading }) => {
       }
     } catch (error) {
       setLoading(false)
-      console.log({ error })
       sendAlert({
         type: 'error',
         msg: 'An error occurred while uploading the video'
@@ -952,7 +938,6 @@ const Video360: React.FC<Video360Props> = ({ loading, setLoading }) => {
     if (errors.length > 0) {
       return
     }
-    console.log('OK FILES', { acceptedFiles })
     setFiles(acceptedFiles)
     uploadVideo360(acceptedFiles)
   }, [])
@@ -972,7 +957,6 @@ const Video360: React.FC<Video360Props> = ({ loading, setLoading }) => {
         setVideo360(urlThumnail)
       } catch (error) {
         setLoading(false)
-        console.log({ error })
       }
     })
   }
@@ -992,8 +976,6 @@ const Video360: React.FC<Video360Props> = ({ loading, setLoading }) => {
     ) as HTMLCanvasElement
     const _CANVAS_CTX = _CANVAS.getContext('2d')
     _CANVAS_CTX.drawImage(_VIDEO, 0, 0, _VIDEO.videoWidth, _VIDEO.videoHeight)
-    console.log(_CANVAS.height)
-    console.log(_CANVAS.height !== 10)
     if (_CANVAS.height !== 10) {
       await uploadThumbnail()
     }
@@ -1040,7 +1022,6 @@ const Video360: React.FC<Video360Props> = ({ loading, setLoading }) => {
       }
     } catch (error) {
       setLoading(false)
-      console.log({ error })
       sendAlert({
         type: 'error',
         msg: 'An error occurred while uploading the video'

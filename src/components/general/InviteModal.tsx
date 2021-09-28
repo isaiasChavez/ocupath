@@ -65,7 +65,6 @@ const InviteModal: React.FC<InviteModalProps> = ({
 
   const handleDateEndChange = e => {
     setErrors(initialErrors())
-    console.log({ e },e.format())
     if (moment(e.format()).isBefore(startedAt)) {
       setErrors({
         ...errors,
@@ -111,8 +110,6 @@ const InviteModal: React.FC<InviteModalProps> = ({
         isValid = false
       }
 
-      console.log({ finishedAt,startedAt })
-      console.log(moment(finishedAt).isSame(startedAt))
       if (moment(finishedAt).isSame(startedAt)) {
         newErrors.finishedAt = `The dates must be different`
         newErrors.startedAt = `The dates must be different`
@@ -132,7 +129,6 @@ const InviteModal: React.FC<InviteModalProps> = ({
 
   const validateCompany = (commondErrors: NewUserErrors): { isOk: boolean,errors: NewUserErrors } => {
     let isValid = true
-    console.log({ errors,dataNewUser })
     const newErrors: NewUserErrors = {
       ...commondErrors
     }
@@ -204,7 +200,6 @@ const InviteModal: React.FC<InviteModalProps> = ({
         if (isInviteGuest) {
           inviteDTO.invitations = 0
         }
-        console.log(typeUserLogged,typeUserLogged === USERS_TYPES.ADMIN)
         if (typeUserLogged === USERS_TYPES.ADMIN) {
           inviteDTO.invitations = 0
           inviteDTO.startedAt = new Date().toISOString()
@@ -213,7 +208,6 @@ const InviteModal: React.FC<InviteModalProps> = ({
         }
 
         const newInvite = new InviteUserDTO(inviteDTO)
-        console.log({ newInvite })
         await validateOrReject(newInvite)
         inviteDTO.email = inviteDTO.email.toLowerCase()
 
@@ -223,7 +217,6 @@ const InviteModal: React.FC<InviteModalProps> = ({
           handleClose()
         }
       } catch (error) {
-        console.log({ error })
         sendAlert({
           type: 'error',
           msg: 'Error validating fields'

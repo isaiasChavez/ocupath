@@ -608,7 +608,6 @@ const DataNewPeriod = ({
   }
   const handleDateEndChange = (e) => {
     setErrors(initialErrors())
-    console.log({ e }, e.format())
     if (moment(e.format()).isBefore(startedAt)) {
       setErrors({
         ...errors,
@@ -696,7 +695,6 @@ const DataNewPeriod = ({
     }
   }
   const handleSend = async (e) => {
-    console.log('handleSend', { e })
     e.preventDefault()
     let commondsFieldsAreValid: boolean
     let particularFieldsAreValid: boolean
@@ -730,7 +728,6 @@ const DataNewPeriod = ({
         },
       )
       const status = await addNewPeriod(newPeriodDTO)
-      console.log({ status })
       if (status === 0) {
         setErrors(initialErrors())
         setHasNewPeriod(false)
