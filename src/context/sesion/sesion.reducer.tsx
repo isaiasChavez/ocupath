@@ -1,31 +1,25 @@
-import { Config } from "../../config";
-import { LOG_A } from "../../types";
+import { Config } from '../../config'
+import { LOG_A } from '../../types'
 export type SesionStateType = {
-  isLogged:boolean
-};
+  isLogged: boolean
+}
 
-
-type Actions =
-  | { type: "CLOSE_SESION"; payload: any }
+type Actions = { type: 'CLOSE_SESION'; payload: any }
 
 const sesionReducer = (
   state: SesionStateType,
-  action: Actions
+  action: Actions,
 ): SesionStateType => {
-  const { payload } = action;
+  const { payload } = action
 
   switch (action.type) {
     case LOG_A.CLOSE_SESION:
-      console.log(LOG_A.CLOSE_SESION,{ payload })
-      
-      
-          return {
-            ...state,
-          }
-
+      return {
+        ...state,
+        isLogged:false
+      }
     default:
-
-      return state;
+      return state
   }
-};
-export default sesionReducer;
+}
+export default sesionReducer

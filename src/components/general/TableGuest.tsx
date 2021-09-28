@@ -1,33 +1,22 @@
 import {
   Box,
-  Button,
-  Chip,
   Switch,
-  Table,
-  TableBody,
-  TableHead,
-  TablePagination,
-  TableRow
 } from '@material-ui/core'
+import { Table } from 'antd'
 import moment from 'moment'
-import React, { useContext, useEffect, useState } from 'react'
-import { getStatus } from '../../config/utils'
+import React, { useContext, useState } from 'react'
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined'
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined'
 import UserContext from '../../context/user/user.context'
 import {
+  costFormated,
   getDataStatus,
-  StyledTableCell,
-  StyledTableRow
 } from '../superadmin/TableCompanies'
 import { USERS, USERS_TYPES } from '../../types/'
 import { User } from '../../context/user/user.reducer'
 import UserDetailModal from '../superadmin/UserDetailModal'
 import AskModal from './AskModal'
-import { Empty } from 'antd'
-
 export interface TableGuestProps {}
-
 const TableGuest: React.FC<TableGuestProps> = () => {
   const [isOpenUserDetailModal, setIsOpenUserDetailModal] = useState<boolean>(
     false
@@ -38,9 +27,6 @@ const TableGuest: React.FC<TableGuestProps> = () => {
   const [isOpenDeleteUserModal, setIsOpenDeleteUserModal] = useState<boolean>(
     false
   )
-  const [rowsPerPage, setRowsPerPage] = useState(5)
-  const [page, setPage] = React.useState(0)
-
   const {
     childrens,
     selectUser,
@@ -50,25 +36,7 @@ const TableGuest: React.FC<TableGuestProps> = () => {
     suspendUser,
     loading
   } = useContext(UserContext)
-  const rows = childrens.users
-
-  useEffect(() => {
-    console.log('Me estoy renderizando')
-  }, [])
-
-  useEffect(() => {
-    console.log({ isOpenUserDetailModal })
-  }, [isOpenUserDetailModal])
-
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setRowsPerPage(parseInt(event.target.value, 10))
-    setPage(0)
-  }
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage)
-  }
+  const rows = childrens.users 
   const toggleDeleteUserModal = () => {
     setIsOpenDeleteUserModal(!isOpenDeleteUserModal)
   }
@@ -93,6 +61,110 @@ const TableGuest: React.FC<TableGuestProps> = () => {
     handleToggleDetailModal()
     await getUserChildDetail(dataUser)
   }
+
+  
+
+  const columns = [
+    {
+      title: 'Name',
+      dataIndex: 'name',
+      key: 'name',
+      render: (text) => <Box fontFamily="font2">{text}</Box>,
+    },
+    {
+      title: 'Email',
+      dataIndex: 'email',
+      key: 'email',
+      render: (text) => <Box fontFamily="font2">{text}</Box>,
+    },
+    {
+      title: 'Total cost',
+      dataIndex: 'lastSuscription',
+      key: 'invitations',
+      render: (text) => <Box fontFamily="font2">{costFormated(text.cost)}</Box>,      
+    },
+    {
+      title: 'Period',
+      dataIndex: 'lastSuscription',
+      key: 'invitations',
+      render: (lastSuscription) => <Box fontFamily="font2">
+{`${moment(lastSuscription.startedAt).format(
+                 'L',
+               )} to ${moment(lastSuscription.finishedAt).format('L')}`}
+
+      </Box>,
+    },
+    {
+      title: 'Time remaining',
+      dataIndex: 'lastSuscription',
+      key: 'remaining',
+      render: (text) => <Box fontFamily="font2">{moment(text.finishedAt).from(moment()) }</Box>,
+
+    },
+    {
+      title: 'Estatus',
+      dataIndex: 'status',
+      key: 'invitations',
+      render:(text)=><Box
+      fontWeight="fontWeightBold"
+      style={{
+        color: getDataStatus(text).color,
+      }}
+    >
+      {getDataStatus(text).name}
+    </Box>
+    },
+    {
+      title: 'Registration date',
+      dataIndex: 'lastSuscription',
+      key: 'Registration',
+      render:(text)=><Box fontFamily="font2">{ moment(text.createdAt).format('L')}</Box>
+    },
+    {
+      title: 'Suspend',
+      dataIndex: 'isActive',
+      key: 'invitations',
+      render:(isActive,user)=> {
+        return (<Switch
+          disabled={loading}
+          checked={isActive}
+          onChange={() => onSuspend(user)}
+          name="checkedA"
+          color="secondary"
+          inputProps={{ 'aria-label': 'secondary checkbox' }}
+        />)
+      }
+    },
+    {
+      title: 'Edit',
+      dataIndex: 'isActive',
+      key: 'invitations',
+      render:(isActive,user)=> <EditOutlinedIcon
+      style={{
+        color: '#A6ABAF',
+        opacity: isActive ? 1 : 0.5,
+        cursor: isActive ? 'pointer' : 'default',
+      }}
+      onClick={() => {
+        if (isActive) {
+          onEdit(user)
+        }
+      }}
+    />
+    },
+    {
+      title: 'Delete',
+      dataIndex: 'lastSuscription',
+      key: 'invitations',
+      render:(_,user)=> <DeleteOutlineOutlinedIcon
+      style={{
+        color: '#A6ABAF',
+        cursor: 'pointer',
+      }}
+      onClick={() => onDelete(user)}
+    />
+    },
+  ]
 
   return (
     <>
@@ -124,111 +196,10 @@ const TableGuest: React.FC<TableGuestProps> = () => {
         title='Suspend User'
         subtitle={`Are you sure you want to  ${
           selectedUser.isActive ? 'suspend' : 'activate'
-        } ${selectedUser ? 'to ' + selectedUser.name + '?' : 'this user?'}`}
+        } ${selectedUser ? ' ' + selectedUser.name + '?' : 'this user?'}`}
       />
-      <Table aria-label='customized table'>
-        <TableHead>
-          <TableRow>
-            <StyledTableCell align='center'>Name</StyledTableCell>
-            <StyledTableCell align='center'>Email</StyledTableCell>
-            <StyledTableCell align='center'>Total Cost</StyledTableCell>
-            <StyledTableCell align='center'>Period</StyledTableCell>
-            <StyledTableCell align='center'>Time Remaining</StyledTableCell>
-            <StyledTableCell align='center'>Status</StyledTableCell>
-            <StyledTableCell align='center'>Registration Date</StyledTableCell>
-            <StyledTableCell align='center'>Suspend</StyledTableCell>
-            <StyledTableCell align='center'>Edit</StyledTableCell>
-            <StyledTableCell align='center'>Delete</StyledTableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody >
-          {rows.map(row => (
-            <StyledTableRow key={row.name}>
-              <StyledTableCell align='center' component='th' scope='row'>
-                {row.name}
-              </StyledTableCell>
-              <StyledTableCell align='center'>{row.email}</StyledTableCell>
-              <StyledTableCell align='center'>
-                {row.lastSuscription.cost}
-              </StyledTableCell>
-              <StyledTableCell align='center'>
-                {`${moment(row.lastSuscription.startedAt).format(
-                  'L'
-                )} to ${moment(row.lastSuscription.finishedAt).format('L')}`}
-              </StyledTableCell>
-              <StyledTableCell align='center'>
-                {moment(row.lastSuscription.finishedAt).from(moment())}
-              </StyledTableCell>
-              <StyledTableCell align='center'>
-                <Box
-                  fontWeight='fontWeightBold'
-                  style={{
-                    color: getDataStatus(row.status).color
-                  }}
-                >
-                  {getDataStatus(row.status).name}
-                </Box>
-              </StyledTableCell>
-              <StyledTableCell align='center'>
-                {moment(row.lastSuscription.createdAt).format('L')}
-              </StyledTableCell>
-              <StyledTableCell align='right'>
-                {' '}
-                <Switch
-                  checked={row.isActive}
-                  disabled={loading}
-                  onChange={() => {
-                    onSuspend(row)
-                  }}
-                  name='checkedA'
-                  color='secondary'
-                  inputProps={{ 'aria-label': 'secondary checkbox' }}
-                />
-              </StyledTableCell>
-              <StyledTableCell align='right'>
-                <EditOutlinedIcon
-                  style={{
-                    color: '#A6ABAF',
-                    cursor: 'pointer'
-                  }}
-                  onClick={() => {
-                    if (row.isActive) {
-                      onEdit(row)
-                    }
-                  }}
-                />
-              </StyledTableCell>
-              <StyledTableCell align='right'>
-                 <DeleteOutlineOutlinedIcon
-                style={{ 
-                  color:'#A6ABAF',
-                  cursor:'pointer'
-                }}
-                onClick={() => {
-                  if (!loading) {
-                  onDelete(row)  
-                  }
-                  }}
-                />
+      <Table loading={loading} columns={columns} dataSource={childrens.users} />
 
-              </StyledTableCell>
-            </StyledTableRow>
-          ))}
-        </TableBody>
-          {rows.length===0&&<Box position="absolute" bottom={0} display='flex' width='100%' height="80%" justifyContent="center" alignItems="center">
-            <Empty description="You have not added any user yet"/>
-            </Box>}
-        {rows.length > 8 && (
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
-            count={rows.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onChangePage={handleChangePage}
-            onChangeRowsPerPage={handleChangeRowsPerPage}
-          />
-        )}
-      </Table>
     </>
   )
 }

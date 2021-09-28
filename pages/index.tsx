@@ -24,7 +24,7 @@ export interface NavigationProps {
 const Home= () => {
   const classes = useStyles()
   const scroll = Scroll.animateScroll;
-  const version = 'v1.0.1'
+  const version = 'v1.1.1'
   useEffect(() => {
 
     window.scrollTo(0, 0);
@@ -98,8 +98,7 @@ const Home= () => {
                 About Us
               </Box>
               <Box mb={2} fontFamily='font3' fontSize='1.125rem' color='white'>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Dignissimos ea accusantium doloribus omnis
+              The MultiVRsity team is passionate about learning. It's what sets us apart from other VR companies.
               </Box>
               <Box
                 fontFamily='font2'
@@ -107,10 +106,7 @@ const Home= () => {
                 color='white'
                 lineHeight='1.8rem'
               >
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Dignissimos ea accusantium doloribus omnis Lorem ipsum dolo
-                consectetur adipisicing elit. Dignissimos ea accusantium
-                doloribus omnis
+                 We believe the next generation of educational technology should let students and employees dive into interactive worlds and explore complex scenarios and concepts in completely new ways
               </Box>
             </Box>
             <BottomArrow next='plans' />

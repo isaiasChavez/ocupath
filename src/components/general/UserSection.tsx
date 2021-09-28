@@ -53,18 +53,24 @@ const UserSection: React.FC<UserSectionProps> = ({ type,toggleAvatarSection }) =
   const validateName = () => {
     const pattern = new RegExp('^[A-Z]+$','i');
 
+    const minCharacters =  3
     let isValid = true
-    if (!name || name.trim().length === 0 || name.trim().length >= 100) {
+    if (!name ) {
+      setHasError(true)
+      setError('Please fill this value')
+      isValid = false
+    } else if ( name.trim().length === 0  ||  name.trim().length >= 100) {
       setHasError(true)
       setError('Please enter a valid name')
       isValid = false
-    } else if (name.trim().includes(' ')) {
+    }
+     else if (name.trim().includes(' ')) {
       setHasError(true)
       setError('You cannot include spaces')
       isValid = false
-    } else if (name.trim().length < 5) {
+    } else if (name.trim().length < minCharacters) {
       setHasError(true)
-      setError('They must be at least 5 characters.')
+      setError(`They must be at least ${minCharacters} characters.`)
       isValid = false
     }
     else if (!pattern.test(name)) {
@@ -353,7 +359,7 @@ const RightSide = () => {
         <h4 className={ classes.information }>Customize your workspace</h4>
       </Box>
       <Box fontFamily='font2' fontSize='0.8rem' >
-      Upload your logo, it will be displayed in the locations shown in the example.
+      You can customize the VR scene by adding your own logo which will be displayed in the locations shown in the example below.
       </Box>
       <Box
         maxHeight='8rem'
@@ -384,7 +390,7 @@ const RightSide = () => {
         <h4 className={ classes.information }>Logo</h4>
       </Box>
       <Box fontFamily='font2' fontSize='0.8rem'>
-        Select your company logo image. This will be displayed within the virtual reality environmet as shown in the image below
+      Select your comany logo. 
       </Box>
       <Box
         maxHeight='8rem'

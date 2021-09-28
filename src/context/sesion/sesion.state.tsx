@@ -19,11 +19,10 @@ const SesionState = ({ children }) => {
       const logoutDto = new ReuestSesionLogOutDTO()
       setLoading(true)
       const { data } = await axios.post(URLS.logout,logoutDto);
-      setLoading(false)
       
       localStorage.removeItem(Config.TOKEN_NAME_INTERN);
+      setLoading(false)
       if (data.status === 0) {
-        router.push("/");
       }
       if (data.status === 2) {
         sendAlert({
@@ -31,9 +30,10 @@ const SesionState = ({ children }) => {
           msg: `Sesion not founded`
         })
       }
+      router.push("/");
       dispatch({
         type: LOG_A.CLOSE_SESION,
-        payload: data,
+        payload: null,
       });
     } catch (error) {
       sendAlert({

@@ -161,17 +161,24 @@ const userReducer = (state: UserStateType,action: Actions): UserStateType => {
       return newState
     case US_A.CHILDRENS:
 
+    if (payload.status ===2) {
+      return {
+        ...state,
+        canAddMoreChilds:true
+      }
+    }
     const isAdminnn = payload.profile.type === USERS_TYPES.ADMIN
-
     let canAddMoreChilds:boolean
-    
-    console.log({isAdminnn})
+    console.log("!******************************")
     if (isAdminnn) {
       const maxAvailableInvitations = state.profile.lastSuscription.invitations 
       const totalChildrensAdded = payload.childrens.admins.length + payload.childrens.users.length
-      canAddMoreChilds =  totalChildrensAdded < maxAvailableInvitations  
-      console.log(state.profile.lastSuscription.invitations)
-      console.log({totalChildrensAdded,canAddMoreChilds})
+      console.log({totalChildrensAdded})
+      if (totalChildrensAdded ===0) {
+        canAddMoreChilds=true
+      }else{
+        canAddMoreChilds =  totalChildrensAdded < maxAvailableInvitations  
+      }
     }
 
     return {

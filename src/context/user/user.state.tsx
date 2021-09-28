@@ -214,7 +214,7 @@ const UserState = ({ children }) => {
       const { data } = await axios.post(URLS.childrens);
       console.log({data})
       setLoading(false)
-      if (data.status ===0) {
+      if (data.status ===0||data.status ===2) {
         dispatch({
           type: US_A.CHILDRENS,
           payload: data,
