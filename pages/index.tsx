@@ -24,7 +24,7 @@ export interface NavigationProps {
 const Home= () => {
   const classes = useStyles()
   const scroll = Scroll.animateScroll;
-  const version = 'v1.1.1'
+  const version = 'v1.1.2'
   useEffect(() => {
 
     window.scrollTo(0, 0);
