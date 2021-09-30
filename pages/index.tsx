@@ -23,7 +23,7 @@ export interface NavigationProps {
 
 const Home= () => {
   const classes = useStyles()
-  const version = 'v1.1.3'
+  const version = 'v1.1.4'
   useEffect(() => {
 
     window.scrollTo(0, 0);

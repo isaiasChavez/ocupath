@@ -1,17 +1,11 @@
-import {
-  Box,
-  Switch,
-} from '@material-ui/core'
+import { Box, Switch } from '@material-ui/core'
 import { Table } from 'antd'
 import moment from 'moment'
 import React, { useContext, useState } from 'react'
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined'
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined'
 import UserContext from '../../context/user/user.context'
-import {
-  costFormated,
-  getDataStatus,
-} from '../superadmin/TableCompanies'
+import { costFormated, getDataStatus } from '../superadmin/TableCompanies'
 import { USERS, USERS_TYPES } from '../../types/'
 import { User } from '../../context/user/user.reducer'
 import UserDetailModal from '../superadmin/UserDetailModal'
@@ -19,13 +13,13 @@ import AskModal from './AskModal'
 export interface TableGuestProps {}
 const TableGuest: React.FC<TableGuestProps> = () => {
   const [isOpenUserDetailModal, setIsOpenUserDetailModal] = useState<boolean>(
-    false
+    false,
   )
   const [isOpenSuspendUserModal, setIsOpenSuspendUserModal] = useState<boolean>(
-    false
+    false,
   )
   const [isOpenDeleteUserModal, setIsOpenDeleteUserModal] = useState<boolean>(
-    false
+    false,
   )
   const {
     childrens,
@@ -34,9 +28,9 @@ const TableGuest: React.FC<TableGuestProps> = () => {
     selectedUser,
     deleteUser,
     suspendUser,
-    loading
+    loading,
   } = useContext(UserContext)
-  const rows = childrens.users 
+  const rows = childrens.users
   const toggleDeleteUserModal = () => {
     setIsOpenDeleteUserModal(!isOpenDeleteUserModal)
   }
@@ -61,8 +55,6 @@ const TableGuest: React.FC<TableGuestProps> = () => {
     await getUserChildDetail(dataUser)
   }
 
-  
-
   const columns = [
     {
       title: 'Name',
@@ -80,88 +72,100 @@ const TableGuest: React.FC<TableGuestProps> = () => {
       title: 'Total cost',
       dataIndex: 'lastSuscription',
       key: 'invitations',
-      render: (text) => <Box fontFamily="font2">{costFormated(text.cost)}</Box>,      
+      render: (text) => <Box fontFamily="font2">{costFormated(text.cost)}</Box>,
     },
     {
       title: 'Period',
       dataIndex: 'lastSuscription',
       key: 'invitations',
-      render: (lastSuscription) => <Box fontFamily="font2">
-{`${moment(lastSuscription.startedAt).format(
-                 'L',
-               )} to ${moment(lastSuscription.finishedAt).format('L')}`}
-
-      </Box>,
+      render: (lastSuscription) => (
+        <Box fontFamily="font2">
+          {`${moment(lastSuscription.startedAt).format('L')} to ${moment(
+            lastSuscription.finishedAt,
+          ).format('L')}`}
+        </Box>
+      ),
     },
     {
       title: 'Time remaining',
       dataIndex: 'lastSuscription',
       key: 'remaining',
-      render: (text) => <Box fontFamily="font2">{moment(text.finishedAt).from(moment()) }</Box>,
-
+      render: (text) => (
+        <Box fontFamily="font2">{moment(text.finishedAt).from(moment())}</Box>
+      ),
     },
     {
       title: 'Estatus',
       dataIndex: 'status',
       key: 'invitations',
-      render:(text)=><Box
-      fontWeight="fontWeightBold"
-      style={{
-        color: getDataStatus(text).color,
-      }}
-    >
-      {getDataStatus(text).name}
-    </Box>
+      render: (text) => (
+        <Box
+          fontWeight="fontWeightBold"
+          style={{
+            color: getDataStatus(text).color,
+          }}
+        >
+          {getDataStatus(text).name}
+        </Box>
+      ),
     },
     {
       title: 'Registration date',
       dataIndex: 'lastSuscription',
       key: 'Registration',
-      render:(text)=><Box fontFamily="font2">{ moment(text.createdAt).format('L')}</Box>
+      render: (text) => (
+        <Box fontFamily="font2">{moment(text.createdAt).format('L')}</Box>
+      ),
     },
     {
       title: 'Suspend',
       dataIndex: 'isActive',
       key: 'invitations',
-      render:(isActive,user)=> {
-        return (<Switch
-          disabled={loading}
-          checked={isActive}
-          onChange={() => onSuspend(user)}
-          name="checkedA"
-          color="secondary"
-          inputProps={{ 'aria-label': 'secondary checkbox' }}
-        />)
-      }
+      render: (isActive, user) => {
+        return (
+          <Switch
+            disabled={loading}
+            checked={isActive}
+            onChange={() => onSuspend(user)}
+            name="checkedA"
+            color="secondary"
+            inputProps={{ 'aria-label': 'secondary checkbox' }}
+          />
+        )
+      },
     },
     {
       title: 'Edit',
       dataIndex: 'isActive',
       key: 'invitations',
-      render:(isActive,user)=> <EditOutlinedIcon
-      style={{
-        color: '#A6ABAF',
-        opacity: isActive ? 1 : 0.5,
-        cursor: isActive ? 'pointer' : 'default',
-      }}
-      onClick={() => {
-        if (isActive) {
-          onEdit(user)
-        }
-      }}
-    />
+      render: (isActive, user) => (
+        <EditOutlinedIcon
+          style={{
+            color: '#A6ABAF',
+            opacity: isActive ? 1 : 0.5,
+            cursor: isActive ? 'pointer' : 'default',
+          }}
+          onClick={() => {
+            if (isActive) {
+              onEdit(user)
+            }
+          }}
+        />
+      ),
     },
     {
       title: 'Delete',
       dataIndex: 'lastSuscription',
       key: 'invitations',
-      render:(_,user)=> <DeleteOutlineOutlinedIcon
-      style={{
-        color: '#A6ABAF',
-        cursor: 'pointer',
-      }}
-      onClick={() => onDelete(user)}
-    />
+      render: (_, user) => (
+        <DeleteOutlineOutlinedIcon
+          style={{
+            color: '#A6ABAF',
+            cursor: 'pointer',
+          }}
+          onClick={() => onDelete(user)}
+        />
+      ),
     },
   ]
 
@@ -175,10 +179,13 @@ const TableGuest: React.FC<TableGuestProps> = () => {
       <AskModal
         isOpen={isOpenDeleteUserModal}
         handleClose={toggleDeleteUserModal}
-        handleOk={() => deleteUser()}
-        okText='Sure'
-        cancelText='Cancel'
-        title='Delete User'
+        handleOk={() => {
+          toggleDeleteUserModal()
+          deleteUser()
+        }}
+        okText="Sure"
+        cancelText="Cancel"
+        title="Delete User"
         subtitle={`Are you sure you want to delete ${
           selectedUser ? selectedUser.name : 'this user'
         } `}
@@ -190,15 +197,14 @@ const TableGuest: React.FC<TableGuestProps> = () => {
           suspendUser()
         }}
         handleClose={toggleSuspendUserModal}
-        okText='Sure'
-        cancelText='Cancel'
-        title='Suspend User'
+        okText="Sure"
+        cancelText="Cancel"
+        title="Suspend User"
         subtitle={`Are you sure you want to  ${
           selectedUser.isActive ? 'suspend' : 'activate'
         } ${selectedUser ? ' ' + selectedUser.name + '?' : 'this user?'}`}
       />
       <Table loading={loading} columns={columns} dataSource={childrens.users} />
-
     </>
   )
 }

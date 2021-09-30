@@ -1,30 +1,18 @@
 //Módulo de administración súper usuario
 
 import React,{ useContext,useEffect,useState } from "react";
-import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import TextField from "@material-ui/core/TextField";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Checkbox from "@material-ui/core/Checkbox";
-import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
-import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
-import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
-import Container from "@material-ui/core/Container";
-import Layout from "../../src/layouts/Layout";
 import { useRouter } from "next/router";
 import clienteAxios from "../../src/config/axios";
 import { COLORS,Images,URLS } from "../../src/types/index";
 import { AxiosResponse } from "axios";
 import UserContext from "../../src/context/user/user.context";
-import withAuth from "../../src/auth/WithAuth";
 import { decifreToken,verifyPassword } from "../../src/config/utils";
 import HeaderSimple from "../../src/components/general/HeaderSimple";
 import { CustomInput } from "../login";
-import { CircularProgress } from "@material-ui/core";
 import { Result, Spin } from "antd";
 import HeadCustom from "../../src/layouts/HeadCustom";
 
@@ -37,7 +25,7 @@ const Register: React.FC<RegisterProps> = () => {
   const [isLoading,setIsLoading] = useState(true)
   const { id } = router.query;
 
-  const { addUserAdm,addUser } = useContext(UserContext)
+  const { addUserAdm,addUser ,loading} = useContext(UserContext)
 
   const classes = useStyles();
   useEffect(() => {
@@ -56,10 +44,7 @@ const Register: React.FC<RegisterProps> = () => {
   },[id]);
 
   const [dataUsuario,setDataUsuario] = useState(initialState())
-
   const [errors,setErrors] = useState(initialErrors())
-
-
   const onChangeInput = (e) => {
     setErrors(initialErrors())
     setDataUsuario({
@@ -221,7 +206,7 @@ const Register: React.FC<RegisterProps> = () => {
                   { ...props }
                   size='small'
                   className={ classes.input }
-
+                  disabled={loading}
                   value={ dataUsuario.name }
                   autoComplete="fname"
                   name="name"
@@ -290,6 +275,7 @@ const Register: React.FC<RegisterProps> = () => {
                   className={ classes.input }
                   error={errors.password!==null}
             helperText={errors.password}
+            disabled={loading}
                   variant="outlined"
                   required
                   fullWidth
@@ -304,6 +290,7 @@ const Register: React.FC<RegisterProps> = () => {
               </Grid>
               <Grid item xs={ 12 }>
                 <CustomInput
+                disabled={loading}
                   { ...props }
                   size='small'
                   className={ classes.input }
@@ -328,6 +315,7 @@ const Register: React.FC<RegisterProps> = () => {
             <Button
               type="submit"
               variant="contained"
+              disabled={loading}
               color="secondary"
               className={ classes.submit }
               >

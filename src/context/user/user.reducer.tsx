@@ -194,9 +194,18 @@ const userReducer = (state: UserStateType,action: Actions): UserStateType => {
       return {
         ...state,
       };
+
+      
+    case AD_A.DELETE_SUCCESS:
+      const newDeleteAdmin = { ...state.childrens }
+      newDeleteAdmin.admins = newDeleteAdmin.admins.filter(user => user.uuid !== state.selectedUser.uuid)
+      return {
+        ...state,
+        childrens: newDeleteAdmin
+      };
     case US_A.DELETE_SUCCESS:
       const newDelete = { ...state.childrens }
-      newDelete.users = newDelete.users.filter(user => user.uuid !== payload.user.uuid)
+      newDelete.users = newDelete.users.filter(user => user.uuid !== state.selectedUser.uuid)
       return {
         ...state,
         childrens: newDelete
