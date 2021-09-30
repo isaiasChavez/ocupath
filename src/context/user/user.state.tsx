@@ -331,6 +331,12 @@ const UserState = ({ children }) => {
       if (data.status === 0) {
         dispatch({ type: AD_A.USER_CHILD_DETAIL, payload: data })
       }
+      if (data.status === 1) {
+        sendAlert({
+          type: 'error',
+          msg: 'Not allowed',
+        })
+      }
       if (data.status === 2) {
         sendAlert({
           type: 'warning',
@@ -352,6 +358,12 @@ const UserState = ({ children }) => {
       const dto = new GetAdminDetailDTO(uuid)
       await validateOrReject(dto)
       const { data } = await axios.post(URLS.adminChildDetail, dto)
+      if (data.status === 1) {
+        sendAlert({
+          type: 'error',
+          msg: 'Not allowed',
+        })
+      }
       setLoading(false)
       dispatch({ type: AD_A.ADMIN_CHILD_DETAIL, payload: data })
     } catch (error) {
