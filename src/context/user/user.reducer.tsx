@@ -128,6 +128,7 @@ const userReducer = (state: UserStateType,action: Actions): UserStateType => {
       }
       return {
         ...state,
+        tokenError:payload.token
       };
     case LOG_A.LOGIN_ERROR:
       return {

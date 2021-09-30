@@ -1,5 +1,4 @@
 import { AxiosResponse } from "axios";
-import { LOG_A } from "../types";
 import { tokenAuth } from "./axios";
 import jwt from 'jsonwebtoken'
 export const verifyEmail = (email: string): boolean => {
@@ -102,33 +101,12 @@ export const getStatus = (id: number): Object => {
 };
 
 
-export const validateResponse = (res: AxiosResponse, type: string): boolean => {
-  const NOT_FOUND = 1;
-  let isValid: boolean = false;
-  const { data } = res;
-  const { status } = data;
-  if (status === 0) {
-    isValid = true;
-  } else {
-    switch (type) {
-      case LOG_A.RECOVER_PASS_SUCCESS:
-        switch (status) {
-          case NOT_FOUND:
-            alert("The requested user was not found");
-            break;
-          case 5:
-            alert("Operation not allowed");
-            break;
-          default:
-            break;
-        }
-        break;
-      default:
-        break;
-    }
-  }
+export const processError = (res: ErrorEvent): boolean => {
 
-  return isValid;
+    
+
+
+  return false;
 };
 
 export const preventDefault = (event) => event.preventDefault();

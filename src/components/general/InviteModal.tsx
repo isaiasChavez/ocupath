@@ -214,7 +214,7 @@ const InviteModal: React.FC<InviteModalProps> = ({
         const response = await inviteUser(newInvite)
         if (response === 0 || response === 8) {
           setDataNewUser({ ...initialState(type) })
-          handleClose()
+          // handleClose()
         }
       } catch (error) {
         sendAlert({
@@ -511,7 +511,9 @@ const InviteModal: React.FC<InviteModalProps> = ({
             </Button>
           </Box>
         </Box>
-          {tokenError}
+        <Box display="flex" justifyContent="center" my={2}>
+          <a target="_blank" href={`https://ocupath-xi.vercel.app/register/${tokenError}`}> Invitation url</a>
+        </Box>
       </Box>
     </Box>
   )
