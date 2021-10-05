@@ -1,38 +1,59 @@
+import { useContext, useEffect, useState } from 'react'
 import {
   Link as LinkScroll,
   Element,
-  animateScroll as Scroll
 } from 'react-scroll'
-import { notification } from 'antd'
+import { useRouter } from "next/router";
 import { makeStyles, Box, Grid } from '@material-ui/core'
-import HeaderLogin from '../src/components/login/HeaderLogin'
-import { Images } from '../src/types'
+import { notification } from 'antd'
 import { CustomInput,propsCustomInputErrors } from './login'
-import { useContext, useEffect, useState } from 'react'
-import Head from 'next/head'
+import HeaderLogin from '../src/components/login/HeaderLogin'
+import HeadCustom from '../src/layouts/HeadCustom'
+import { verifyEmail } from '../src/config/utils'
 import withAuth from '../src/auth/WithAuth'
 import UserContext, {
   SendEmailInfoProps
 } from '../src/context/user/user.context'
-import { verifyEmail } from '../src/config/utils'
-import HeadCustom from '../src/layouts/HeadCustom'
-
+import { Images } from '../src/types'
 export interface NavigationProps {
   isPanel: boolean | null
 }
 
 const Home= () => {
   const classes = useStyles()
-  const version = 'v1.1.5'
-  useEffect(() => {
+  const version = 'v1.1.6'
+    const router = useRouter();
 
-    window.scrollTo(0, 0);
-  }, [])
+    useEffect(() => {
+      const handleRouteChange = (url, { shallow }) => {
+        window.scroll({
+          top: 0,
+          left: 0,
+        });
+        console.log(
+          `App is changing to ${url} ${
+            shallow ? 'with' : 'without'
+          } shallow routing`
+        )
+      }
+  
+      router.events.on('routeChangeComplete', handleRouteChange)
+      router.events.on('routeChangeStart', ()=> console.log("routeChangeStart"))
+      router.events.on('routeChangeComplete', ()=> console.log("routeChangeComplete"))
+      router.events.on('hashChangeStart', ()=> console.log("hashChangeStart"))
+  
+      // If the component is unmounted, unsubscribe
+      // from the event with the `off` method:
+      return () => {
+        router.events.off('routeChangeComplete', handleRouteChange)
+      }
+    }, [])
+ 
+  
   return (
     <>
       <HeadCustom>
         <title>Multivrsity</title>
-
       </HeadCustom>
       <Box height='100vh' className={classes.root}>
         <HeaderLogin />
@@ -484,7 +505,6 @@ function FormInformation () {
 
 function BottomArrow ({ next }) {
   const classes = useStyles()
-
   return (
     <LinkScroll
       activeClass='active'
@@ -611,8 +631,4 @@ const useStyles = makeStyles(theme => ({
     paddingRight: '3rem'
   }
 }))
-Home.getInitialProps = async ctx => {
-  const res = await fetch('https://api.github.com/repos/vercel/next.js')
-  const json = await res.json()
-  return { stars: json.stargazers_count }
-}
+

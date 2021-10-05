@@ -27,7 +27,7 @@ const SesionState = ({ children }) => {
       if (data.status === 2) {
         sendAlert({
           type: 'error',
-          msg: `Sesion not founded`
+          msg: `Sesion expired`
         })
       }
       router.push("/");

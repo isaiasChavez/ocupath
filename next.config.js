@@ -8,4 +8,7 @@ module.exports = {
       },
     ];
   },
+  env: {
+    BACK_URL: '',
+  },
 };

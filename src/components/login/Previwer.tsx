@@ -24,21 +24,59 @@ const Previwer: React.FC<PreviewProps> = () => {
   const previousUrl = useRef(currentAsset.url);
 
   const nameImage = () => {
-    let newName
+    let newName = currentAsset.thumbnail
+    console.log({previewIsImage})
     if (previewIsImage) {
-      newName = currentAsset.url.replace(
-        'https://ocupath.fra1.digitaloceanspaces.com/image/',
-        ''
-      )
+
+      if (currentAsset.thumbnail.includes('https://spacegeneral.sfo2.digitaloceanspaces.com/ocupath/ocupath/')) {
+        newName = currentAsset.thumbnail.replace(
+          'https://spacegeneral.sfo2.digitaloceanspaces.com/ocupath/ocupath/',
+          ''
+        )
+        
+      }
+      if (currentAsset.thumbnail.includes('https://ocupath.fra1.digitaloceanspaces.com/image/')) {
+        newName = currentAsset.thumbnail.replace(
+          'https://ocupath.fra1.digitaloceanspaces.com/image/',
+          ''
+        )
+        
+      }
+      if (currentAsset.thumbnail.includes('https://ocupath.fra1.digitaloceanspaces.com/image360/')) {
+        newName = currentAsset.thumbnail.replace(
+          'https://ocupath.fra1.digitaloceanspaces.com/image360/',
+          ''
+        )
+        
+      }
     } else {
-      newName = currentAsset.thumbnail.replace(
-        'https://ocupath.fra1.digitaloceanspaces.com/video/',
-        ''
-      )
-      newName = currentAsset.thumbnail.replace(
-        'https://ocupath.fra1.digitaloceanspaces.com/video360/',
-        ''
-      )
+      if (currentAsset.thumbnail.includes('https://ocupath.fra1.digitaloceanspaces.com/image/')) {
+        console.log("Si lo incluye")
+        newName = currentAsset.thumbnail.replace(
+          'https://ocupath.fra1.digitaloceanspaces.com/image/',
+          ''
+        )
+        
+      }
+      if (currentAsset.thumbnail.includes('https://ocupath.fra1.digitaloceanspaces.com/video/')) {
+        newName = currentAsset.thumbnail.replace(
+          'https://ocupath.fra1.digitaloceanspaces.com/video/',
+          ''
+        )
+      }
+      if (currentAsset.thumbnail.includes('https://ocupath.fra1.digitaloceanspaces.com/video360/')) {
+        newName = currentAsset.thumbnail.replace(
+          'https://ocupath.fra1.digitaloceanspaces.com/video360/',
+          ''
+        )
+      }
+    
+      if (currentAsset.thumbnail.includes('https://ocupath.fra1.digitaloceanspaces.com/image360/')) {
+        newName = currentAsset.thumbnail.replace(
+          'https://ocupath.fra1.digitaloceanspaces.com/image360/',
+          ''
+        )
+      }      
     }
     return newName
   }

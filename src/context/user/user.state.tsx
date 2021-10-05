@@ -616,6 +616,7 @@ const UserState = ({ children }) => {
       setLoading(true)
       const { data } = await axios.post(URLS.login, loginDTO)
       setLoading(false)
+      console.log({data})
       if (data.status === 0) {
         tokenAuth(data.profile.token)
         dispatch({
@@ -638,6 +639,7 @@ const UserState = ({ children }) => {
         return data
       }
     } catch (error) {
+      console.log({error})
       setLoading(false)
       sendAlert({
         type: 'warning',

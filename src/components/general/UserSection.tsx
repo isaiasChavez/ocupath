@@ -21,18 +21,16 @@ interface UserSectionProps {
 }
 
 const UserSection: React.FC<UserSectionProps> = ({ type,toggleAvatarSection }) => {
-  const { profile,updateUser,loading,isSuperAdmin } = useContext(UserContext)
+  const { profile,updateUser,loading } = useContext(UserContext)
   const classes = useStyles()
   const [isBlocked,setIsBlocked] = useState(true)
   const [error,setError] = useState('')
   const [hasError,setHasError] = useState(false)
   const [name,setName] = useState(profile.name)
-
   const {type:typeLoggued} = profile
 
   const handleUnlock = () => {
     if (!loading) {
-      
       setIsBlocked(!isBlocked)
       setError('')
       setHasError(false)
@@ -152,7 +150,7 @@ const UserSection: React.FC<UserSectionProps> = ({ type,toggleAvatarSection }) =
             </Box>
             <Box width='100%' display='flex' justifyContent='center'>
               <Image
-                src={ profile.thumbnail }
+                src="https://ocupath.fra1.digitaloceanspaces.com/app/thumbnailpre.png"
                 className={ classes.large }
                 preview={ false }
                 alt={ profile.name }

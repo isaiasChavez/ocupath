@@ -1,4 +1,4 @@
-import { Box, Switch } from '@material-ui/core'
+import { Box, IconButton, Switch } from '@material-ui/core'
 import { Table } from 'antd'
 import moment from 'moment'
 import React, { useContext, useState } from 'react'
@@ -60,26 +60,26 @@ const TableGuest: React.FC<TableGuestProps> = () => {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
-      render: (text) => <Box fontFamily="font2">{text}</Box>,
+      render: (text) => <Box textAlign="center" fontFamily="font2">{text}</Box>,
     },
     {
       title: 'Email',
       dataIndex: 'email',
       key: 'email',
-      render: (text) => <Box fontFamily="font2">{text}</Box>,
+      render: (text) => <Box  fontFamily="font2">{text}</Box>,
     },
     {
       title: 'Total cost',
       dataIndex: 'lastSuscription',
       key: 'invitations',
-      render: (text) => <Box fontFamily="font2">{costFormated(text.cost)}</Box>,
+      render: (text) => <Box textAlign="center" fontFamily="font2">{costFormated(text.cost)}</Box>,
     },
     {
       title: 'Period',
       dataIndex: 'lastSuscription',
       key: 'invitations',
       render: (lastSuscription) => (
-        <Box fontFamily="font2">
+        <Box textAlign="center" fontFamily="font2">
           {`${moment(lastSuscription.startedAt).format('L')} to ${moment(
             lastSuscription.finishedAt,
           ).format('L')}`}
@@ -91,7 +91,7 @@ const TableGuest: React.FC<TableGuestProps> = () => {
       dataIndex: 'lastSuscription',
       key: 'remaining',
       render: (text) => (
-        <Box fontFamily="font2">{moment(text.finishedAt).from(moment())}</Box>
+        <Box textAlign="center" fontFamily="font2">{moment(text.finishedAt).from(moment())}</Box>
       ),
     },
     {
@@ -114,7 +114,7 @@ const TableGuest: React.FC<TableGuestProps> = () => {
       dataIndex: 'lastSuscription',
       key: 'Registration',
       render: (text) => (
-        <Box fontFamily="font2">{moment(text.createdAt).format('L')}</Box>
+        <Box textAlign="center" fontFamily="font2">{moment(text.createdAt).format('L')}</Box>
       ),
     },
     {
@@ -139,18 +139,22 @@ const TableGuest: React.FC<TableGuestProps> = () => {
       dataIndex: 'isActive',
       key: 'invitations',
       render: (isActive, user) => (
+        <IconButton
+          onClick={() => {
+            if (isActive) {
+              onEdit(user)
+            }
+          }}
+        >
+
         <EditOutlinedIcon
           style={{
             color: '#A6ABAF',
             opacity: isActive ? 1 : 0.5,
             cursor: isActive ? 'pointer' : 'default',
           }}
-          onClick={() => {
-            if (isActive) {
-              onEdit(user)
-            }
-          }}
-        />
+          />
+          </IconButton>
       ),
     },
     {
@@ -158,13 +162,16 @@ const TableGuest: React.FC<TableGuestProps> = () => {
       dataIndex: 'lastSuscription',
       key: 'invitations',
       render: (_, user) => (
+        <IconButton
+          onClick={() => onDelete(user)}
+        >
         <DeleteOutlineOutlinedIcon
           style={{
             color: '#A6ABAF',
             cursor: 'pointer',
           }}
-          onClick={() => onDelete(user)}
-        />
+          />
+          </IconButton>
       ),
     },
   ]

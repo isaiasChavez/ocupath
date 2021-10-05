@@ -98,16 +98,16 @@ const UserDetailModal: React.FC<UserDetailModalProps> = ({
   >
     <IconButton
                 disabled={loading}
-                
+                onClick={() => {
+                  setHasNewPeriod(false)
+                  handleClose()
+                }}           
                  color="primary" aria-label="upload picture" component="span">
     <Close
       style={{
         cursor: 'pointer',
       }}
-      onClick={() => {
-        setHasNewPeriod(false)
-        handleClose()
-      }}
+     
       />
       </IconButton>
   </Box>

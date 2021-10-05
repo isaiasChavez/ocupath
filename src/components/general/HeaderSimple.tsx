@@ -1,5 +1,7 @@
-import { Link, makeStyles, Toolbar } from '@material-ui/core'
+import {  makeStyles, Toolbar } from '@material-ui/core'
 import { Images, ROUTES } from '../../types'
+import Link from 'next/link'
+
 interface HeaderSimpleProps {
   isLogin: boolean
 }
@@ -10,7 +12,7 @@ const HeaderSimple: React.FC<HeaderSimpleProps> = ({ isLogin }) => {
   return (
     <>
       <Toolbar className={isLogin ? classes.appbar : classes.appBarDark}>
-        <Link href='/'>
+        <Link scroll={true} href='/'>
           <img src={Images.logichiquito} alt='Home' />
         </Link>
       </Toolbar>
