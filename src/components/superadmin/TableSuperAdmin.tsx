@@ -62,7 +62,7 @@ const TableSuperAdmin: React.FC<TableSuperAdminProps> = () => {
           variant='contained'
           color='secondary'
         >
-          New guest
+          New paid user
         </Button>
       )
     }
@@ -83,7 +83,7 @@ const TableSuperAdmin: React.FC<TableSuperAdminProps> = () => {
           aria-label='ant example'
         >
           <AntTab label='Companies' />
-          <AntTab label='Guest' />
+          <AntTab label='Paid user' />
           <Box width='100%' display="flex" alignItems="center" justifyContent='flex-end'>
           {currentButton()}
           </Box>

@@ -99,7 +99,7 @@ const TableCompanies: React.FC<TableCompaniesProps> = () => {
 
   const columns = [
     {
-      title: 'Name',
+      title: 'First Name',
       dataIndex: 'name',
       key: 'name',
       render: (text) => <Box textAlign="center" fontFamily="font2">{text}</Box>,

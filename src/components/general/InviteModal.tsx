@@ -232,7 +232,7 @@ const InviteModal: React.FC<InviteModalProps> = ({
       headerText = 'Invite new company'
     }
     if (type === GUEST) {
-      headerText = 'Invite new guest'
+      headerText = 'Invite new user'
     }
     return (
       <Box
@@ -329,7 +329,7 @@ const InviteModal: React.FC<InviteModalProps> = ({
               type='string'
               name='name'
               id='name'
-              label='Name'
+              label='First Name'
               value={ dataNewUser.name }
               fullWidth
               autoComplete='name'
@@ -414,7 +414,7 @@ const InviteModal: React.FC<InviteModalProps> = ({
                     inputVariant='outlined'
                     label='Start'
                     helperText={ errors.startedAt }
-                    format='DD/MM/YYYY'
+                    format='MM/DD/YYYY'
                     value={ startedAt }
                     disablePast
                     disabled={ loading }
@@ -437,7 +437,7 @@ const InviteModal: React.FC<InviteModalProps> = ({
                     inputVariant='outlined'
                     label='Finish'
                     helperText={ errors.finishedAt }
-                    format='DD/MM/YYYY'
+                    format='MM/DD/YYYY'
                     value={ finishedAt }
                     InputAdornmentProps={ { position: 'start' } }
                     onChange={ handleDateEndChange }

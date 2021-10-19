@@ -240,7 +240,7 @@ const Img: React.FC<ImgProps> = ({ loading, setLoading }) => {
       if (error.errors[0].code==="file-too-large") {
         sendAlert({
           type: 'warning',
-          msg: `File is larger than ${Config.MAX_IMAGE_SIZE/Config.constants.MB} mb` 
+          msg: `File is larger than 1 mb` 
         })  
       }else{
         sendAlert({
@@ -259,7 +259,7 @@ const Img: React.FC<ImgProps> = ({ loading, setLoading }) => {
     onDrop,
     accept: 'image/jpeg, image/png',
     maxFiles: 1,
-    maxSize: Config.MAX_IMAGE_SIZE,
+    maxSize: 1e+6,
     noClick: true,
     validator: nameLengthValidator,
     multiple: false,
@@ -276,6 +276,7 @@ const Img: React.FC<ImgProps> = ({ loading, setLoading }) => {
       const response = await clienteAxios.post(URLS.urlUploadImage, formData)
       const DTO = {
         url: response.data,
+        thumbnail:response.data,
         typeAsset: FILES_TYPES.IMG
       }
 
@@ -536,11 +537,12 @@ const Img360: React.FC<Img360Props> = ({ loading, setLoading }) => {
     }
   }
   const onDrop = useCallback((acceptedFiles, errors) => {
+    console.log({acceptedFiles})
     errors.map(error => {
       if (error.errors[0].code==="file-too-large") {
         sendAlert({
           type: 'warning',
-          msg: `File is larger than ${Config.MAX_IMAGE360_SIZE/Config.constants.MB} mb` 
+          msg: `File is larger than 1 mb` 
         })  
       }else{
         sendAlert({
@@ -564,7 +566,7 @@ const Img360: React.FC<Img360Props> = ({ loading, setLoading }) => {
     onDrop,
     accept: 'image/jpeg, image/png',
     maxFiles: 1,
-    maxSize: Config.MAX_IMAGE360_SIZE,
+    maxSize: 1e+6,
     noClick: true,
     validator: nameLengthValidator,
     multiple: false,
@@ -583,6 +585,7 @@ const Img360: React.FC<Img360Props> = ({ loading, setLoading }) => {
       setLoading(false)
       const DTO = {
         url: response.data,
+        thumbnail:response.data,
         typeAsset: FILES_TYPES.IMG_360
       }
       const { data } = await clienteAxios.post(URLS.createAsset, DTO)
@@ -640,7 +643,7 @@ const Img360: React.FC<Img360Props> = ({ loading, setLoading }) => {
             className={classes.containerUpload}
           >
               <Box flex={1} fontFamily='font2' fontSize='1rem' textAlign='center'>
-              Drop files to upload them instantly
+              Drop files to upload them instantlyasdf
             </Box>
             <input
               {...getInputProps()}
@@ -732,7 +735,7 @@ const Video: React.FC<VideoProps> = ({ loading, setLoading }) => {
           URLS.urlUploadImage,
           formData
         )
-        
+        console.log({urlThumnail})
         setVideo(urlThumnail)
       } catch (error) {
         setLoading(false)
@@ -748,8 +751,8 @@ const Video: React.FC<VideoProps> = ({ loading, setLoading }) => {
     const _CANVAS = document.querySelector(
       '#canvas-element'
     ) as HTMLCanvasElement
-    _CANVAS.width = _VIDEO.videoWidth
-    _CANVAS.height = _VIDEO.videoHeight
+    _CANVAS.width = Config.WIDTH_THUMBNAIL
+    _CANVAS.height = Config.HEIGTH_THUMBNAIL
     _VIDEO.currentTime = 3
   }
   const onTimeVideoIsUpdated = async () => {
@@ -758,7 +761,7 @@ const Video: React.FC<VideoProps> = ({ loading, setLoading }) => {
       '#canvas-element'
     ) as HTMLCanvasElement
     const _CANVAS_CTX = _CANVAS.getContext('2d')
-    _CANVAS_CTX.drawImage(_VIDEO, 0, 0, _VIDEO.videoWidth, _VIDEO.videoHeight)
+    _CANVAS_CTX.drawImage(_VIDEO, 0, 0, Config.WIDTH_THUMBNAIL, Config.HEIGTH_THUMBNAIL)
     if (_CANVAS.height !== 10) {
       await uploadThumbnail()
     }
@@ -965,8 +968,8 @@ const Video360: React.FC<Video360Props> = ({ loading, setLoading }) => {
     const _CANVAS = document.querySelector(
       '#canvas-element'
     ) as HTMLCanvasElement
-    _CANVAS.width = _VIDEO.videoWidth
-    _CANVAS.height = _VIDEO.videoHeight
+    _CANVAS.width = Config.WIDTH_THUMBNAIL
+    _CANVAS.height = Config.HEIGTH_THUMBNAIL
     _VIDEO.currentTime = 3
   }
   const onTimeVideoIsUpdated = async () => {
@@ -975,7 +978,7 @@ const Video360: React.FC<Video360Props> = ({ loading, setLoading }) => {
       '#canvas-element'
     ) as HTMLCanvasElement
     const _CANVAS_CTX = _CANVAS.getContext('2d')
-    _CANVAS_CTX.drawImage(_VIDEO, 0, 0, _VIDEO.videoWidth, _VIDEO.videoHeight)
+    _CANVAS_CTX.drawImage(_VIDEO, 0, 0, Config.WIDTH_THUMBNAIL, Config.HEIGTH_THUMBNAIL)
     if (_CANVAS.height !== 10) {
       await uploadThumbnail()
     }

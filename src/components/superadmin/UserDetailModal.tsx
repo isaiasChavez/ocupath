@@ -414,7 +414,7 @@ const DataAdmin: React.FC<DataAdminProps> = ({
                     variant="inline"
                     inputVariant="outlined"
                     label="Start"
-                    format="DD/MM/YYYY"
+                    format="MM/DD/YYYY"
                     value={selectedUser.lastSuscription.startedAt}
                     InputAdornmentProps={{ position: 'start' }}
                     onChange={() => {}}
@@ -429,7 +429,7 @@ const DataAdmin: React.FC<DataAdminProps> = ({
                     size="small"
                     inputVariant="outlined"
                     label="Finish"
-                    format="DD/MM/YYYY"
+                    format="MM/DD/YYYY"
                     value={selectedUser.lastSuscription.finishedAt}
                     InputAdornmentProps={{ position: 'start' }}
                     onChange={() => {}}
@@ -496,7 +496,7 @@ const DataAdmin: React.FC<DataAdminProps> = ({
                           variant="inline"
                           inputVariant="outlined"
                           label="Start"
-                          format="DD/MM/YYYY"
+                          format="MM/DD/YYYY"
                           value={selectedUser.suscriptionWaiting.startedAt}
                           InputAdornmentProps={{ position: 'start' }}
                           onChange={() => {}}
@@ -514,7 +514,7 @@ const DataAdmin: React.FC<DataAdminProps> = ({
                           variant="inline"
                           inputVariant="outlined"
                           label="Finish"
-                          format="DD/MM/YYYY"
+                          format="MM/DD/YYYY"
                           value={selectedUser.suscriptionWaiting.finishedAt}
                           InputAdornmentProps={{ position: 'start' }}
                           onChange={() => {}}
@@ -779,7 +779,7 @@ const DataNewPeriod = ({
                   size="small"
                   inputVariant="outlined"
                   label="Start"
-                  format="DD/MM/YYYY"
+                  format="MM/DD/YYYY"
                   name="startedAt"
                   value={startedAt}
                   error={errors.startedAt !== null}
@@ -808,7 +808,7 @@ const DataNewPeriod = ({
                   inputVariant="outlined"
                   label="Finish"
                   value={finishedAt}
-                  format="DD/MM/YYYY"
+                  format="MM/DD/YYYY"
                   InputAdornmentProps={{ position: 'start' }}
                   onChange={handleDateEndChange}
                 />

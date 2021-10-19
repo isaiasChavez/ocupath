@@ -22,7 +22,7 @@ const Previwer: React.FC<PreviewProps> = () => {
   } = useContext(AssetsContext)
   const videoRef = useRef();
   const previousUrl = useRef(currentAsset.url);
-
+  console.log({currentAsset})
   const nameImage = () => {
     let newName = currentAsset.thumbnail
     console.log({previewIsImage})

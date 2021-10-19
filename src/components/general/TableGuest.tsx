@@ -57,10 +57,16 @@ const TableGuest: React.FC<TableGuestProps> = () => {
 
   const columns = [
     {
-      title: 'Name',
+      title: 'First Name',
       dataIndex: 'name',
       key: 'name',
       render: (text) => <Box textAlign="center" fontFamily="font2">{text}</Box>,
+    },
+    {
+      title: 'Last Name',
+      dataIndex: 'lastname',
+      key: 'name',
+      render: (text) => <Box fontFamily="font2">{text}</Box>,
     },
     {
       title: 'Email',

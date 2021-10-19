@@ -83,7 +83,7 @@ const Recovery: React.FC<RecoveryProps> = () => {
     if (!verifyPassword(password)) {
       isValid = false;
       newErrors.password =
-        "Your password is not secure, try to include at least one different character, 8 letters a number, and upper and lower case letters.";
+        "Your password is not secure. Password must have 8 or more characters with at least 1 Upper Case, 1 lower case, and 1 numeric character.";
     }
     if (password!==confirm) {
       isValid = false;

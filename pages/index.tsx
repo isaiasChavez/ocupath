@@ -408,7 +408,7 @@ function FormInformation () {
             required
             fullWidth
             id='firstName'
-            label='Name'
+            label='First Name'
             autoFocus
             onChange={onChange}
             InputLabelProps={SylesInputLabel}
@@ -426,7 +426,7 @@ function FormInformation () {
             fullWidth
             onChange={onChange}
             id='lastName'
-            label='Surname'
+            label='Last Name'
             name='surname'
             autoComplete='lname'
             InputLabelProps={SylesInputLabel}

@@ -67,7 +67,7 @@ const Register: React.FC<RegisterProps> = () => {
       isValid = false
     }
     if (!verifyPassword(dataUsuario.password)) {
-      newErrors.password= "Your password is not secure, try to include at least one different character, 8 letters a number, and upper and lower case letters"
+      newErrors.password= "Your password is not secure. Password must have 8 or more characters with at least 1 Upper Case, 1 lower case, and 1 numeric character"
       isValid = false
     }
     if (dataUsuario.password.trim().length === 0) {
@@ -214,7 +214,7 @@ const Register: React.FC<RegisterProps> = () => {
                   required
                   fullWidth
                   id="name"
-                  label="Name"
+                  label="First Name"
                   autoFocus
                   onChange={ onChangeInput }
 
@@ -230,7 +230,7 @@ const Register: React.FC<RegisterProps> = () => {
                   required
                   fullWidth
                   id="lastname"
-                  label="Surname"
+                  label="Last Name"
                   name="lastname"
                   autoComplete="lname"
                   value={ dataUsuario.lastname }
