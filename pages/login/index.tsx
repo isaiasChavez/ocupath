@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import { message } from 'antd';
+import { message } from 'antd'
 
 import {
   Link,
@@ -15,24 +15,23 @@ import {
 } from '@material-ui/core'
 
 import { makeStyles } from '@material-ui/core/styles'
-import { useContext,useEffect,useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { verifyEmail } from '../../src/config/utils'
-import UserContext,{
+import UserContext, {
   ReuestSesionDTO
 } from '../../src/context/user/user.context'
-import { COLORS,Images } from '../../src/types/index'
+import { COLORS, Images } from '../../src/types/index'
 import { withStyles } from '@material-ui/styles'
-import { Visibility,VisibilityOff } from '@material-ui/icons'
+import { Visibility, VisibilityOff } from '@material-ui/icons'
 import HeaderSimple from '../../src/components/general/HeaderSimple'
 import withAuth from '../../src/auth/WithAuth'
-import HeadCustom from '../../src/layouts/HeadCustom';
+import HeadCustom from '../../src/layouts/HeadCustom'
 
 export const CustomInput = withStyles({
   root: {
     borderColor: 'white',
     color: 'white',
     '& input:valid + fieldset': {
-      
       borderColor: 'white'
     },
     '& input:invalid + fieldset': {
@@ -42,21 +41,20 @@ export const CustomInput = withStyles({
       color: COLORS.red_error,
       '& fieldset': {
         borderColor: COLORS.red_error,
-        color: COLORS.red_error,
+        color: COLORS.red_error
       },
       '& p': {
-        color: COLORS.red_error,
+        color: COLORS.red_error
       }
     },
     '& .MuiOutlinedInput-root.Mui-disabled': {
       '& fieldset': {
-        
         borderColor: COLORS.GRAY_MEDIUM,
         opacity: 0.6,
-        color: COLORS.red_error,
+        color: COLORS.red_error
       },
       '& p': {
-        color: COLORS.red_error,
+        color: COLORS.red_error
       }
     },
     '& .MuiOutlinedInput-root': {
@@ -71,31 +69,25 @@ export const CustomInput = withStyles({
       }
     },
     '& input:valid:focus + fieldset': {
-      color: 'white',
+      color: 'white'
     }
   },
-  fieldset:{
-
-  }
+  fieldset: {}
 })(TextField)
 export const CustomInputWithValidations = withStyles({
   root: {
-  
-    
     '& .MuiOutlinedInput-root.Mui-error': {
       color: COLORS.red_error,
       '& fieldset': {
         borderColor: COLORS.red_error,
-        color: COLORS.red_error,
+        color: COLORS.red_error
       },
       '& p': {
-        color: COLORS.red_error,
+        color: COLORS.red_error
       }
-    },
+    }
   },
-  fieldset:{
-
-  }
+  fieldset: {}
 })(TextField)
 export const propsCustomInput = {
   FormHelperTextProps: {
@@ -114,18 +106,15 @@ export const propsCustomInput = {
       color: 'white',
       fontFamily: 'font2'
     }
-  },
+  }
 }
 export const propsCustomInputErrors = {
   FormHelperTextProps: {
     style: {
       color: '#bb2929'
     }
-  },
+  }
 }
- 
-
-
 
 export const CustomInputDos = withStyles({
   root: {
@@ -148,23 +137,22 @@ export const CustomInputDos = withStyles({
   }
 })(FormControl)
 
-export interface LoginProps { }
+export interface LoginProps {}
 
 const Login: React.FC<LoginProps> = () => {
-  const [loginState,setloginState] = useState({
+  const [loginState, setloginState] = useState({
     email: '',
     password: '',
     showPassword: false
   })
 
-  const { logUser,loading } = useContext(UserContext)
- 
+  const { logUser, loading } = useContext(UserContext)
 
-  const [errors,setErrors] = useState({
+  const [errors, setErrors] = useState({
     email: null,
     password: null
   })
-  const { email,password } = loginState
+  const { email, password } = loginState
 
   const onChange = e => {
     setErrors({
@@ -179,7 +167,10 @@ const Login: React.FC<LoginProps> = () => {
   const onSubmit = async e => {
     e.preventDefault()
     if (validateFields()) {
-      let dto = new ReuestSesionDTO(loginState.email.trim(),loginState.password)
+      let dto = new ReuestSesionDTO(
+        loginState.email.trim(),
+        loginState.password
+      )
       const data = await logUser(dto)
       if (data) {
         validateResponse(data)
@@ -193,14 +184,13 @@ const Login: React.FC<LoginProps> = () => {
       password: null
     }
     if (res.status === 1) {
-      newErrors.email = "We cannot find an active account with this email"
+      newErrors.email = 'We cannot find an active account with this email'
     }
     if (res.status === 2) {
       newErrors.password = 'Invalid password'
     }
     if (res.status === 3) {
-      message.info('Your subscription has expired');
-
+      message.info('Your subscription has expired')
     }
     setErrors(newErrors)
   }
@@ -230,7 +220,7 @@ const Login: React.FC<LoginProps> = () => {
   }
 
   const handleClickShowPassword = () => {
-    setloginState({ ...loginState,showPassword: !loginState.showPassword })
+    setloginState({ ...loginState, showPassword: !loginState.showPassword })
   }
 
   const handleMouseDownPassword = event => {
@@ -244,7 +234,7 @@ const Login: React.FC<LoginProps> = () => {
         <title>Multivrsity | Login</title>
       </HeadCustom>
       <div
-        style={ {
+        style={{
           height: '100vh',
           display: 'flex',
           justifyContent: 'center',
@@ -252,107 +242,103 @@ const Login: React.FC<LoginProps> = () => {
           backgroundImage: `url(${Images.landingLogin})`,
           color: 'white',
           backgroundSize: 'cover'
-        } }
+        }}
       >
-        <HeaderSimple isLogin={ true } />
+        <HeaderSimple isLogin={true} />
 
-        <Box className={ classes.container } bgcolor="primary.main">
-
+        <Box className={classes.container} bgcolor='primary.main'>
           <Box
             width='100%'
-            mb={ 6 }
+            mb={6}
             height='4.5rem'
             display='flex'
             justifyContent='center'
             fontWeight='fontWeightBold'
           >
-            <img src={ Images.logosvg } alt='Multivrsity' />
+            <img src={Images.logosvg} alt='Multivrsity' />
           </Box>
-          <form className={ classes.form } onSubmit={ onSubmit }>
-            <Typography component='h3' style={ { textAlign: 'center' } }>
-              <Box color="white" fontSize="1.2rem" m={ 1 }>
-                Fill the information below to enter your profile{ ' ' }
+          <form className={classes.form} onSubmit={onSubmit}>
+            <Typography component='h3' style={{ textAlign: 'center' }}>
+              <Box color='white' fontSize='1.2rem' m={1}>
+                Fill the information below to enter your profile{' '}
               </Box>
             </Typography>
-              <CustomInput
-                disabled={ loading }
-                margin='normal'
-                fullWidth
-                onChange={ onChange }
-                id='email'
-                label='Email Address'
-                error={ errors.email !== null }
-                name='email'
-                autoComplete='email'
-                helperText={ errors.email }
-                size='small'
-                FormHelperTextProps={ {
-                  style: {
-                    color: '#bb2929'
-                  }
-                } }
-
-                InputLabelProps={ {
-                  style: {
-                    color: 'white',
-                    fontFamily: 'font2'
-                  }
-                } }
-                InputProps={ {
-                  style: {
-                    color: 'white',
-                    fontFamily: 'font2'
-                  }
-                } }
-                variant='outlined'
-              />
-              <CustomInput
-                disabled={ loading }
-                margin='normal'
-                fullWidth
-                onChange={ onChange }
-                id='outlined-adornment-password'
-                label='Password'
-                value={ loginState.password }
-                required
-                error={ errors.password !== null }
-                name='password'
-                type="password"
-
-                autoComplete='current-password'
-                helperText={ errors.password }
-                size='small'
-                style={ {
-                  color: 'white'
-                } }
-                FormHelperTextProps={ {
-                  style: {
-                    color: '#bb2929'
-                  }
-                } }
-
-                InputLabelProps={ {
-                  style: {
-                    color: 'white',
-                    fontFamily: 'font2'
-                  }
-                } }
-                InputProps={ {
-                  style: {
-                    color: 'white',
-                    fontFamily: 'font2'
-                  }
-                } }
-                variant='outlined'
-              />
-                {/* <CustomInputDos size='small' fullWidth variant='outlined'>
+            <CustomInput
+              disabled={loading}
+              margin='normal'
+              fullWidth
+              onChange={onChange}
+              id='email'
+              label='Email Address'
+              error={errors.email !== null}
+              name='email'
+              autoComplete='email'
+              helperText={errors.email}
+              size='small'
+              FormHelperTextProps={{
+                style: {
+                  color: '#bb2929'
+                }
+              }}
+              InputLabelProps={{
+                style: {
+                  color: 'white',
+                  fontFamily: 'font2'
+                }
+              }}
+              InputProps={{
+                style: {
+                  color: 'white',
+                  fontFamily: 'font2'
+                }
+              }}
+              variant='outlined'
+            />
+            <CustomInput
+              disabled={loading}
+              margin='normal'
+              fullWidth
+              onChange={onChange}
+              id='outlined-adornment-password'
+              label='Password'
+              value={loginState.password}
+              required
+              error={errors.password !== null}
+              name='password'
+              type='password'
+              autoComplete='current-password'
+              helperText={errors.password}
+              size='small'
+              style={{
+                color: 'white'
+              }}
+              FormHelperTextProps={{
+                style: {
+                  color: '#bb2929'
+                }
+              }}
+              InputLabelProps={{
+                style: {
+                  color: 'white',
+                  fontFamily: 'font2'
+                }
+              }}
+              InputProps={{
+                style: {
+                  color: 'white',
+                  fontFamily: 'font2'
+                }
+              }}
+              variant='outlined'
+            />
+            {/* <CustomInputDos size='small' fullWidth variant='outlined'>
                   <InputLabel
                     style={ { color: 'white' } }
                     htmlFor='outlined-adornment-password'
                   >
                     Password
                   </InputLabel> */}
-              {/* <OutlinedInput
+            {/* <OutlinedInput
                 disabled={ loading }
                 id='outlined-adornment-password'
                 type={ loginState.showPassword ? 'text' : 'password' }
@@ -388,27 +374,25 @@ const Login: React.FC<LoginProps> = () => {
                 labelWidth={ 70 }
               /> */}
             {/* </CustomInputDos> */}
-      
+
             <div
-              style={ {
+              style={{
                 display: 'flex',
                 justifyContent: 'flex-end',
                 alignItems: 'center',
                 flexDirection: 'column'
-              } }
+              }}
             >
-              <Box mt={ 6 } >
-
+              <Box mt={6}>
                 <Link
-                  style={ {
+                  style={{
                     marginTop: '1rem',
                     width: '100%',
                     textAlign: 'center',
                     color: COLORS.blue_secondary,
                     textDecoration: 'underline',
                     fontFamily: 'font2'
-
-                  } }
+                  }}
                   href='login/forgot'
                 >
                   Forgot your password?
@@ -416,21 +400,21 @@ const Login: React.FC<LoginProps> = () => {
               </Box>
 
               <Button
-                disabled={ loading }
+                disabled={loading}
                 size='small'
                 color='secondary'
                 type='submit'
                 variant='contained'
-                className={ classes.submit }
+                className={classes.submit}
                 disableElevation
               >
                 <span
-                  style={ {
+                  style={{
                     color: 'white',
                     fontSize: '1rem',
                     textTransform: 'capitalize',
                     fontFamily: 'font3'
-                  } }
+                  }}
                 >
                   Login
                 </span>
@@ -443,7 +427,7 @@ const Login: React.FC<LoginProps> = () => {
   )
 }
 
-export interface HeaderLandingProps { }
+export interface HeaderLandingProps {}
 
 const useStyles = makeStyles(theme => ({
   inner: {
@@ -452,17 +436,17 @@ const useStyles = makeStyles(theme => ({
   container: {
     backgroundColor: 'rgba(36, 37, 38, 0.6)',
     padding: '5rem',
-    borderRadius: '8pt',
+    borderRadius: '8pt'
   },
   form: {
     width: '33rem',
     '@media(maxWidth: 780px)': {
-      width: '20rem',
+      width: '20rem'
     },
-    maxWidth: '100vw',
+    maxWidth: '100vw'
   },
   submit: {
-    margin: theme.spacing(5,0,2),
+    margin: theme.spacing(5, 0, 2),
     minWidth: '11rem',
     paddingTop: '0.3rem'
   },

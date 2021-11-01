@@ -126,7 +126,7 @@ const UserSection: React.FC<UserSectionProps> = ({ type,toggleAvatarSection }) =
         height='6%'
         display='flex'
         alignItems='center'
-        fontSize={ 20 }
+        fontSize={ 22 }
         mb={2}
         fontWeight='fontWeightBold'
       >
@@ -194,8 +194,8 @@ const UserSection: React.FC<UserSectionProps> = ({ type,toggleAvatarSection }) =
                 disabled={loading}
                 style={ {
                   position: 'absolute',
-                  right:0,
-                  top:'50%',
+                  right:-20,
+                  top:'55%',
                   transform:'translateY(-80%)',
                   cursor: 'pointer'
                 } }
@@ -343,7 +343,7 @@ const RightSide = () => {
 
 
   return (
-    <Box pl={ 8 } height='100%' minWidth='18rem' width='20%'>
+    <Box pl={ 8 } height='100%' minWidth='20rem' width='20%'>
       <Box
         textAlign='left'
         width='100%'
@@ -356,8 +356,8 @@ const RightSide = () => {
       You can customize the VR scene by adding your own logo which will be displayed in the locations shown in the example below.
       </Box>
       <Box
-        maxHeight='8rem'
-        minHeight='8rem'
+        maxHeight='9rem'
+        minHeight='9rem'
         minWidth='100%'
         width='100%'
         display="flex"
@@ -384,11 +384,11 @@ const RightSide = () => {
         <h4 className={ classes.information }>Logo</h4>
       </Box>
       <Box fontFamily='font2' fontSize='0.8rem'>
-      Select your comany logo. 
+      This image must be in PNG format with dimensions of 1024 x 1024 pixels.  
       </Box>
       <Box
         maxHeight='8rem'
-        minHeight='8rem'
+        minHeight='9rem'
         minWidth='100%'
         width='100%'
         position="relative"
@@ -404,11 +404,7 @@ const RightSide = () => {
           style={ { height: '100%',width: '100%',objectFit: 'contain',opacity:loading?0.8:1} }
           alt='Room image'
         />
-        {/* {loading&&<Box position='absolute' top="50%" left="50%" style={{
-          transform:'translateX(-50%) translateY(-50%)'
-        }}>
-        <Spin size="large"/>
-        </Box>} */}
+      
       </Box>
       <Box display='flex' width="100%" justifyContent='center'>
         <Upload showUploadList={ false } listType='picture' { ...props }>
@@ -455,7 +451,7 @@ const useStyles = makeStyles(theme => ({
   },
   information: {
     justifyContent: 'flex-end',
-    fontSize: '0.9rem'
+    fontSize: '1.1rem'
   },
   subtitle: {
     fontsize: '1.5rem',
@@ -463,7 +459,7 @@ const useStyles = makeStyles(theme => ({
   },
   submit: {
     margin: theme.spacing(2,0,0),
-    minWidth: '14.2rem',
+    minWidth: '16.2rem',
     width: '100%',
     paddingTop: '0.45rem'
   },

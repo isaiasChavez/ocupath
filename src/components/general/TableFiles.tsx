@@ -227,7 +227,7 @@ const Img: React.FC<ImgProps> = ({ loading, setLoading }) => {
         if (statusImage.errors.weight) {
           sendAlert({
             type: 'warning',
-            msg: `The maximum allowed file weight is: ${Config.MAX_IMAGE_SIZE_MB} MBs, your file has: ${statusImage.dataImage.sizeImage} MBs`
+            msg: `The maximum allowed file weight is: 2MBs, your file has: ${statusImage.dataImage.sizeImage} MBs`
           })
         }
         setFiles([])
@@ -237,10 +237,11 @@ const Img: React.FC<ImgProps> = ({ loading, setLoading }) => {
 
   const onDrop = useCallback((acceptedFiles, errors) => {
     errors.map(error => {
+        console.log({errors})
       if (error.errors[0].code==="file-too-large") {
         sendAlert({
           type: 'warning',
-          msg: `File is larger than 1 mb` 
+          msg: `File is larger than 2 mb` 
         })  
       }else{
         sendAlert({
@@ -259,7 +260,7 @@ const Img: React.FC<ImgProps> = ({ loading, setLoading }) => {
     onDrop,
     accept: 'image/jpeg, image/png',
     maxFiles: 1,
-    maxSize: 1e+6,
+    maxSize: 1e+6 *  2,
     noClick: true,
     validator: nameLengthValidator,
     multiple: false,
@@ -306,7 +307,7 @@ const Img: React.FC<ImgProps> = ({ loading, setLoading }) => {
   return (
     <>
       <Box {...getRootProps()} width='100%' height='100%' position='relative'>
-        <Box height='90%' width='100%'>
+        <Box height='81%' width='100%'>
           <Box width='82%' mx='auto' pt={1}>
             <div
               style={{
@@ -331,14 +332,18 @@ const Img: React.FC<ImgProps> = ({ loading, setLoading }) => {
           loading={loading}
         />
         <Paper>
+          <Box display="flex" justifyContent='center'  fontSize="1rem"  className={classes.warn} py={1} width={"100%"}> 
+                  <Box color="white"  fontFamily='font2'>The files should not exceed a weight greater than 2 MB</Box>
+          </Box>
           <Box
             display='flex'
             justifyContent='flex-end'
             alignItems='center'
             className={classes.containerUpload}
           >
-            <Box flex={1} fontFamily='font2' fontSize='1rem' textAlign='center'>
-              Drop files to upload them instantly
+
+            <Box flex={1} ml={24} fontFamily='font2' fontSize='1rem' textAlign='center'>
+              Drop files to upload them instantly 
             </Box>
             <input
               {...getInputProps()}
@@ -529,7 +534,7 @@ const Img360: React.FC<Img360Props> = ({ loading, setLoading }) => {
         if (statusImage.errors.weight) {
           sendAlert({
             type: 'warning',
-            msg: `The maximum allowed file weight is: ${Config.MAX_IMAGE_SIZE_MB} MBs, your file has: ${statusImage.dataImage.sizeImage} MBs`
+            msg: `The maximum allowed file weight is: 4.5 MBs, your file has: ${statusImage.dataImage.sizeImage} MBs`
           })
         }
         setFiles([])
@@ -542,7 +547,7 @@ const Img360: React.FC<Img360Props> = ({ loading, setLoading }) => {
       if (error.errors[0].code==="file-too-large") {
         sendAlert({
           type: 'warning',
-          msg: `File is larger than 1 mb` 
+          msg: `File is larger than 4.5 mb` 
         })  
       }else{
         sendAlert({
@@ -566,7 +571,7 @@ const Img360: React.FC<Img360Props> = ({ loading, setLoading }) => {
     onDrop,
     accept: 'image/jpeg, image/png',
     maxFiles: 1,
-    maxSize: 1e+6,
+    maxSize: 1e+6 * 5,
     noClick: true,
     validator: nameLengthValidator,
     multiple: false,
@@ -612,7 +617,7 @@ const Img360: React.FC<Img360Props> = ({ loading, setLoading }) => {
   return (
     <>
       <Box {...getRootProps()} width='100%' height='100%' position='relative'>
-        <Box height='90%' width='100%'>
+        <Box height='81%' width='100%'>
           <Box width='82%' mx='auto' pt={1}>
             <div
               style={{
@@ -636,14 +641,17 @@ const Img360: React.FC<Img360Props> = ({ loading, setLoading }) => {
           loading={loading}
         />
         <Paper>
+            <Box display="flex" justifyContent='center'  fontSize="1rem"  className={classes.warn} py={1} width={"100%"}> 
+                  <Box color="white"  fontFamily='font2'>The files should not exceed a weight greater than 4.5 MB</Box>
+          </Box>
           <Box
             display='flex'
             justifyContent='flex-end'
             alignItems='center'
             className={classes.containerUpload}
           >
-              <Box flex={1} fontFamily='font2' fontSize='1rem' textAlign='center'>
-              Drop files to upload them instantlyasdf
+              <Box flex={1} ml={24} fontFamily='font2' fontSize='1rem' textAlign='center'>
+              Drop files to upload them instantly
             </Box>
             <input
               {...getInputProps()}
@@ -689,7 +697,7 @@ const Video: React.FC<VideoProps> = ({ loading, setLoading }) => {
       if (error.errors[0].code==="file-too-large") {
         sendAlert({
           type: 'warning',
-          msg: `File is larger than ${Config.MAX_VIDEO_SIZE/Config.constants.MB} mb` 
+          msg: `File is larger than 10 mb` 
         })  
       }else{
         sendAlert({
@@ -709,7 +717,7 @@ const Video: React.FC<VideoProps> = ({ loading, setLoading }) => {
     onDrop,
     accept: 'video/mp4',
     maxFiles: 1,
-    maxSize: Config.MAX_VIDEO_SIZE,
+    maxSize: 1e+6 *  10,
     noClick: true,
     validator: nameLengthValidator,
     multiple: false,
@@ -812,7 +820,7 @@ const Video: React.FC<VideoProps> = ({ loading, setLoading }) => {
   return (
     <>
       <Box {...getRootProps()} width='100%' height='100%' position='relative'>
-        <Box height='90%' width='100%'>
+        <Box height='81%' width='100%'>
           <Box width='82%' mx='auto' pt={1}>
             <div
               style={{
@@ -838,14 +846,16 @@ const Video: React.FC<VideoProps> = ({ loading, setLoading }) => {
         />
 
         <Paper>
-      
+      <Box display="flex" justifyContent='center'  fontSize="1rem"  className={classes.warn} py={1} width={"100%"}> 
+                  <Box color="white"  fontFamily='font2'>The files should not exceed a weight greater than 10 MB</Box>
+          </Box>
           <Box
             display='flex'
             justifyContent='flex-end'
             alignItems='center'
             className={classes.containerUpload}
           >
-        <Box flex={1} fontFamily='font2' fontSize='1rem' textAlign='center'>
+        <Box flex={1} ml={24} fontFamily='font2' fontSize='1rem' textAlign='center'>
               Drop files to upload them instantly
             </Box>
             <input
@@ -929,7 +939,7 @@ const Video360: React.FC<Video360Props> = ({ loading, setLoading }) => {
       if (error.errors[0].code==="file-too-large") {
         sendAlert({
           type: 'warning',
-          msg: `File is larger than ${Config.MAX_VIDEO_SIZE/Config.constants.MB} mb` 
+          msg: `File is larger than 10 mb` 
         })  
       }else{
         sendAlert({
@@ -988,7 +998,7 @@ const Video360: React.FC<Video360Props> = ({ loading, setLoading }) => {
     onDrop,
     accept: 'video/mp4',
     maxFiles: 1,
-    maxSize: Config.MAX_VIDEO_360_SIZE,
+    maxSize: 1e+6 *  10,
     noClick: true,
     validator: nameLengthValidator,
     multiple: false,
@@ -1040,7 +1050,7 @@ const Video360: React.FC<Video360Props> = ({ loading, setLoading }) => {
   return (
     <>
       <Box {...getRootProps()} width='100%' height='100%' position='relative'>
-          <Box height='90%' width='100%'>
+          <Box height='81%' width='100%'>
             <Box width='82%' mx='auto' pt={1}>
               <div
                 style={{
@@ -1063,14 +1073,16 @@ const Video360: React.FC<Video360Props> = ({ loading, setLoading }) => {
           isDragActive={isDragActive}
           loading={loading}
         />
-
+<Box display="flex" justifyContent='center'  fontSize="1rem"  className={classes.warn} py={1} width={"100%"}> 
+                  <Box color="white"  fontFamily='font2'>The files should not exceed a weight greater than 10 MB</Box>
+          </Box>
         <Paper>
           <Box
             display='flex'
             alignItems='center'
             className={classes.containerUpload}
           >
-        <Box flex={1} fontFamily='font2' fontSize='1rem' textAlign='center'>
+        <Box flex={1} ml={24} fontFamily='font2' fontSize='1rem' textAlign='center'>
               Drop files to upload them instantly
             </Box>
             <input
@@ -1148,8 +1160,12 @@ const useStyles = makeStyles((theme: Theme) => ({
   paper: {
     height: '100%'
   },
+  warn:{
+    backgroundColor: 'rgba(36, 37, 38, 0.6)',
+  },
   containerUpload: {
-    padding: '1rem'
+    padding: '1rem',
+    flex:1,
   },
   uploadButton: {
     marginLeft: '1rem',

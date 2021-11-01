@@ -16,6 +16,7 @@ const sidequest = 'https://ocupath.fra1.digitaloceanspaces.com/app/sidequest.png
 const steam = 'https://ocupath.fra1.digitaloceanspaces.com/app/steam.png'
 const logichiquito = 'https://ocupath.fra1.digitaloceanspaces.com/app/logochiquito.png'
 const powered = 'https://ocupath.fra1.digitaloceanspaces.com/app/powered.png'
+const iconoInfo = 'https://ocupath.fra1.digitaloceanspaces.com/app/powered.png'
 const preload = '/assets/images/preload.png'
 const preview = 'https://ocupath.fra1.digitaloceanspaces.com/app/preview.png'
 
