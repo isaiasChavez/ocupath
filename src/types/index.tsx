@@ -16,7 +16,7 @@ const sidequest = 'https://ocupath.fra1.digitaloceanspaces.com/app/sidequest.png
 const steam = 'https://ocupath.fra1.digitaloceanspaces.com/app/steam.png'
 const logichiquito = 'https://ocupath.fra1.digitaloceanspaces.com/app/logochiquito.png'
 const powered = 'https://ocupath.fra1.digitaloceanspaces.com/app/powered.png'
-const iconoInfo = 'https://ocupath.fra1.digitaloceanspaces.com/app/powered.png'
+const iconoInfo = 'https://ocupath.fra1.digitaloceanspaces.com/app/infoicon.svg'
 const preload = '/assets/images/preload.png'
 const preview = 'https://ocupath.fra1.digitaloceanspaces.com/app/preview.png'
 
@@ -109,6 +109,7 @@ export const URLS = {
   createAsset: "api/asset",
   deleteAsset: "/api/asset",
   assets: "api/asset/",
+  
   urlUploadImage:'api/upload/1',
   urlUploadImage360:'api/upload/2',
   urlUploadVideo:'api/upload/3',
@@ -182,6 +183,7 @@ export const Images = {
   landing1,
   landing2,
   landing3,
+  iconoInfo,
   landing4,
   landingLogin,
   godown,

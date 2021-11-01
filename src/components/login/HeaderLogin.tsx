@@ -96,12 +96,14 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 1
   },
   center: {
-    flexGrow: 1
+    flexGrow: 1,
+    marginRight:'4rem',
   },
   appbar: {
     position: 'fixed',
     height: '4rem',
-    background: 'rgba(0, 13, 52, 0.2)',
+    
+    background: 'rgba(0, 13, 52, 0.4)',
     color: 'white',
     top: 0,
     left: 0,

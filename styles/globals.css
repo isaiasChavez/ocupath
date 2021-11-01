@@ -28,7 +28,8 @@
 
 ::-webkit-scrollbar {
      display: none;
- }
+}
+
 @font-face {
      font-family: 'font1';
      /*a name to be used later*/
@@ -60,6 +61,14 @@
 
 .font3 {
      font-family: font3;
+}
+
+.mr-4 {
+     margin-right: 1rem;
+}
+
+.mr-2 {
+     margin-right: 0.5rem;
 }
 
 @keyframes fadeIn {

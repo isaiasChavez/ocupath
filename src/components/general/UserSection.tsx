@@ -150,7 +150,7 @@ const UserSection: React.FC<UserSectionProps> = ({ type,toggleAvatarSection }) =
             </Box>
             <Box width='100%' display='flex' justifyContent='center'>
               <Image
-                src="https://ocupath.fra1.digitaloceanspaces.com/app/thumbnailpre.png"
+                src={profile.thumbnail}
                 className={ classes.large }
                 preview={ false }
                 alt={ profile.name }

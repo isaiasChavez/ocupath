@@ -8,17 +8,15 @@ import {
 } from '@material-ui/core/styles'
 import Paper from '@material-ui/core/Paper'
 import Tabs from '@material-ui/core/Tabs'
-import {  Space, Spin } from 'antd'
+import { Space, Spin } from 'antd'
 import { Popover, Button as ButtonAnt } from 'antd'
 
 import Tab from '@material-ui/core/Tab'
 import { COLORS, FILES, URLS, FILES_TYPES, Images } from '../../types'
 import Grid from '@material-ui/core/Grid'
-import { Box, Button,  CircularProgress } from '@material-ui/core'
+import { Box, Button, CircularProgress } from '@material-ui/core'
 import clienteAxios from '../../config/axios'
-import AssetsContext, {
-  Asset,
-} from '../../context/assets/assets.context'
+import AssetsContext, { Asset } from '../../context/assets/assets.context'
 import NotificationsContext from '../../context/notifications/notifications.context'
 import { useDropzone } from 'react-dropzone'
 import { Config } from '../../config'
@@ -29,7 +27,6 @@ interface StyledTabProps {
 }
 export interface TableFilesProps {}
 const nameLengthValidator = file => {
-
   if (file.name.length > Config.MAX_LENGTH_NAME_SIZE) {
     return {
       code: 'name-too-large',
@@ -154,7 +151,7 @@ const DropZone: React.FC<DropZoneProps> = ({
           </Box>
         </Box>
       )}
-      {isEmpty && !loading && !isDragActive&& (
+      {isEmpty && !loading && !isDragActive && (
         <Box
           className='animate-fadein'
           position='absolute'
@@ -209,7 +206,7 @@ const Img: React.FC<ImgProps> = ({ loading, setLoading }) => {
   const { sendAlert } = useContext(NotificationsContext)
 
   const [files, setFiles] = useState<FileList | []>([])
-
+  const [imageThumbnail, setImageThumbnail] = useState<string>(null)
   useEffect(() => {
     const hasSelectedSomething = files && files.length !== 0
     if (hasSelectedSomething) {
@@ -237,13 +234,13 @@ const Img: React.FC<ImgProps> = ({ loading, setLoading }) => {
 
   const onDrop = useCallback((acceptedFiles, errors) => {
     errors.map(error => {
-        console.log({errors})
-      if (error.errors[0].code==="file-too-large") {
+      console.log({ errors })
+      if (error.errors[0].code === 'file-too-large') {
         sendAlert({
           type: 'warning',
-          msg: `File is larger than 2 mb` 
-        })  
-      }else{
+          msg: `File is larger than 2 mb`
+        })
+      } else {
         sendAlert({
           type: 'warning',
           msg: error.errors[0].message
@@ -260,7 +257,7 @@ const Img: React.FC<ImgProps> = ({ loading, setLoading }) => {
     onDrop,
     accept: 'image/jpeg, image/png',
     maxFiles: 1,
-    maxSize: 1e+6 *  2,
+    maxSize: 1e6 * 2,
     noClick: true,
     validator: nameLengthValidator,
     multiple: false,
@@ -268,28 +265,78 @@ const Img: React.FC<ImgProps> = ({ loading, setLoading }) => {
     disabled: loading
   })
 
+  const uploadThumbnail = async (formDataImageRaw:FormData,selectedFile:File) => {
+    const _CANVAS = document.querySelector(
+      '#canvas-element'
+    ) as HTMLCanvasElement
+    _CANVAS.toBlob(async function (blob) {
+      try {
+        setLoading(true)
+        const formData = new FormData()
+        formData.append('upload', blob, selectedFile.name)
+        const { data: urlThumnail } = await clienteAxios.post(
+          URLS.urlUploadImage,
+          formData
+        )
+
+        const response = await clienteAxios.post(
+          URLS.urlUploadImage,
+          formDataImageRaw
+        )
+        const DTO = {
+          url: response.data,
+          thumbnail: urlThumnail,
+          typeAsset: FILES_TYPES.IMG
+        }
+
+        const responseUploadUser = await clienteAxios.post(
+          URLS.createAsset,
+          DTO
+        )
+        setLoading(false)
+        if (responseUploadUser.data.status === 0) {
+          sendAlert({
+            type: 'success',
+            msg: 'Your image has been uploaded successfully'
+          })
+          setFiles(null)
+          successCreate(responseUploadUser.data.asset)
+        }
+      } catch (error) {
+        setLoading(false)
+        sendAlert({
+          type: 'error',
+          msg: 'Error uploading thumbnail'
+        })
+      }
+    })
+  }
+
   const setImage = async () => {
     try {
       const selectedFile = files[0]
       const formData = new FormData()
       formData.append('upload', selectedFile)
-      setLoading(true)
-      const response = await clienteAxios.post(URLS.urlUploadImage, formData)
-      const DTO = {
-        url: response.data,
-        thumbnail:response.data,
-        typeAsset: FILES_TYPES.IMG
-      }
+      const newImage = URL.createObjectURL(selectedFile)
 
-      const responseUploadUser = await clienteAxios.post(URLS.createAsset, DTO)
-      setLoading(false)
-      if (responseUploadUser.data.status === 0) {
-        sendAlert({
-          type: 'success',
-          msg: 'Your image has been uploaded successfully'
-        })
-        setFiles(null)
-        successCreate(responseUploadUser.data.asset)
+      const image = new Image()
+      const _CANVAS = document.querySelector(
+        '#canvas-element'
+      ) as HTMLCanvasElement
+      _CANVAS.width = Config.WIDTH_THUMBNAIL
+      _CANVAS.height = Config.HEIGTH_THUMBNAIL
+
+      const _CANVAS_CTX = _CANVAS.getContext('2d')
+      image.src = newImage
+      image.onload = () => {
+        _CANVAS_CTX.drawImage(
+          image,
+          0,
+          0,
+          Config.WIDTH_THUMBNAIL,
+          Config.HEIGTH_THUMBNAIL
+        )
+        uploadThumbnail(formData,selectedFile)
       }
     } catch (error) {
       setLoading(false)
@@ -322,6 +369,16 @@ const Img: React.FC<ImgProps> = ({ loading, setLoading }) => {
               ))}
             </div>
           </Box>
+          <canvas
+            style={{
+              position: 'fixed',
+              left: '-1000%',
+              backgroundColor: 'red',
+              display: 'hidden',
+              visibility: 'hidden'
+            }}
+            id='canvas-element'
+          ></canvas>
         </Box>
 
         <DropZone
@@ -332,8 +389,18 @@ const Img: React.FC<ImgProps> = ({ loading, setLoading }) => {
           loading={loading}
         />
         <Paper>
-          <Box display="flex" justifyContent='center'  fontSize="1rem"  className={classes.warn} py={1} width={"100%"}> 
-                  <Box color="white"  fontFamily='font2'>The files should not exceed a weight greater than 2 MB</Box>
+          <Box
+            display='flex'
+            justifyContent='center'
+            fontSize='1rem'
+            className={classes.warn}
+            py={1}
+            width={'100%'}
+          >
+            <img className="mr-2" src={Images.iconoInfo} alt="icon info" />
+            <Box color='white' fontFamily='font2'>
+              The files should not exceed a weight greater than 2 MB
+            </Box>
           </Box>
           <Box
             display='flex'
@@ -341,9 +408,14 @@ const Img: React.FC<ImgProps> = ({ loading, setLoading }) => {
             alignItems='center'
             className={classes.containerUpload}
           >
-
-            <Box flex={1} ml={24} fontFamily='font2' fontSize='1rem' textAlign='center'>
-              Drop files to upload them instantly 
+            <Box
+              flex={1}
+              ml={24}
+              fontFamily='font2'
+              fontSize='1rem'
+              textAlign='center'
+            >
+              Drop files to upload them instantly
             </Box>
             <input
               {...getInputProps()}
@@ -378,7 +450,7 @@ const ImageGrid = ({
   asset: Asset
   onOpenPreviewer: Function
 }) => {
-  const {  deleteAsset } = useContext(AssetsContext)
+  const { deleteAsset } = useContext(AssetsContext)
 
   const [isPopperVisible, setIsPopperVisible] = useState<boolean>(false)
   const [isDeleteHoverd, setIsDeleteHoverd] = useState(false)
@@ -390,12 +462,10 @@ const ImageGrid = ({
 
   const [currentImage, setCurrentImage] = useState(null)
 
-
   useEffect(() => {
     const heavyImage: HTMLImageElement = document.createElement('img')
     heavyImage.onload = () => setCurrentImage(heavyImage.src)
     heavyImage.src = assetIsVideo ? asset.thumbnail : asset.url
-
   }, [assetIsVideo ? asset.thumbnail : asset.url])
 
   const onDeleteAsset = () => {
@@ -478,30 +548,31 @@ const ImageGrid = ({
           </Popover>
         </Box>
       )}
-      {currentImage?<img
-        style={{
-          width: '100%',
-          minHeight: '100%',
-          objectFit: 'cover'
-        }}
-        alt="Image"
-        title="Image"
-        src={assetIsVideo ? asset.thumbnail : asset.url}
-      />:
-      <div  style={{
-        width: '100%',
-        minHeight: '100%',
-        objectFit: 'cover',
-        display: 'flex',
-        justifyContent:'center',
-        alignItems: 'center'
-      }}> 
-        <Spin />
-
-    </div>
-      }
-      
-
+      {currentImage ? (
+        <img
+          style={{
+            width: '100%',
+            minHeight: '100%',
+            objectFit: 'cover'
+          }}
+          alt='Image'
+          title='Image'
+          src={assetIsVideo ? asset.thumbnail : asset.url}
+        />
+      ) : (
+        <div
+          style={{
+            width: '100%',
+            minHeight: '100%',
+            objectFit: 'cover',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}
+        >
+          <Spin />
+        </div>
+      )}
     </div>
   )
 }
@@ -542,14 +613,14 @@ const Img360: React.FC<Img360Props> = ({ loading, setLoading }) => {
     }
   }
   const onDrop = useCallback((acceptedFiles, errors) => {
-    console.log({acceptedFiles})
+    console.log({ acceptedFiles })
     errors.map(error => {
-      if (error.errors[0].code==="file-too-large") {
+      if (error.errors[0].code === 'file-too-large') {
         sendAlert({
           type: 'warning',
-          msg: `File is larger than 4.5 mb` 
-        })  
-      }else{
+          msg: `File is larger than 4.5 mb`
+        })
+      } else {
         sendAlert({
           type: 'warning',
           msg: error.errors[0].message
@@ -560,7 +631,7 @@ const Img360: React.FC<Img360Props> = ({ loading, setLoading }) => {
       return
     }
     setFiles(acceptedFiles)
-  },[])
+  }, [])
 
   const {
     getRootProps,
@@ -571,7 +642,7 @@ const Img360: React.FC<Img360Props> = ({ loading, setLoading }) => {
     onDrop,
     accept: 'image/jpeg, image/png',
     maxFiles: 1,
-    maxSize: 1e+6 * 5,
+    maxSize: 1e6 * 5,
     noClick: true,
     validator: nameLengthValidator,
     multiple: false,
@@ -579,28 +650,78 @@ const Img360: React.FC<Img360Props> = ({ loading, setLoading }) => {
     disabled: loading
   })
 
+  const uploadThumbnail = async (formDataImageRaw,selectedFile:File) => {
+    const _CANVAS = document.querySelector(
+      '#canvas-element'
+    ) as HTMLCanvasElement
+    _CANVAS.toBlob(async function (blob) {
+      try {
+
+        setLoading(true)
+        const formData = new FormData()
+        formData.append('upload', blob, selectedFile.name)
+        const { data: urlThumnail } = await clienteAxios.post(
+          URLS.urlUploadImage,
+          formData
+        )
+
+        const response = await clienteAxios.post(
+          URLS.urlUploadImage360,
+          formDataImageRaw
+        )
+        setLoading(false)
+        const DTO = {
+          url: response.data,
+          thumbnail: urlThumnail,
+          typeAsset: FILES_TYPES.IMG_360
+        }
+        const { data } = await clienteAxios.post(URLS.createAsset, DTO)
+        if (data.status === 0) {
+          successCreate(data.asset)
+          setFiles(null)
+          sendAlert({
+            type: 'success',
+            msg: 'Your image has been uploaded successfully'
+          })
+        }
+      } catch (error) {
+        setLoading(false)
+        sendAlert({
+          type: 'error',
+          msg: 'Error uploading thumbnail'
+        })
+      }
+    })
+  }
+
   const setImage = async () => {
     try {
       const selectedFile = files[0]
+      console.log({selectedFile})
       const formData = new FormData()
       formData.append('upload', selectedFile)
       setLoading(true)
 
-      const response = await clienteAxios.post(URLS.urlUploadImage360, formData)
-      setLoading(false)
-      const DTO = {
-        url: response.data,
-        thumbnail:response.data,
-        typeAsset: FILES_TYPES.IMG_360
-      }
-      const { data } = await clienteAxios.post(URLS.createAsset, DTO)
-      if (data.status === 0) {
-        successCreate(data.asset)
-        setFiles(null)
-        sendAlert({
-          type: 'success',
-          msg: 'Your image has been uploaded successfully'
-        })
+      const newImage = URL.createObjectURL(selectedFile)
+
+      const image = new Image()
+      const _CANVAS = document.querySelector(
+        '#canvas-element'
+      ) as HTMLCanvasElement
+      _CANVAS.width = Config.WIDTH_THUMBNAIL
+      _CANVAS.height = Config.HEIGTH_THUMBNAIL
+
+      const _CANVAS_CTX = _CANVAS.getContext('2d')
+      image.src = newImage
+      image.onload = () => {
+        _CANVAS_CTX.drawImage(
+          image,
+          0,
+          0,
+          Config.WIDTH_THUMBNAIL,
+          Config.HEIGTH_THUMBNAIL
+        )
+        uploadThumbnail(formData,selectedFile)
       }
     } catch (error) {
       setLoading(false)
@@ -633,6 +754,16 @@ const Img360: React.FC<Img360Props> = ({ loading, setLoading }) => {
             </div>
           </Box>
         </Box>
+        <canvas
+          style={{
+            position: 'fixed',
+            left: '-1000%',
+            backgroundColor: 'red',
+            display: 'hidden',
+            visibility: 'hidden'
+          }}
+          id='canvas-element'
+        ></canvas>
         <DropZone
           type={FILES_TYPES.IMG_360}
           isEmpty={isEmpty}
@@ -641,8 +772,19 @@ const Img360: React.FC<Img360Props> = ({ loading, setLoading }) => {
           loading={loading}
         />
         <Paper>
-            <Box display="flex" justifyContent='center'  fontSize="1rem"  className={classes.warn} py={1} width={"100%"}> 
-                  <Box color="white"  fontFamily='font2'>The files should not exceed a weight greater than 4.5 MB</Box>
+          <Box
+            display='flex'
+            justifyContent='center'
+            fontSize='1rem'
+            className={classes.warn}
+            py={1}
+            width={'100%'}
+          >
+                        <img className="mr-2" src={Images.iconoInfo} alt="icon info" />
+
+            <Box color='white' fontFamily='font2'>
+              The files should not exceed a weight greater than 4.5 MB
+            </Box>
           </Box>
           <Box
             display='flex'
@@ -650,7 +792,13 @@ const Img360: React.FC<Img360Props> = ({ loading, setLoading }) => {
             alignItems='center'
             className={classes.containerUpload}
           >
-              <Box flex={1} ml={24} fontFamily='font2' fontSize='1rem' textAlign='center'>
+            <Box
+              flex={1}
+              ml={24}
+              fontFamily='font2'
+              fontSize='1rem'
+              textAlign='center'
+            >
               Drop files to upload them instantly
             </Box>
             <input
@@ -683,8 +831,7 @@ const Video: React.FC<VideoProps> = ({ loading, setLoading }) => {
   const [files, setFiles] = useState<FileList>(null)
   const [urlVideo, setUrlVideo] = useState<string>('')
   const { sendAlert } = useContext(NotificationsContext)
-  const [urlThumnail,seturlThumnail] = useState<string>(null)
-
+  const [urlThumnail, seturlThumnail] = useState<string>(null)
 
   useEffect(() => {
     const _CANVAS = document.querySelector(
@@ -694,12 +841,12 @@ const Video: React.FC<VideoProps> = ({ loading, setLoading }) => {
   }, [])
   const onDrop = useCallback((acceptedFiles, errors) => {
     errors.map(error => {
-      if (error.errors[0].code==="file-too-large") {
+      if (error.errors[0].code === 'file-too-large') {
         sendAlert({
           type: 'warning',
-          msg: `File is larger than 10 mb` 
-        })  
-      }else{
+          msg: `File is larger than 10 mb`
+        })
+      } else {
         sendAlert({
           type: 'warning',
           msg: error.errors[0].message
@@ -711,13 +858,13 @@ const Video: React.FC<VideoProps> = ({ loading, setLoading }) => {
     }
     setFiles(acceptedFiles)
     uploadVideo(acceptedFiles)
-  },[])
+  }, [])
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: 'video/mp4',
     maxFiles: 1,
-    maxSize: 1e+6 *  10,
+    maxSize: 1e6 * 10,
     noClick: true,
     validator: nameLengthValidator,
     multiple: false,
@@ -743,7 +890,7 @@ const Video: React.FC<VideoProps> = ({ loading, setLoading }) => {
           URLS.urlUploadImage,
           formData
         )
-        console.log({urlThumnail})
+        console.log({ urlThumnail })
         setVideo(urlThumnail)
       } catch (error) {
         setLoading(false)
@@ -769,7 +916,13 @@ const Video: React.FC<VideoProps> = ({ loading, setLoading }) => {
       '#canvas-element'
     ) as HTMLCanvasElement
     const _CANVAS_CTX = _CANVAS.getContext('2d')
-    _CANVAS_CTX.drawImage(_VIDEO, 0, 0, Config.WIDTH_THUMBNAIL, Config.HEIGTH_THUMBNAIL)
+    _CANVAS_CTX.drawImage(
+      _VIDEO,
+      0,
+      0,
+      Config.WIDTH_THUMBNAIL,
+      Config.HEIGTH_THUMBNAIL
+    )
     if (_CANVAS.height !== 10) {
       await uploadThumbnail()
     }
@@ -846,8 +999,19 @@ const Video: React.FC<VideoProps> = ({ loading, setLoading }) => {
         />
 
         <Paper>
-      <Box display="flex" justifyContent='center'  fontSize="1rem"  className={classes.warn} py={1} width={"100%"}> 
-                  <Box color="white"  fontFamily='font2'>The files should not exceed a weight greater than 10 MB</Box>
+          <Box
+            display='flex'
+            justifyContent='center'
+            fontSize='1rem'
+            className={classes.warn}
+            py={1}
+            width={'100%'}
+          >
+                        <img className="mr-2" src={Images.iconoInfo} alt="icon info" />
+
+            <Box color='white' fontFamily='font2'>
+              The files should not exceed a weight greater than 10 MB
+            </Box>
           </Box>
           <Box
             display='flex'
@@ -855,7 +1019,13 @@ const Video: React.FC<VideoProps> = ({ loading, setLoading }) => {
             alignItems='center'
             className={classes.containerUpload}
           >
-        <Box flex={1} ml={24} fontFamily='font2' fontSize='1rem' textAlign='center'>
+            <Box
+              flex={1}
+              ml={24}
+              fontFamily='font2'
+              fontSize='1rem'
+              textAlign='center'
+            >
               Drop files to upload them instantly
             </Box>
             <input
@@ -921,7 +1091,7 @@ const Video360: React.FC<Video360Props> = ({ loading, setLoading }) => {
   const { sendAlert } = useContext(NotificationsContext)
   const [urlVideo, setUrlVideo] = useState<string>('')
 
- useEffect(() => {
+  useEffect(() => {
     const _CANVAS = document.querySelector(
       '#canvas-element'
     ) as HTMLCanvasElement
@@ -936,12 +1106,12 @@ const Video360: React.FC<Video360Props> = ({ loading, setLoading }) => {
 
   const onDrop = useCallback((acceptedFiles, errors) => {
     errors.map(error => {
-      if (error.errors[0].code==="file-too-large") {
+      if (error.errors[0].code === 'file-too-large') {
         sendAlert({
           type: 'warning',
-          msg: `File is larger than 10 mb` 
-        })  
-      }else{
+          msg: `File is larger than 10 mb`
+        })
+      } else {
         sendAlert({
           type: 'warning',
           msg: error.errors[0].message
@@ -988,7 +1158,13 @@ const Video360: React.FC<Video360Props> = ({ loading, setLoading }) => {
       '#canvas-element'
     ) as HTMLCanvasElement
     const _CANVAS_CTX = _CANVAS.getContext('2d')
-    _CANVAS_CTX.drawImage(_VIDEO, 0, 0, Config.WIDTH_THUMBNAIL, Config.HEIGTH_THUMBNAIL)
+    _CANVAS_CTX.drawImage(
+      _VIDEO,
+      0,
+      0,
+      Config.WIDTH_THUMBNAIL,
+      Config.HEIGTH_THUMBNAIL
+    )
     if (_CANVAS.height !== 10) {
       await uploadThumbnail()
     }
@@ -998,7 +1174,7 @@ const Video360: React.FC<Video360Props> = ({ loading, setLoading }) => {
     onDrop,
     accept: 'video/mp4',
     maxFiles: 1,
-    maxSize: 1e+6 *  10,
+    maxSize: 1e6 * 10,
     noClick: true,
     validator: nameLengthValidator,
     multiple: false,
@@ -1050,22 +1226,22 @@ const Video360: React.FC<Video360Props> = ({ loading, setLoading }) => {
   return (
     <>
       <Box {...getRootProps()} width='100%' height='100%' position='relative'>
-          <Box height='81%' width='100%'>
-            <Box width='82%' mx='auto' pt={1}>
-              <div
-                style={{
-                  display: 'grid',
-                  gridAutoRows: '160px',
-                  gridTemplateColumns: 'repeat(7,minmax(10rem,1fr))',
-                  gap: '0.3rem'
-                }}
-              >
-                {assets.videos360.map((asset: Asset, i) => (
-                  <ImageGrid onOpenPreviewer={onOpenPreviewer} asset={asset} />
-                ))}
-              </div>
-            </Box>
+        <Box height='81%' width='100%'>
+          <Box width='82%' mx='auto' pt={1}>
+            <div
+              style={{
+                display: 'grid',
+                gridAutoRows: '160px',
+                gridTemplateColumns: 'repeat(7,minmax(10rem,1fr))',
+                gap: '0.3rem'
+              }}
+            >
+              {assets.videos360.map((asset: Asset, i) => (
+                <ImageGrid onOpenPreviewer={onOpenPreviewer} asset={asset} />
+              ))}
+            </div>
           </Box>
+        </Box>
         <DropZone
           type={FILES_TYPES.VIDEO_360}
           isEmpty={isEmpty}
@@ -1073,16 +1249,33 @@ const Video360: React.FC<Video360Props> = ({ loading, setLoading }) => {
           isDragActive={isDragActive}
           loading={loading}
         />
-<Box display="flex" justifyContent='center'  fontSize="1rem"  className={classes.warn} py={1} width={"100%"}> 
-                  <Box color="white"  fontFamily='font2'>The files should not exceed a weight greater than 10 MB</Box>
+        <Box
+          display='flex'
+          justifyContent='center'
+          fontSize='1rem'
+          className={classes.warn}
+          py={1}
+          width={'100%'}
+        >
+                      <img className="mr-2" src={Images.iconoInfo} alt="icon info" />
+
+          <Box color='white' fontFamily='font2'>
+            The files should not exceed a weight greater than 10 MB
           </Box>
+        </Box>
         <Paper>
           <Box
             display='flex'
             alignItems='center'
             className={classes.containerUpload}
           >
-        <Box flex={1} ml={24} fontFamily='font2' fontSize='1rem' textAlign='center'>
+            <Box
+              flex={1}
+              ml={24}
+              fontFamily='font2'
+              fontSize='1rem'
+              textAlign='center'
+            >
               Drop files to upload them instantly
             </Box>
             <input
@@ -1160,12 +1353,12 @@ const useStyles = makeStyles((theme: Theme) => ({
   paper: {
     height: '100%'
   },
-  warn:{
-    backgroundColor: 'rgba(36, 37, 38, 0.6)',
+  warn: {
+    backgroundColor: 'rgba(36, 37, 38, 0.6)'
   },
   containerUpload: {
     padding: '1rem',
-    flex:1,
+    flex: 1
   },
   uploadButton: {
     marginLeft: '1rem',
