@@ -1,6 +1,7 @@
 import { AxiosResponse } from "axios";
 import { tokenAuth } from "./axios";
 import jwt from 'jsonwebtoken'
+import { Config } from ".";
 export const verifyEmail = (email: string): boolean => {
   if (
     /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i.test(
@@ -35,6 +36,16 @@ export const decifreToken = (token: string) => {
     return {status:false,jwtDecoded:null}
   }
 };
+
+export const nameLengthValidator = file => {
+  if (file.name.length > Config.MAX_LENGTH_NAME_SIZE) {
+    return {
+      code: 'name-too-large',
+      message: `Name is larger than ${Config.MAX_LENGTH_NAME_SIZE} characters`
+    }
+  }
+  return null
+}
 
 
 

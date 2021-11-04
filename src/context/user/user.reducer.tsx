@@ -74,8 +74,6 @@ type Actions =
   | { type: "ADMIN_CHILD_DETAIL"; payload: any }
   | { type: "USER_CHILD_DETAIL"; payload: any }
   | { type: "DELETE_PERIOD"; payload: any }
-  
-
   | { type: "UPDATE_NAME"; payload: any }
   | { type: "UPDATE_PERIOD_SUCCESS"; payload: any }
   | { type: "LOGIN_ERROR"; payload: any }

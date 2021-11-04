@@ -11,7 +11,7 @@ export class ReuestSesionLogOutDTO  {
   readonly isFromCMS: boolean;
 }
 interface SesionContextInterface {
-  logout: Function;
+  logout(): any;
   loadingSesion:boolean
 }
 

@@ -352,7 +352,7 @@ const UserState = ({ children }) => {
       console.error('** Error validating getUserChildDetail ** ', { error })
     }
   }
-  const getAdminChildDetail = async (uuid) => {
+  const getAdminChildDetail = async (uuid:string) => {
     try {
       setLoading(true)
       const dto = new GetAdminDetailDTO(uuid)

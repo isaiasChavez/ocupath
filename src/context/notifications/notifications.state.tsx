@@ -1,17 +1,17 @@
 import { useReducer } from "react";
-import axios from "../../config/axios";
 import NotificationContext from "./notifications.context";
-import { AS_A, URLS } from "../../types/index";
 import NotificationReducer, { NotificationStateType } from "./notifications.reducer";
 import { toast } from 'react-toastify';
+import {TypesNotification} from '../../types'
+
 
 const NotificationState = ({ children }) => {
   const [state, dispatch] = useReducer(NotificationReducer, initialState());
 
 
-  const sendAlert = async ({msg,type,stop}) => {
+  const sendAlert = async ({msg,type,stop}:{msg:string,type:TypesNotification,stop:boolean}) => {
     try {
-        if (type==='success') {
+        if (type===TypesNotification.success) {
           toast.success(msg, {
             position: "bottom-center",
             autoClose:stop?false:5000,
@@ -24,7 +24,7 @@ const NotificationState = ({ children }) => {
             });
             return 
         }
-        if (type==='error') {
+        if (type===TypesNotification.error) {
           toast.error(msg, {
             position: "bottom-center",
             autoClose:stop?false:5000,
@@ -37,20 +37,8 @@ const NotificationState = ({ children }) => {
             });
             return 
         }
-        if (type==='error') {
-          toast.error(msg, {
-            position: "bottom-center",
-            autoClose:stop?false:5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            toastId:msg.replace(/ /g, "")
-            });
-            return 
-        }
-        if (type==='warning') {
+       
+        if (type===TypesNotification.warning) {
           toast.warn(msg, {
             position: "bottom-center",
             autoClose:stop?false:5000,

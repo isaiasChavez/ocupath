@@ -4,7 +4,7 @@ import { useState } from 'react'
 export interface AdminProps {}
 import { COLORS } from '../../src/types/index'
 import TableAdmin from '../../src/components/admin/TableAdmin'
-import TableFiles from '../../src/components/general/TableFiles'
+import TableFiles from '../../src/components/files/TableFiles'
 import { USERS } from '../../src/types/index'
 import AppBarCms from '../../src/components/general/AppBarCms'
 import Head from 'next/head'

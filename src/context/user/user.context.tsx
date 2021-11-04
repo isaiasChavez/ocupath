@@ -14,6 +14,9 @@ import {
 import { createContext } from "react";
 import { Config } from "../../config";
 import { Childrens, Profile, User } from "./user.reducer";
+import {LoginDTO} from '../../types/types';
+import {USERS} from '../../types';
+
 export class ReuestSesionDTO {
   constructor(email: string, password: string) {
     this.email = email;
@@ -364,32 +367,32 @@ export class SendEmailInfo implements SendEmailInfoProps{
 
 
 interface UserContextInterface {
-  resetPass: Function;
-  logUser: Function;
-  confirmPass: Function;
-  passRecover: Function;
-  inviteUser: Function;
+  resetPass(resetPassword: ResetPassword): any;
+  logUser(loginDTO: LoginDTO): any;
+  confirmPass(confirmUserPassword: ConfirmUserPassword): any;
+  passRecover(passwordRecovery: ResetPassword): any;
+  inviteUser(inviteUserDTO: InviteUserDTO): any;
   isGuest:boolean;
   isAdmin:boolean;
   canAddMoreChilds:boolean;
   isSuperAdmin:boolean;
-  addUserAdm: Function;
-  deleteUserAdm: Function;
-  updateUserAdm: Function;
-  suspendUserAdm: Function;
-  suspendUser: Function;
-  addUser: Function;
-  deleteUser: Function;
-  updateUser: Function;
-  addNewPeriod: Function;
-  selectUser: Function;
-  getUserDetail: Function;
-  getUserChildrens:Function;
-  getAdminChildDetail: Function;
-  getUserChildDetail: Function;
-  validateToken: Function;
-  sendInformationForm:Function;
-  deletePeriod:Function;
+  addUserAdm(createUserAdmDTO: CreateAdminDTO): any;
+  deleteUserAdm(): any;
+  updateUserAdm(updateUserAdminDTO: UpdateUserAdminDTO): any;
+  suspendUserAdm(): any;
+  suspendUser(): any;
+  addUser(createUserDTO: CreateUserDTO): any;
+  deleteUser(): any;
+  updateUser(updateUserDTO: UpdateUserDTO): any;
+  addNewPeriod(addNewSuscriptionSuscriptionDTO: AddNewSuscriptionSuscriptionDTO): Promise<number>;
+  selectUser(user: User, type: USERS): any;
+  getUserDetail(): any;
+  getUserChildrens():any;
+  getAdminChildDetail(uuid:string): any;
+  getUserChildDetail(selectedUser: User): any;
+  validateToken(token: string): any;
+  sendInformationForm(sendInformationDTO: SendEmailInfo):any;
+  deletePeriod(deleteSuscriptionSuscriptionDTO: DeleteSuscriptionSuscriptionDTO):any;
   profile: Profile;
   childrens:Childrens,
   selectedUser:User;

@@ -127,6 +127,12 @@ export enum INVITATIONS {
   GUEST = "GUEST",
 }
 
+export enum TypesNotification {
+  success="success",
+  error="error",
+  warning="warning"
+}
+
 export enum FILES {
   IMG = 0,
   IMG_360 = 1,

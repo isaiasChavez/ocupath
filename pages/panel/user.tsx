@@ -1,37 +1,21 @@
 import { makeStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
 import { useState } from 'react'
-import TableFiles from '../../src/components/general/TableFiles'
-
+import TableFiles from '../../src/components/files/TableFiles'
 export interface AdminProps { }
-import Head from 'next/head'
 import { COLORS } from '../../src/types/index'
 import { USERS } from '../../src/types/index'
-import theme from '../../src/theme'
 import AppBarCms from '../../src/components/general/AppBarCms'
 import withAuth from '../../src/auth/WithAuth'
 import SideBar from '../../src/components/general/SideBar'
 import Profile from '../../src/components/general/Profile'
 import HeadCustom from '../../src/layouts/HeadCustom'
-const drawerWidth = 240
 const PROFILE = 0
 const FILES = 2
 const UserMod = () => {
   const classes = useStyles()
   const [currentTab,setCurrentTab] = useState<number>(0)
   const [isEditingAvatar,setIsEditingAvatar] = useState(false)
-
-  const titleHeader = ()=>{
-    if (currentTab === PROFILE) {
-      return "Profile" 
-    }
-    if (currentTab === FILES) {
-      
-      return "Files" 
-    }
-  }
-  
-
   return (
     <>
     <HeadCustom>
