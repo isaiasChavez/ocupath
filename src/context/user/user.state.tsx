@@ -12,6 +12,7 @@ import UserContext, {
   GetAdminDetailDTO,
   GetUserDetailDTO,
   InviteUserDTO,
+  PasswordRecovery,
   ResetPassword,
   SendEmailInfo,
   UpdateUserAdminDTO,
@@ -32,8 +33,9 @@ const UserState = ({ children }) => {
   const [state, dispatch] = useReducer(UserReducer, initialState())
   const { sendAlert } = useContext(NotificationsContext)
 
-  const resetPass = async (resetPassword: ResetPassword) => {
+  const resetPass = async (resetPassword: PasswordRecovery) => {
     try {
+
       await validateOrReject(resetPassword)
       setLoading(true)
       const { data } = await axios.put(URLS.recoverpass, resetPassword)
@@ -178,7 +180,6 @@ const UserState = ({ children }) => {
           type: TypesNotification.warning,
           msg:
             'The invitation already existed, the previous invitation has been resent',
-          stop: true,
         })
         sendAlert({
           type: TypesNotification.success,

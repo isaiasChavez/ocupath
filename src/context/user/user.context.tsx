@@ -102,6 +102,7 @@ export class ResetPassword {
   @IsEmail()
   email: string;
 }
+
 export class ConfirmUserPassword {
   constructor(email: string, password: string) {
     this.email = email;
@@ -367,7 +368,7 @@ export class SendEmailInfo implements SendEmailInfoProps{
 
 
 interface UserContextInterface {
-  resetPass(resetPassword: ResetPassword): any;
+  resetPass(resetPassword: PasswordRecovery): any;
   logUser(loginDTO: LoginDTO): any;
   confirmPass(confirmUserPassword: ConfirmUserPassword): any;
   passRecover(passwordRecovery: ResetPassword): any;

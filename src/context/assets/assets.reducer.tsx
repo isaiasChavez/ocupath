@@ -92,7 +92,8 @@ const userReducer = (
           id:0,name:''
         },
         url:'',
-        uuid:''
+        uuid:'',
+        name:''
       }
       if (newCurrentImages.length>0) {
         newCurrentAsset =  newCurrentImages[0]
@@ -147,7 +148,8 @@ const userReducer = (
             name:'',
             id:0
           },
-          uuid:''
+          uuid:'',
+          name:''
         },
         currentAssets:[]
       }
