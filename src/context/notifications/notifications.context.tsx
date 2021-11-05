@@ -1,10 +1,8 @@
-import { IsNotEmpty,IsString,IsUUID } from "class-validator";
 import { createContext } from "react";
-
-
+import {TypesNotification} from '../../types'
 
 interface NotificationsContextInterface {
-  sendAlert:Function
+  sendAlert({msg:string,type:TypesNotification,stop:boolean}):any
 }
 
 const NotificationsContext = createContext<NotificationsContextInterface | null>(null);

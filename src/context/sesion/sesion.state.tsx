@@ -1,7 +1,7 @@
 import { useContext, useReducer, useState } from "react";
 import axios from "../../config/axios";
 import SesionContext, { ReuestSesionLogOutDTO } from "./sesion.context";
-import { LOG_A, URLS } from "../../types/index";
+import { LOG_A, URLS,TypesNotification } from "../../types/index";
 import SesionReducer, { SesionStateType } from "./sesion.reducer";
 import { Config } from "../../config";
 import { useRouter } from "next/router";
@@ -26,7 +26,7 @@ const SesionState = ({ children }) => {
       }
       if (data.status === 2) {
         sendAlert({
-          type: 'error',
+          type: TypesNotification.error,
           msg: `Sesion expired`
         })
       }
@@ -37,7 +37,7 @@ const SesionState = ({ children }) => {
       });
     } catch (error) {
       sendAlert({
-        type: 'error',
+        type: TypesNotification.error,
         msg: `An error has occurred ${error.message}`
       })
       setLoading(false)

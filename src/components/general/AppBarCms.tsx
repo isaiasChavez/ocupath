@@ -3,7 +3,6 @@ import {
   LinearProgress,
   makeStyles,
   Toolbar,
-  Typography,
 } from '@material-ui/core'
 import { useContext } from 'react'
 import SesionContext from '../../context/sesion/sesion.context'
@@ -13,7 +12,6 @@ import { COLORS } from '../../types'
 export interface AppBarCmsProps {}
 
 const AppBarCms: React.FC<AppBarCmsProps> = () => {
-  const classes = useStyles()
   const { loading } = useContext(UserContext)
   const { loadingSesion } = useContext(SesionContext)
 

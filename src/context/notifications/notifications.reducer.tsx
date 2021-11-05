@@ -1,5 +1,3 @@
-import { Config } from "../../config";
-import { AS_A,FILES_TYPES } from "../../types";
 
 export type NotificationStateType = {
 

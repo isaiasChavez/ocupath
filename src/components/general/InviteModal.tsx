@@ -1,12 +1,11 @@
 import React,{
   MouseEventHandler,
   useContext,
-  useEffect,
   useState
 } from 'react'
-import { Button,TextField,Box, IconButton } from '@material-ui/core'
+import { Button,Box, IconButton } from '@material-ui/core'
 import MomentUtils from '@date-io/moment'
-import { COMPANIES,GUEST,USERS_TYPES } from '../../types'
+import { COMPANIES,GUEST,USERS_TYPES,TypesNotification } from '../../types'
 import moment from 'moment'
 import {
   MuiPickersUtilsProvider,
@@ -218,7 +217,7 @@ const InviteModal: React.FC<InviteModalProps> = ({
         }
       } catch (error) {
         sendAlert({
-          type: 'error',
+          type: TypesNotification.error,
           msg: 'Error validating fields'
         })
       }

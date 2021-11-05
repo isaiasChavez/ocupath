@@ -3,7 +3,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import ArrowBack from '@material-ui/icons/ArrowBack';
 import UserSection from './UserSection';
-import { COLORS } from '../../types';
 import UserContext,{ UpdateUserDTO } from '../../context/user/user.context';
 import { Button,IconButton,Box, LinearProgress   } from '@material-ui/core';
 import AskModal from './AskModal';

@@ -1,5 +1,5 @@
 import {  makeStyles, Toolbar } from '@material-ui/core'
-import { Images, ROUTES } from '../../types'
+import { Images } from '../../types'
 import Link from 'next/link'
 
 interface HeaderSimpleProps {

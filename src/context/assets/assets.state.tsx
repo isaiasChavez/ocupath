@@ -7,7 +7,7 @@ import AssetsContext, {
 } from './assets.context'
 import NotificationsContext from '../notifications/notifications.context'
 
-import { AS_A, URLS, MIS } from '../../types/index'
+import { AS_A, URLS, MIS,TypesNotification } from '../../types/index'
 import AssetsReducer, { AssetsStateType } from './assets.reducer'
 import { validateOrReject } from 'class-validator'
 
@@ -85,12 +85,12 @@ const UserState = ({ children }) => {
           payload: data
         })
         sendAlert({
-          type: 'success',
+          type: TypesNotification.success,
           msg: 'Asset successfully removed'
         })
       } else {
         sendAlert({
-          type: 'error',
+          type: TypesNotification.error,
           msg: 'an unexpected error has occurred'
         })
       }

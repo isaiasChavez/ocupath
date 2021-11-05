@@ -1,8 +1,7 @@
-import { Divider, Drawer, List, ListItem, ListItemIcon, ListItemText, makeStyles } from "@material-ui/core";
+import {  Drawer, List, ListItem, ListItemIcon, ListItemText, makeStyles } from "@material-ui/core";
 import { useContext } from "react";
 import SesionContext from "../../context/sesion/sesion.context";
 import { COLORS, Images,USERS_TYPES } from "../../types";
-import LayersIcon from '@material-ui/icons/Layers';
 import UserContext from "../../context/user/user.context";
 import PersonOutlineOutlinedIcon from '@material-ui/icons/PersonOutlineOutlined';
 import FolderOpenOutlinedIcon from '@material-ui/icons/FolderOpenOutlined';

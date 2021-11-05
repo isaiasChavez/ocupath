@@ -76,7 +76,9 @@ export enum MIS {
 
 export const ROUTES = {
   login: "/login",
-
+  panelAdmin: "/panel/admin",
+  panelSuperAdmin: "/superadmin",
+  panelGuest: "/panel/user",
 }
 
 

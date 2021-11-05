@@ -20,86 +20,68 @@ const Previwer: React.FC<PreviewProps> = () => {
     deleteAsset,
     loading
   } = useContext(AssetsContext)
-  const videoRef = useRef();
-  const previousUrl = useRef(currentAsset.url);
-  console.log({currentAsset})
+  const videoRef = useRef()
+  const previousUrl = useRef(currentAsset.url)
+  console.log({ currentAsset })
   const nameImage = () => {
     let newName = currentAsset.thumbnail
-    console.log({previewIsImage})
-    if (previewIsImage) {
+    const prefixImages = 'https://ocupath.fra1.digitaloceanspaces.com/image/'
+    const prefixImages360 =
+      'https://ocupath.fra1.digitaloceanspaces.com/image360/'
+    const prefixVideo = 'https://ocupath.fra1.digitaloceanspaces.com/video/'
+    const prefixVideo360 =
+      'https://ocupath.fra1.digitaloceanspaces.com/video360/'
+    const prefixNormal =
+      'https://spacegeneral.sfo2.digitaloceanspaces.com/ocupath/ocupath/'
 
-      if (currentAsset.thumbnail.includes('https://spacegeneral.sfo2.digitaloceanspaces.com/ocupath/ocupath/')) {
-        newName = currentAsset.thumbnail.replace(
-          'https://spacegeneral.sfo2.digitaloceanspaces.com/ocupath/ocupath/',
-          ''
-        )
-        
+    if (previewIsImage) {
+      if (
+        currentAsset.thumbnail.includes(prefixNormal)
+      ) {
+        newName = currentAsset.thumbnail.replace(prefixNormal,'')
       }
-      if (currentAsset.thumbnail.includes('https://ocupath.fra1.digitaloceanspaces.com/image/')) {
-        newName = currentAsset.thumbnail.replace(
-          'https://ocupath.fra1.digitaloceanspaces.com/image/',
-          ''
-        )
-        
+      if (currentAsset.thumbnail.includes(prefixImages)) {
+        newName = currentAsset.thumbnail.replace(prefixImages, '')
       }
-      if (currentAsset.thumbnail.includes('https://ocupath.fra1.digitaloceanspaces.com/image360/')) {
-        newName = currentAsset.thumbnail.replace(
-          'https://ocupath.fra1.digitaloceanspaces.com/image360/',
-          ''
-        )
-        
+      if (currentAsset.thumbnail.includes(prefixImages360)) {
+        newName = currentAsset.thumbnail.replace(prefixImages360, '')
       }
     } else {
-      if (currentAsset.thumbnail.includes('https://ocupath.fra1.digitaloceanspaces.com/image/')) {
-        console.log("Si lo incluye")
-        newName = currentAsset.thumbnail.replace(
-          'https://ocupath.fra1.digitaloceanspaces.com/image/',
-          ''
-        )
-        
+      //Preview is video
+      if (currentAsset.thumbnail.includes(prefixImages)) {
+        newName = currentAsset.thumbnail.replace(prefixImages, '')
       }
-      if (currentAsset.thumbnail.includes('https://ocupath.fra1.digitaloceanspaces.com/video/')) {
-        newName = currentAsset.thumbnail.replace(
-          'https://ocupath.fra1.digitaloceanspaces.com/video/',
-          ''
-        )
+      if (currentAsset.thumbnail.includes(prefixVideo)) {
+        newName = currentAsset.thumbnail.replace(prefixVideo, '')
       }
-      if (currentAsset.thumbnail.includes('https://ocupath.fra1.digitaloceanspaces.com/video360/')) {
-        newName = currentAsset.thumbnail.replace(
-          'https://ocupath.fra1.digitaloceanspaces.com/video360/',
-          ''
-        )
+      if (currentAsset.thumbnail.includes(prefixVideo360)) {
+        newName = currentAsset.thumbnail.replace(prefixVideo360, '')
       }
-    
-      if (currentAsset.thumbnail.includes('https://ocupath.fra1.digitaloceanspaces.com/image360/')) {
-        newName = currentAsset.thumbnail.replace(
-          'https://ocupath.fra1.digitaloceanspaces.com/image360/',
-          ''
-        )
-      }      
+
+      if (currentAsset.thumbnail.includes(prefixImages360)) {
+        newName = currentAsset.thumbnail.replace(prefixImages360, '')
+      }
     }
     return newName
   }
-   const onDeleteAsset =()=>{
+  const onDeleteAsset = () => {
     deleteAsset(currentAsset.uuid)
   }
 
-  if(currentAssets.length===0){
-     closePreviewer()
+  if (currentAssets.length === 0) {
+    closePreviewer()
   }
   useEffect(() => {
     if (previousUrl.current !== currentAsset.url) {
-      if (videoRef&&videoRef.current) {
-        const videoElement:HTMLVideoElement = videoRef?.current
-        videoElement.load();
+      if (videoRef && videoRef.current) {
+        const videoElement: HTMLVideoElement = videoRef?.current
+        videoElement.load()
       }
     }
-  }, [currentAsset.url]);
-
+  }, [currentAsset.url])
 
   return (
     <>
-    
       <Box
         position='fixed'
         zIndex={200}
@@ -110,12 +92,11 @@ const Previwer: React.FC<PreviewProps> = () => {
         left={0}
         right={0}
         bottom={0}
-        className="animate-fadein"
+        className='animate-fadein'
         style={{
           backgroundColor: 'rgba(0,0,0,0.6)'
         }}
       >
-
         <Box
           minWidth='80vw'
           width='80vw'
@@ -132,30 +113,28 @@ const Previwer: React.FC<PreviewProps> = () => {
             </Box>
             <Box flex='0.08' display='flex' justifyContent='center'>
               <IconButton>
-
-              <DeleteOutlineOutlinedIcon
-                style={{
-                  color: '#FFF',
-                  marginRight: '1rem',
-                  opacity:loading?0.5:1
-                }}
-                onClick={() => {
-                  if (!loading) {
-                    onDeleteAsset()  
-                  }
-                }}
+                <DeleteOutlineOutlinedIcon
+                  style={{
+                    color: '#FFF',
+                    marginRight: '1rem',
+                    opacity: loading ? 0.5 : 1
+                  }}
+                  onClick={() => {
+                    if (!loading) {
+                      onDeleteAsset()
+                    }
+                  }}
                 />
-                </IconButton>
-                <IconButton>
-                  
-              <CloseIcon
-                onClick={() => closePreviewer()}
-                style={{
-                  color: '#FFF',
-                  cursor: 'pointer'
-                }}
+              </IconButton>
+              <IconButton>
+                <CloseIcon
+                  onClick={() => closePreviewer()}
+                  style={{
+                    color: '#FFF',
+                    cursor: 'pointer'
+                  }}
                 />
-                </IconButton>
+              </IconButton>
             </Box>
           </Box>
           <Box width='100%' height='80%' style={{ backgroundColor: '#282828' }}>
@@ -166,7 +145,12 @@ const Previwer: React.FC<PreviewProps> = () => {
                 display='flex'
                 justifyContent='center'
               >
-                <Box position='relative' height='100%' maxWidth='80%' className='animate-fadein' >
+                <Box
+                  position='relative'
+                  height='100%'
+                  maxWidth='80%'
+                  className='animate-fadein'
+                >
                   {previewIsImage ? (
                     <img
                       src={
@@ -178,7 +162,7 @@ const Previwer: React.FC<PreviewProps> = () => {
                         objectFit: 'contain',
                         height: '100%',
                         maxWidth: '100%',
-                        opacity:loading?0.5:1
+                        opacity: loading ? 0.5 : 1
                       }}
                       alt=''
                     />
@@ -195,7 +179,7 @@ const Previwer: React.FC<PreviewProps> = () => {
                       Tu navegador no soporta vídeos
                     </video>
                   )}
-                  {previewIsImage&&<BottomControls  />}
+                  {previewIsImage && <BottomControls />}
                 </Box>
               </Box>
             </Box>
@@ -205,9 +189,7 @@ const Previwer: React.FC<PreviewProps> = () => {
               ))}
             </Box>
           </Box>
-          <Box width='100%' height='10%'>
-
-          </Box>
+          <Box width='100%' height='10%'></Box>
         </Box>
       </Box>
     </>
@@ -215,7 +197,7 @@ const Previwer: React.FC<PreviewProps> = () => {
 }
 
 const BottomImage = ({ asset }: { asset: Asset }) => {
-  const { selectAsset, previewIsImage, currentAsset,loading } = useContext(
+  const { selectAsset, previewIsImage, currentAsset, loading } = useContext(
     AssetsContext
   )
 
@@ -224,10 +206,10 @@ const BottomImage = ({ asset }: { asset: Asset }) => {
   return (
     <Box
       onClick={() => {
-        if (!loading) {  
-          selectAsset(asset)}
+        if (!loading) {
+          selectAsset(asset)
         }
-        }
+      }}
       width='15%'
       maxHeight='8rem'
       maxWidth='8rem'
@@ -237,7 +219,7 @@ const BottomImage = ({ asset }: { asset: Asset }) => {
       overflow='hidden'
       style={{
         border: isTheCurrent ? '1px solid white' : 'none',
-        cursor: loading?'default':'pointer'
+        cursor: loading ? 'default' : 'pointer'
       }}
       className='animate-elevate'
     >
@@ -247,7 +229,7 @@ const BottomImage = ({ asset }: { asset: Asset }) => {
           objectFit: 'cover',
           width: '100%',
           height: '100%',
-          opacity:loading?0.5:1
+          opacity: loading ? 0.5 : 1
         }}
         alt=''
       />
@@ -256,91 +238,91 @@ const BottomImage = ({ asset }: { asset: Asset }) => {
 }
 
 function BottomControls () {
-  const { prevPreview, nextPreview, currentAsset, currentAssets,loading } = useContext(
-    AssetsContext
-  )
+  const {
+    prevPreview,
+    nextPreview,
+    currentAsset,
+    currentAssets,
+    loading
+  } = useContext(AssetsContext)
 
   const [isMaxViewerVisible, setisMaxViewerVisible] = useState(false)
   let indiceCurrent = currentAssets.findIndex(
     (asset: Asset) => asset.uuid === currentAsset.uuid
   )
-  const closeMaxViewer=()=>{
+  const closeMaxViewer = () => {
     setisMaxViewerVisible(false)
   }
-  const openMaxViewer=()=>{
+  const openMaxViewer = () => {
     if (!loading) {
       setisMaxViewerVisible(true)
     }
   }
-    
+
   const isTheFirst = indiceCurrent === 0
   const isTheLast = indiceCurrent === currentAssets.length - 1
 
   const stylesIcons = { color: 'white', cursor: 'pointer', fontSize: '2rem' }
   return (
     <>
-    {isMaxViewerVisible&&<MaxViewer closeMaxViewer={closeMaxViewer} />}
+      {isMaxViewerVisible && <MaxViewer closeMaxViewer={closeMaxViewer} />}
 
-    <Box
-      height='10%'
-      position='absolute'
-      
-      bottom={0}
-      display='flex'
-      justifyContent='center'
-      left={0}
-      right={0}
-      style={{ backgroundColor: 'rgba(36, 37, 38, 0.4)' }}
-      >
       <Box
+        height='10%'
+        position='absolute'
+        bottom={0}
         display='flex'
-        height='100%'
-        minWidth='31.75rem'
-        maxWidth='31.75rem'
-        justifyContent='space-between'
-        alignItems='center'
+        justifyContent='center'
+        left={0}
+        right={0}
+        style={{ backgroundColor: 'rgba(36, 37, 38, 0.4)' }}
+      >
+        <Box
+          display='flex'
+          height='100%'
+          minWidth='31.75rem'
+          maxWidth='31.75rem'
+          justifyContent='space-between'
+          alignItems='center'
         >
-        <Box></Box>
-        <Box>
-        <IconButton>
-
-
-          <SkipPreviousOutlinedIcon
-            onClick={() => {
-              if (!isTheFirst&&!loading) {
-                prevPreview()
-              }
-            }}
-            style={{
-              ...stylesIcons,
-              opacity: isTheFirst ? 0 : 1,
-              cursor: isTheFirst ? 'default' : 'pointer'
-            }}
-            />
+          <Box></Box>
+          <Box>
+            <IconButton>
+              <SkipPreviousOutlinedIcon
+                onClick={() => {
+                  if (!isTheFirst && !loading) {
+                    prevPreview()
+                  }
+                }}
+                style={{
+                  ...stylesIcons,
+                  opacity: isTheFirst ? 0 : 1,
+                  cursor: isTheFirst ? 'default' : 'pointer'
+                }}
+              />
             </IconButton>
             <IconButton>
-
-          <SkipNextOutlinedIcon
-            onClick={() => {
-              if (!isTheLast&&!loading) {
-                nextPreview()
-              }
-            }}
-            style={{
-              ...stylesIcons,
-              marginLeft: '1rem',
-              opacity: isTheLast ? 0 : 1,
-              cursor: isTheLast ? 'default' : 'pointer'
-            }}
-            />
+              <SkipNextOutlinedIcon
+                onClick={() => {
+                  if (!isTheLast && !loading) {
+                    nextPreview()
+                  }
+                }}
+                style={{
+                  ...stylesIcons,
+                  marginLeft: '1rem',
+                  opacity: isTheLast ? 0 : 1,
+                  cursor: isTheLast ? 'default' : 'pointer'
+                }}
+              />
             </IconButton>
-        </Box>
-        <Box>
-          <FullscreenIcon onClick={openMaxViewer} style={stylesIcons} />
+          </Box>
+          <Box>
+            <FullscreenIcon onClick={openMaxViewer} style={stylesIcons} />
+          </Box>
         </Box>
       </Box>
-    </Box>
-            </>
+    </>
   )
 }
 

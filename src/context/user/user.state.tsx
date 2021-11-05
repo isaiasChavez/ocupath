@@ -3,7 +3,6 @@ import axios, { tokenAuth } from '../../config/axios'
 import { useRouter } from 'next/router'
 import UserContext, {
   AddNewSuscriptionSuscriptionDTO,
-  ChangeName,
   ConfirmUserPassword,
   CreateAdminDTO,
   CreateUserDTO,
@@ -18,10 +17,11 @@ import UserContext, {
   UpdateUserAdminDTO,
   UpdateUserDTO,
 } from './user.context'
-
-import { AD_A, US_A, LOG_A, URLS, USERS } from '../../types/index'
-import UserReducer, { Profile, User, UserStateType } from './user.reducer'
+import { AD_A, US_A, LOG_A, URLS, USERS, ROUTES } from '../../types/index'
+import UserReducer, {  User, UserStateType } from './user.reducer'
 import { LoginDTO } from '../../types/types'
+import { TypesNotification} from '../../types'
+TypesNotification
 import { validateOrReject } from 'class-validator'
 import NotificationsContext from '../notifications/notifications.context'
 
@@ -40,20 +40,20 @@ const UserState = ({ children }) => {
       setLoading(false)
       if (data.status === 0) {
         sendAlert({
-          type: 'success',
+          type: TypesNotification.success,
           msg: 'Your password has been reset',
         })
         router.push('/login')
       }
       if (data.status === 5 || data.status == 10) {
         sendAlert({
-          type: 'error',
+          type: TypesNotification.error,
           msg: 'Token error',
         })
       }
     } catch (error) {
       sendAlert({
-        type: 'error',
+        type: TypesNotification.error,
         msg: error.message,
       })
       setLoading(false)
@@ -71,7 +71,7 @@ const UserState = ({ children }) => {
       setLoading(false)
       if (response.data.status === 0) {
         sendAlert({
-          type: 'success',
+          type: TypesNotification.success,
           msg: 'An email has been sent with the data to restore your password',
         })
         dispatch({
@@ -81,12 +81,12 @@ const UserState = ({ children }) => {
       }
       if (response.data.status === 1) {
         sendAlert({
-          type: 'success',
+          type: TypesNotification.error,
           msg: 'User does not exist',
         })
       } else if (response.data.status === 2) {
         sendAlert({
-          type: 'warning',
+          type: TypesNotification.error,
           msg: 'We have not been able to contact this email',
         })
       }
@@ -94,7 +94,7 @@ const UserState = ({ children }) => {
       return response.data.status
     } catch (error) {
       sendAlert({
-        type: 'error',
+        type: TypesNotification.error,
         msg: error.message,
       })
       setLoading(false)
@@ -136,7 +136,7 @@ const UserState = ({ children }) => {
       setLoading(false)
       if (data.status === 0) {
         sendAlert({
-          type: 'success',
+          type: TypesNotification.success,
           msg: 'The invitation has been sent successfully',
         })
         dispatch({
@@ -146,25 +146,25 @@ const UserState = ({ children }) => {
       }
       if (data.status === 6) {
         sendAlert({
-          type: 'error',
+          type: TypesNotification.error,
           msg: 'You cannot select a date before today',
         })
       }
       if (data.status === 5) {
         sendAlert({
-          type: 'error',
+          type: TypesNotification.error,
           msg: 'Operation not allowed',
         })
       }
       if (data.status === 405) {
         sendAlert({
-          type: 'error',
+          type: TypesNotification.error,
           msg: 'Operation not allowed',
         })
       }
       if (data.status === 3) {
         sendAlert({
-          type: 'warning',
+          type: TypesNotification.warning,
           msg:
             'The invitation has been registered but an error occurred while sending the email',
         })
@@ -175,19 +175,19 @@ const UserState = ({ children }) => {
       }
       if (data.status === 8) {
         sendAlert({
-          type: 'warning',
+          type: TypesNotification.warning,
           msg:
             'The invitation already existed, the previous invitation has been resent',
           stop: true,
         })
         sendAlert({
-          type: 'success',
+          type: TypesNotification.success,
           msg: 'The invitation has been sent successfully',
         })
       }
       if (data.status === 9) {
         sendAlert({
-          type: 'warning',
+          type: TypesNotification.warning,
           msg: 'User already exists',
         })
       }
@@ -195,7 +195,7 @@ const UserState = ({ children }) => {
     } catch (error) {
       setLoading(false)
       sendAlert({
-        type: 'error',
+        type: TypesNotification.error,
         msg: error.message,
       })
 
@@ -217,7 +217,7 @@ const UserState = ({ children }) => {
     } catch (error) {
       setLoading(false)
       sendAlert({
-        type: 'error',
+        type: TypesNotification.error,
         msg: error.message,
       })
       console.error('** Error geting user childrens ** ', { error })
@@ -232,20 +232,20 @@ const UserState = ({ children }) => {
       setLoading(false)
       if (data.status === 0) {
         sendAlert({
-          type: 'success',
+          type: TypesNotification.success,
           msg: 'Successful registration',
         })
         router.push('/login')
       }
       if (data.status === 2) {
         sendAlert({
-          type: 'warning',
+          type: TypesNotification.warning,
           msg: 'This email is already registered',
         })
       }
       if (data.status === 3) {
         sendAlert({
-          type: 'warning',
+          type: TypesNotification.warning,
           msg: 'The invitation has been sent but the email does not exist',
         })
       }
@@ -254,7 +254,7 @@ const UserState = ({ children }) => {
     } catch (error) {
       setLoading(false)
       sendAlert({
-        type: 'error',
+        type: TypesNotification.error,
         msg: 'An error has occurred | code (u2)',
       })
       console.error('** Error validating addUserAdm ** ', { error })
@@ -268,7 +268,7 @@ const UserState = ({ children }) => {
       setLoading(false)
       if (data.status === 0) {
         sendAlert({
-          type: 'success',
+          type: TypesNotification.success,
           msg: 'Successful registration',
         })
         dispatch({
@@ -279,20 +279,20 @@ const UserState = ({ children }) => {
       }
       if (data.status === 3) {
         sendAlert({
-          type: 'error',
+          type: TypesNotification.error,
           msg:
             'The person who invites you cannot invite more people, please contact him',
         })
       }
       if (data.status === 2) {
         sendAlert({
-          type: 'warning',
+          type: TypesNotification.warning,
           msg: 'The email already exists',
         })
       }
       if (data.status === 1) {
         sendAlert({
-          type: 'warning',
+          type: TypesNotification.warning,
           msg: "We couldn't find an invitation for you",
         })
       }
@@ -314,7 +314,7 @@ const UserState = ({ children }) => {
     } catch (error) {
       setLoading(false)
       sendAlert({
-        type: 'error',
+        type: TypesNotification.error,
         msg: 'An error has occurred code (u1)',
       })
       console.error('** Error validating addUserAdm ** ', { error })
@@ -333,19 +333,19 @@ const UserState = ({ children }) => {
       }
       if (data.status === 1) {
         sendAlert({
-          type: 'error',
+          type: TypesNotification.error,
           msg: 'Not allowed',
         })
       }
       if (data.status === 2) {
         sendAlert({
-          type: 'warning',
+          type: TypesNotification.warning,
           msg: 'An error has occurred',
         })
       }
     } catch (error) {
       sendAlert({
-        type: 'error',
+        type: TypesNotification.error,
         msg: 'An error has occurred code (u0)',
       })
       setLoading(false)
@@ -360,7 +360,7 @@ const UserState = ({ children }) => {
       const { data } = await axios.post(URLS.adminChildDetail, dto)
       if (data.status === 1) {
         sendAlert({
-          type: 'error',
+          type: TypesNotification.error,
           msg: 'Not allowed',
         })
       }
@@ -399,19 +399,19 @@ const UserState = ({ children }) => {
       setLoading(false)
       if (data.status === 0) {
         sendAlert({
-          type: 'success',
+          type: TypesNotification.success,
           msg: 'Admin deleted successfully',
         })
       }
       if (data.status === 1) {
         sendAlert({
-          type: 'error',
+          type: TypesNotification.error,
           msg: 'Not allowed',
         })
       }
       if (data.status === 2) {
         sendAlert({
-          type: 'error',
+          type: TypesNotification.error,
           msg: 'admin not founded',
         })
       }
@@ -436,19 +436,19 @@ const UserState = ({ children }) => {
 
       if (data.status === 0) {
         sendAlert({
-          type: 'success',
+          type: TypesNotification.success,
           msg: 'User deleted successfully',
         })
       }
       if (data.status === 1) {
         sendAlert({
-          type: 'error',
+          type: TypesNotification.error,
           msg: 'Not allowed',
         })
       }
       if (data.status === 2) {
         sendAlert({
-          type: 'error',
+          type: TypesNotification.error,
           msg: 'User not founded',
         })
       }
@@ -496,7 +496,7 @@ const UserState = ({ children }) => {
       }
       if (data.status === 2) {
         sendAlert({
-          type: 'warning',
+          type: TypesNotification.warning,
           msg: 'User not found',
         })
       }
@@ -524,7 +524,7 @@ const UserState = ({ children }) => {
       }
       if (data.status === 2) {
         sendAlert({
-          type: 'warning',
+          type: TypesNotification.warning,
           msg: 'User not found',
         })
       }
@@ -546,14 +546,14 @@ const UserState = ({ children }) => {
           payload: data,
         })
         sendAlert({
-          type: 'success',
+          type: TypesNotification.success,
           msg: 'User has been updated',
         })
       }
       return data.status
     } catch (error) {
       sendAlert({
-        type: 'error',
+        type: TypesNotification.error,
         msg: error.message,
       })
       setLoading(false)
@@ -599,7 +599,7 @@ const UserState = ({ children }) => {
           payload: data,
         })
         sendAlert({
-          type: 'success',
+          type: TypesNotification.success,
           msg: 'Suscription has been updated',
         })
       }
@@ -626,13 +626,13 @@ const UserState = ({ children }) => {
           },
         })
         if (data.profile.type === USERS.SUPER + 1) {
-          router.push('/superadmin')
+          router.push(ROUTES.panelSuperAdmin)
         }
         if (data.profile.type === USERS.ADMIN + 1) {
-          router.push('/panel/admin')
+          router.push(ROUTES.panelAdmin)
         }
         if (data.profile.type === USERS.GUEST + 1) {
-          router.push('/panel/user')
+          router.push(ROUTES.panelGuest)
         }
         return null
       } else {
@@ -642,7 +642,7 @@ const UserState = ({ children }) => {
       console.log({error})
       setLoading(false)
       sendAlert({
-        type: 'warning',
+        type: TypesNotification.warning,
         msg: 'Could not log in',
       })
     }
@@ -662,7 +662,7 @@ const UserState = ({ children }) => {
     } catch (error) {
       setLoading(false)
       sendAlert({
-        type: 'warning',
+        type: TypesNotification.warning,
         msg: 'Could send email',
       })
     }

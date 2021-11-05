@@ -3,13 +3,10 @@ import NotificationContext from "./notifications.context";
 import NotificationReducer, { NotificationStateType } from "./notifications.reducer";
 import { toast } from 'react-toastify';
 import {TypesNotification} from '../../types'
-
-
 const NotificationState = ({ children }) => {
   const [state, dispatch] = useReducer(NotificationReducer, initialState());
 
-
-  const sendAlert = async ({msg,type,stop}:{msg:string,type:TypesNotification,stop:boolean}) => {
+  const sendAlert = async ({msg,type,stop}: {msg:string,type:TypesNotification,stop:boolean}) => {
     try {
         if (type===TypesNotification.success) {
           toast.success(msg, {

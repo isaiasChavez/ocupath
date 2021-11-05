@@ -30,7 +30,6 @@ const TableGuest: React.FC<TableGuestProps> = () => {
     suspendUser,
     loading,
   } = useContext(UserContext)
-  const rows = childrens.users
   const toggleDeleteUserModal = () => {
     setIsOpenDeleteUserModal(!isOpenDeleteUserModal)
   }

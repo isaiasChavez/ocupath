@@ -7,7 +7,7 @@ import {
   withStyles,
   IconButton,
 } from '@material-ui/core'
-import { Images,URLS,USERS,USERS_TYPES } from '../../types/index'
+import { Images,URLS,USERS,USERS_TYPES,TypesNotification } from '../../types/index'
 import EditIcon from '@material-ui/icons/Edit'
 import UserContext,{ UpdateUserDTO } from '../../context/user/user.context'
 import clienteAxios from '../../config/axios'
@@ -297,7 +297,7 @@ const RightSide = () => {
       }
     } catch (error) {
       sendAlert({
-        type: 'error',
+        type: TypesNotification.error,
         msg: 'An error occurred while uploading the images'
       })
     }
@@ -310,7 +310,7 @@ const RightSide = () => {
       if (!okFiles.includes(file.type)) {
 
         sendAlert({
-          type: 'warning',
+          type: TypesNotification.warning,
           msg: 'Only .png / .jpg'
         })
         return
