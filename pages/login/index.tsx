@@ -331,49 +331,7 @@ const Login: React.FC<LoginProps> = () => {
               }}
               variant='outlined'
             />
-            {/* <CustomInputDos size='small' fullWidth variant='outlined'>
-                  <InputLabel
-                    style={ { color: 'white' } }
-                    htmlFor='outlined-adornment-password'
-                  >
-                    Password
-                  </InputLabel> */}
-            {/* <OutlinedInput
-                disabled={ loading }
-                id='outlined-adornment-password'
-                type={ loginState.showPassword ? 'text' : 'password' }
-                value={ loginState.password }
-                name='password'
-                
-                error={ errors.password !== null }
-                required
-                style={ {
-                  color: 'white'
-                } }
-                onChange={ onChange }
-                autoComplete='current-password'
-                endAdornment={
-                  <InputAdornment position='end'>
-                    <IconButton
-                      aria-label='toggle password visibility'
-                      onClick={ handleClickShowPassword }
-                      onMouseDown={ handleMouseDownPassword }
-                      edge='end'
-                      style={ {
-                        color: 'white'
-                      } }
-                    >
-                      { loginState.showPassword ? (
-                        <Visibility />
-                      ) : (
-                        <VisibilityOff />
-                      ) }
-                    </IconButton>
-                  </InputAdornment>
-                }
-                labelWidth={ 70 }
-              /> */}
-            {/* </CustomInputDos> */}
+           
 
             <div
               style={{

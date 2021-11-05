@@ -208,7 +208,6 @@ const Register: React.FC<RegisterProps> = () => {
                   className={ classes.input }
                   disabled={loading}
                   value={ dataUsuario.name }
-                  autoComplete="fname"
                   name="name"
                   variant="outlined"
                   required
