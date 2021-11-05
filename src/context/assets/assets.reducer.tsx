@@ -117,6 +117,7 @@ const userReducer = (
         previewIsImage,
         ...payload
       }
+      //
     case MIS.SELECT_ASSET:
       return {
         ...state,
