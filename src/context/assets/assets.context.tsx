@@ -1,6 +1,6 @@
-import {  IsNotEmpty,IsString,IsUUID } from "class-validator";
+import {  IsNotEmpty,IsNumber,IsOptional,IsString,IsUrl,IsUUID } from "class-validator";
 import { createContext } from "react";
-
+import {FILES_TYPES} from '../../types'
 
   export class CreateAssetDTO {
   constructor (url: string) {
@@ -8,6 +8,32 @@ import { createContext } from "react";
   }
   url: string;
 }
+export class CreateNewAssetDTO {
+    constructor({url,typeAsset,thumbnail,nameAsset }) {
+        this.url = url
+        this.typeAsset = typeAsset
+        this.thumbnail=thumbnail
+        this.nameAsset = nameAsset
+
+    }
+   
+    @IsNotEmpty()
+    @IsString()
+    @IsUrl()
+    url: string;
+    @IsString()
+    @IsUrl()
+    thumbnail: string;
+    @IsNotEmpty()
+    @IsNumber()
+    typeAsset: FILES_TYPES;
+    @IsNotEmpty()
+    @IsString()
+    nameAsset: string;
+  
+}
+
+
 
 export class DeleteAssetDto {
   constructor (uuid: string) {
@@ -31,7 +57,8 @@ export type Asset =  {
     name: string
   },
   url:string,
-  uuid:string
+  uuid:string,
+  name:string
 }
 
 

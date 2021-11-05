@@ -2,7 +2,7 @@ import { useCallback, useContext, useEffect, useState } from "react"
 import { useDropzone } from "react-dropzone"
 import { Config } from "../../config"
 import { nameLengthValidator } from "../../config/utils"
-import AssetsContext, { Asset } from "../../context/assets/assets.context"
+import AssetsContext, { Asset, CreateNewAssetDTO } from "../../context/assets/assets.context"
 import clienteAxios from '../../config/axios'
 import NotificationsContext from "../../context/notifications/notifications.context"
 import {
@@ -68,7 +68,7 @@ const Video360Uploader: React.FC<Video360Props> = ({ loading, setLoading }) => {
         setLoading(true)
         const formData = new FormData()
         //Aquí se cambia para modificar el nombre con el que se sube el archivo, no lo pude modificar, pero debería ser el nombre original en lugar de filename
-        formData.append(FilesConfiguration.nameToUpload, blob, 'filename.png')
+        formData.append(FilesConfiguration.nameToUpload, blob, 'thumbnail360.png')
         const { data: urlThumnail } = await clienteAxios.post(
           URLS.urlUploadImage360,
           formData
@@ -125,10 +125,11 @@ const Video360Uploader: React.FC<Video360Props> = ({ loading, setLoading }) => {
       formData.append(FilesConfiguration.nameToUpload, selectedFile)
       const response = await clienteAxios.post(URLS.urlUploadVideo360, formData)
 
-      const DTO = {
+      const DTO:CreateNewAssetDTO = {
         url: response.data,
         typeAsset: FILES_TYPES.VIDEO_360,
-        thumbnail
+        thumbnail,
+        nameAsset:selectedFile.name
       }
       const { data } = await clienteAxios.post(URLS.createAsset, DTO)
       setLoading(false)
@@ -196,7 +197,7 @@ const Video360Uploader: React.FC<Video360Props> = ({ loading, setLoading }) => {
           <img className='mr-2' src={Images.iconoInfo} alt='icon info' />
 
           <Box color='white' fontFamily='font2'>
-            The files should not exceed a weight greater than ${FilesConfiguration.videos360.maxSize/Constants.MB} MB
+            The files should not exceed a weight greater than {FilesConfiguration.videos360.maxSize/Constants.MB} MB
           </Box>
         </Box>
         <Paper>

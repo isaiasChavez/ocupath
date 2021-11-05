@@ -39,7 +39,7 @@ export class Config {
 
 
 
-   static BASE_URL = "http://localhost:5000/";
+  static BASE_URL = "http://localhost:5000/";
  
   //static BASE_URL = "https://ocupathdev.herokuapp.com/";  
   static DEFAULT_AVATAR =

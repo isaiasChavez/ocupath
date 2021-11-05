@@ -2,7 +2,7 @@ import { useCallback, useContext, useEffect, useState } from "react"
 import { useDropzone } from "react-dropzone"
 import { Config } from "../../config"
 import { nameLengthValidator } from "../../config/utils"
-import AssetsContext, { Asset } from "../../context/assets/assets.context"
+import AssetsContext, { Asset, CreateNewAssetDTO } from "../../context/assets/assets.context"
 import clienteAxios from '../../config/axios'
 import NotificationsContext from "../../context/notifications/notifications.context"
 import {
@@ -113,10 +113,11 @@ const ImgUploader: React.FC<ImgProps> = ({ loading, setLoading }) => {
           URLS.urlUploadImage,
           formDataImageRaw
         )
-        const DTO = {
+        const DTO:CreateNewAssetDTO = {
           url: response.data,
           thumbnail: urlThumnail,
-          typeAsset: FILES_TYPES.IMG
+          typeAsset: FILES_TYPES.IMG,
+          nameAsset:selectedFile.name
         }
 
         const responseUploadUser = await clienteAxios.post(

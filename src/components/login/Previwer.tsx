@@ -1,11 +1,10 @@
-import { Box, IconButton, LinearProgress } from '@material-ui/core'
+import { Box, IconButton } from '@material-ui/core'
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined'
 import FullscreenIcon from '@material-ui/icons/Fullscreen'
 import SkipNextOutlinedIcon from '@material-ui/icons/SkipNextOutlined'
 import SkipPreviousOutlinedIcon from '@material-ui/icons/SkipPreviousOutlined'
 import CloseIcon from '@material-ui/icons/Close'
 import AssetsContext, { Asset } from '../../context/assets/assets.context'
-import { FILES_TYPES } from '../../types'
 import { useContext, useEffect, useRef, useState } from 'react'
 import MaxViewer from '../general/MaxViewer'
 
@@ -23,47 +22,7 @@ const Previwer: React.FC<PreviewProps> = () => {
   const videoRef = useRef()
   const previousUrl = useRef(currentAsset.url)
   console.log({ currentAsset })
-  const nameImage = () => {
-    let newName = currentAsset.thumbnail
-    const prefixImages = 'https://ocupath.fra1.digitaloceanspaces.com/image/'
-    const prefixImages360 =
-      'https://ocupath.fra1.digitaloceanspaces.com/image360/'
-    const prefixVideo = 'https://ocupath.fra1.digitaloceanspaces.com/video/'
-    const prefixVideo360 =
-      'https://ocupath.fra1.digitaloceanspaces.com/video360/'
-    const prefixNormal =
-      'https://spacegeneral.sfo2.digitaloceanspaces.com/ocupath/ocupath/'
-
-    if (previewIsImage) {
-      if (
-        currentAsset.thumbnail.includes(prefixNormal)
-      ) {
-        newName = currentAsset.thumbnail.replace(prefixNormal,'')
-      }
-      if (currentAsset.thumbnail.includes(prefixImages)) {
-        newName = currentAsset.thumbnail.replace(prefixImages, '')
-      }
-      if (currentAsset.thumbnail.includes(prefixImages360)) {
-        newName = currentAsset.thumbnail.replace(prefixImages360, '')
-      }
-    } else {
-      //Preview is video
-      if (currentAsset.thumbnail.includes(prefixImages)) {
-        newName = currentAsset.thumbnail.replace(prefixImages, '')
-      }
-      if (currentAsset.thumbnail.includes(prefixVideo)) {
-        newName = currentAsset.thumbnail.replace(prefixVideo, '')
-      }
-      if (currentAsset.thumbnail.includes(prefixVideo360)) {
-        newName = currentAsset.thumbnail.replace(prefixVideo360, '')
-      }
-
-      if (currentAsset.thumbnail.includes(prefixImages360)) {
-        newName = currentAsset.thumbnail.replace(prefixImages360, '')
-      }
-    }
-    return newName
-  }
+  
   const onDeleteAsset = () => {
     deleteAsset(currentAsset.uuid)
   }
@@ -109,7 +68,7 @@ const Previwer: React.FC<PreviewProps> = () => {
         >
           <Box height='10%' width='100%' display='flex' alignItems='center'>
             <Box flex='0.92' textAlign='center' color='white'>
-              {nameImage()}
+              {currentAsset.name}
             </Box>
             <Box flex='0.08' display='flex' justifyContent='center'>
               <IconButton>

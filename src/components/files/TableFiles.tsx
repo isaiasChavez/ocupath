@@ -33,6 +33,7 @@ export const Constants = {
   MB: 1e6
 }
 
+
 export const FilesConfiguration = {
   images: {
     minSize: Constants.MB * 1,

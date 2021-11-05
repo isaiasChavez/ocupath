@@ -120,62 +120,36 @@ const UserState = ({ children }) => {
   )
 }
 
+const AssetExample = {
+          thumbnail: '',
+          typeAsset: {
+            id: 0,
+            name: ''
+          },
+          uuid: '',
+          url: '',
+          name:""
+        }
+
 const initialState = () => {
   let state: AssetsStateType = {
     isPreviewerOpened: false,
     previewIsImage: false,
     currentAssets: [],
-    currentAsset: {
-      uuid: '',
-      thumbnail: '',
-      url: '',
-      typeAsset: {
-        id: null,
-        name: ''
-      }
-    },
+    currentAsset:AssetExample,
     assets: {
       images: [
         {
           typeAsset: { id: 0, name: '' },
           thumbnail: '',
           url: '',
-          uuid: ''
+          uuid: '',
+          name:""
         }
       ],
-      images360: [
-        {
-          thumbnail: '',
-          typeAsset: {
-            id: 0,
-            name: ''
-          },
-          uuid: '',
-          url: ''
-        }
-      ],
-      videos: [
-        {
-          thumbnail: '',
-          typeAsset: {
-            id: 0,
-            name: ''
-          },
-          uuid: '',
-          url: ''
-        }
-      ],
-      videos360: [
-        {
-          thumbnail: '',
-          typeAsset: {
-            id: 0,
-            name: ''
-          },
-          uuid: '',
-          url: ''
-        }
-      ]
+      images360: [AssetExample],
+      videos: [AssetExample],
+      videos360: [AssetExample]
     }
   }
   return state

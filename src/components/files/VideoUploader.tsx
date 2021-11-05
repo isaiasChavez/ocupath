@@ -2,7 +2,7 @@ import { useCallback, useContext, useEffect, useState } from "react"
 import { useDropzone } from "react-dropzone"
 import { Config } from "../../config"
 import { nameLengthValidator } from "../../config/utils"
-import AssetsContext, { Asset } from "../../context/assets/assets.context"
+import AssetsContext, { Asset, CreateNewAssetDTO } from "../../context/assets/assets.context"
 import clienteAxios from '../../config/axios'
 import NotificationsContext from "../../context/notifications/notifications.context"
 import {
@@ -40,7 +40,7 @@ const VideoUploader : React.FC<VideoProps> = ({ loading, setLoading }) => {
         sendAlert({
           type: TypesNotification.warning,
           msg: `File is larger than ${FilesConfiguration.videos.maxSize /
-            Constants.MB} MB`
+            Constants.MB} MB`,
         })
       } else {
         sendAlert({
@@ -81,7 +81,7 @@ const VideoUploader : React.FC<VideoProps> = ({ loading, setLoading }) => {
       try {
         setLoading(true)
         const formData = new FormData()
-        formData.append(FilesConfiguration.nameToUpload, blob, 'filename.png')
+        formData.append(FilesConfiguration.nameToUpload, blob, 'thumbnail.png')
         const { data: urlThumnail } = await clienteAxios.post(
           URLS.urlUploadImage,
           formData
@@ -132,10 +132,11 @@ const VideoUploader : React.FC<VideoProps> = ({ loading, setLoading }) => {
       const response = await clienteAxios.post(URLS.urlUploadVideo, formData)
       setLoading(false)
 
-      const DTO = {
+      const DTO:CreateNewAssetDTO = {
         url: response.data,
         typeAsset: FILES_TYPES.VIDEO,
-        thumbnail
+        thumbnail,
+        nameAsset:selectedFile.name
       }
       const { data } = await clienteAxios.post(URLS.createAsset, DTO)
       setLoading(false)
@@ -206,7 +207,7 @@ const VideoUploader : React.FC<VideoProps> = ({ loading, setLoading }) => {
             <img className='mr-2' src={Images.iconoInfo} alt='icon info' />
 
             <Box color='white' fontFamily='font2'>
-              The files should not exceed a weight greater than ${FilesConfiguration.videos.maxSize /
+              The files should not exceed a weight greater than {FilesConfiguration.videos.maxSize /
             Constants.MB} MB
             </Box>
           </Box>

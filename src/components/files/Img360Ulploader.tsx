@@ -1,7 +1,7 @@
 import { useCallback, useContext, useEffect, useState } from "react"
 import { Config } from "../../config"
 import { nameLengthValidator } from "../../config/utils"
-import AssetsContext, { Asset } from "../../context/assets/assets.context"
+import AssetsContext, { Asset, CreateNewAssetDTO } from "../../context/assets/assets.context"
 import NotificationsContext from "../../context/notifications/notifications.context"
 import { Constants, FilesConfiguration, ImageGrid, useStylesFiles } from "./TableFiles"
 import clienteAxios from '../../config/axios'
@@ -109,10 +109,11 @@ const Img360Uploader: React.FC<Img360Props> = ({ loading, setLoading }) => {
           formDataImageRaw
         )
         setLoading(false)
-        const DTO = {
+        const DTO:CreateNewAssetDTO = {
           url: response.data,
           thumbnail: urlThumnail,
-          typeAsset: FILES_TYPES.IMG_360
+          typeAsset: FILES_TYPES.IMG_360,
+          nameAsset:selectedFile.name
         }
         const { data } = await clienteAxios.post(URLS.createAsset, DTO)
         if (data.status === 0) {
@@ -173,6 +174,8 @@ const Img360Uploader: React.FC<Img360Props> = ({ loading, setLoading }) => {
     openPreviewer(currentAsset, assets.images360)
   }
   const isEmpty = assets.images360.length == 0
+  const sizeInNumber:number  = FilesConfiguration.images360.maxSize / Constants.MB
+  console.log({sizeInNumber})
   return (
     <>
       <Box {...getRootProps()} width='100%' height='100%' position='relative'>
@@ -221,8 +224,7 @@ const Img360Uploader: React.FC<Img360Props> = ({ loading, setLoading }) => {
             <img className='mr-2' src={Images.iconoInfo} alt='icon info' />
 
             <Box color='white' fontFamily='font2'>
-              The files should not exceed a weight greater than $
-              {FilesConfiguration.images360.maxSize / Constants.MB} MB
+              The files should not exceed a weight greater than {sizeInNumber} MB
             </Box>
           </Box>
           <Box
