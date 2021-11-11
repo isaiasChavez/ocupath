@@ -1,23 +1,22 @@
 import { useCallback, useContext, useEffect, useState } from "react"
 import { Config } from "../../config"
-import { nameLengthValidator } from "../../config/utils"
-import AssetsContext, { Asset, CreateNewAssetDTO } from "../../context/assets/assets.context"
+import {validateFile } from "../../config/utils"
+import AssetsContext, { Asset } from "../../context/assets/assets.context"
 import NotificationsContext from "../../context/notifications/notifications.context"
 import { Constants, FilesConfiguration, ImageGrid, useStylesFiles } from "./TableFiles"
-import clienteAxios from '../../config/axios'
-import { URLS,TypesNotification,FILES_TYPES, Images } from "../../types"
+import { TypesNotification,FILES_TYPES, Images } from "../../types"
 import { useDropzone } from "react-dropzone"
 import { Box, Button, Paper } from "@material-ui/core"
 import DropZone from "./DropZone"
 
 export interface Img360Props {
   loading: boolean
-  setLoading: Function
+  setLoading(status:boolean): any
 }
 
 const Img360Uploader: React.FC<Img360Props> = ({ loading, setLoading }) => {
   const [files, setFiles] = useState<FileList | []>([])
-  const { assets, successCreate, openPreviewer } = useContext(AssetsContext)
+  const { assets, openPreviewer,uploadImage360 } = useContext(AssetsContext)
   const { sendAlert } = useContext(NotificationsContext)
 
   useEffect(() => {
@@ -29,21 +28,21 @@ const Img360Uploader: React.FC<Img360Props> = ({ loading, setLoading }) => {
   const classes = useStylesFiles()
 
   const uploadImage = (data: FileList) => {
-    const hasSelectedSomething = data && data.length !== 0
+    const hasSelectedSomething:boolean = data && data.length !== 0
     if (hasSelectedSomething) {
-      const statusImage = Config.isImage360Valid(data[0])
-      if (statusImage.isValid) {
+
+      const statusImage = validateFile(data[0],{
+        maxLengthName:Config.MAX_LENGTH_NAME_SIZE,
+        maxSize:FilesConfiguration.images360.maxSize/ Constants.MB
+      })
+
+      if (!statusImage) {
         setFiles(data)
       } else {
-        if (statusImage.errors.weight) {
           sendAlert({
             type: TypesNotification.warning,
-            msg: `The maximum allowed file weight is: ${FilesConfiguration
-              .images360.maxSize / Constants.MB}MBs, your file has: ${
-              statusImage.dataImage.sizeImage
-            } MBs`
+            msg: statusImage.message
           })
-        }
         setFiles([])
       }
     }
@@ -80,50 +79,39 @@ const Img360Uploader: React.FC<Img360Props> = ({ loading, setLoading }) => {
     maxFiles: 1,
     maxSize: FilesConfiguration.images360.maxSize,
     noClick: true,
-    validator: nameLengthValidator,
+    validator: (file:File)=>{
+      return validateFile(file,{
+        maxLengthName:Config.MAX_LENGTH_NAME_SIZE,
+        maxSize:FilesConfiguration.images360.maxSize/ Constants.MB
+      })
+    },
     multiple: false,
     noKeyboard: true,
     disabled: loading
   })
 
-  const uploadThumbnail = async (formDataImageRaw, selectedFile: File) => {
+  const generateThumbnail = async (formDataImageRaw:FormData, selectedFile: File) => {
     const _CANVAS = document.querySelector(
       '#canvas-element'
     ) as HTMLCanvasElement
+
     _CANVAS.toBlob(async function (blob) {
       try {
-        setLoading(true)
-        const formData = new FormData()
-        formData.append(
+        const formDataThumbnail:FormData = new FormData()
+        formDataThumbnail.append(
           FilesConfiguration.nameToUpload,
           blob,
           selectedFile.name
         )
-        const { data: urlThumnail } = await clienteAxios.post(
-          URLS.urlUploadImage,
-          formData
-        )
 
-        const response = await clienteAxios.post(
-          URLS.urlUploadImage360,
-          formDataImageRaw
-        )
+        await uploadImage360({
+          file:selectedFile,
+          formDataFile:formDataImageRaw,
+          formDataThumbnail
+        })
+
+        setFiles(null)
         setLoading(false)
-        const DTO:CreateNewAssetDTO = {
-          url: response.data,
-          thumbnail: urlThumnail,
-          typeAsset: FILES_TYPES.IMG_360,
-          nameAsset:selectedFile.name
-        }
-        const { data } = await clienteAxios.post(URLS.createAsset, DTO)
-        if (data.status === 0) {
-          successCreate(data.asset)
-          setFiles(null)
-          sendAlert({
-            type: TypesNotification.success,
-            msg: 'Your image has been uploaded successfully'
-          })
-        }
       } catch (error) {
         setLoading(false)
         sendAlert({
@@ -160,8 +148,9 @@ const Img360Uploader: React.FC<Img360Props> = ({ loading, setLoading }) => {
           Config.WIDTH_THUMBNAIL,
           Config.HEIGTH_THUMBNAIL
         )
-        uploadThumbnail(formData, selectedFile)
+        generateThumbnail(formData, selectedFile)
       }
+
     } catch (error) {
       setLoading(false)
       sendAlert({
@@ -173,9 +162,9 @@ const Img360Uploader: React.FC<Img360Props> = ({ loading, setLoading }) => {
   const onOpenPreviewer = (currentAsset: Asset) => {
     openPreviewer(currentAsset, assets.images360)
   }
+
   const isEmpty = assets.images360.length == 0
   const sizeInNumber:number  = FilesConfiguration.images360.maxSize / Constants.MB
-  console.log({sizeInNumber})
   return (
     <>
       <Box {...getRootProps()} width='100%' height='100%' position='relative'>

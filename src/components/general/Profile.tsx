@@ -29,25 +29,35 @@ const Profile: React.FC<ProfileProps> = ({ type ,isEditingAvatar,setIsEditingAva
 
 
 const AvatarSection = ({ toggleAvatarSection }) => {
+
   const iframeUrl = "https://ocupath.readyplayer.me/"
   const thumbnailUrl = "https://render.readyplayer.me/render"
   const classes = useStyles();
   const [isModalVisible,setIsModalVisible] = useState(false)
+
   const { updateUser } = useContext(UserContext)
+
   const [loading, setloading] = useState(false)
   const [urlAvatar,setUrlAvatar] = useState<string>(null)
+
   const handleUrlAvatar = (event) => {
+    console.log("Se inició la función que levanta el modal",{event})
+
+    console.log("event.origin:",event.origin,event.data)
     if (iframeUrl.includes(event.origin)) {
+      console.log("Si entró donde no debería:",iframeUrl.includes(event.origin))
       setUrlAvatar(event.data)
       setIsModalVisible(true)
     }
-
   }
+
   const onCancelAvatar = () => {
     setIsModalVisible(false)
   }
+
   const onSaveAvatar = async () => {
     try {
+
       setIsModalVisible(false)
       setloading(true)
       const { data } = await axios.post(thumbnailUrl,{
@@ -62,6 +72,7 @@ const AvatarSection = ({ toggleAvatarSection }) => {
       })
       const status = await updateUser(updateUserDto)
       setloading(false)
+
       if(status===0){
         toggleAvatarSection()
       }
@@ -91,6 +102,7 @@ const AvatarSection = ({ toggleAvatarSection }) => {
         handleOk={ onSaveAvatar }
         subtitle="Are you sure you want to save these changes?"
       />
+
       <div className={ classes.rootIframe } >
         <div className={ classes.header }>
           <IconButton onClick={ toggleAvatarSection } aria-label="delete">

@@ -61,14 +61,24 @@ export type Asset =  {
   name:string
 }
 
+export type UploadFile = {
+    formDataFile: FormData
+    formDataThumbnail: FormData
+    file: File
+  }
 
 interface AssetsContextInterface {
+  uploadImage(data:UploadFile):Promise<boolean>,
+  uploadImage360(data:UploadFile):Promise<boolean>,
+  uploadVideo(data:UploadFile):Promise<boolean>,
+  uploadVideo360(data:UploadFile):Promise<boolean>,
+  
   deleteAsset: Function;
   successCreate: Function;
   getAssetsUser: Function;
-  openPreviewer:Function;
+  openPreviewer(currentAsset: Asset, currentAssets: Asset[]):any;
   closePreviewer:Function;
-  selectAsset:Function;
+  selectAsset(currentAsset: Asset):any;
   prevPreview:Function,
   nextPreview:Function,
 

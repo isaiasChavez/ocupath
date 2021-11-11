@@ -1,12 +1,11 @@
 import { useCallback, useContext, useEffect, useState } from "react"
 import { useDropzone } from "react-dropzone"
 import { Config } from "../../config"
-import { nameLengthValidator } from "../../config/utils"
-import AssetsContext, { Asset, CreateNewAssetDTO } from "../../context/assets/assets.context"
-import clienteAxios from '../../config/axios'
+import {  validateFile } from "../../config/utils"
+import AssetsContext, { Asset } from "../../context/assets/assets.context"
 import NotificationsContext from "../../context/notifications/notifications.context"
 import {
-  TypesNotification, URLS,
+  TypesNotification, 
   FILES_TYPES,
   Images,
 } from '../../types'
@@ -19,7 +18,7 @@ export interface ImgProps {
 }
 
 const ImgUploader: React.FC<ImgProps> = ({ loading, setLoading }) => {
-  const { assets, successCreate, openPreviewer } = useContext(AssetsContext)
+  const { assets, openPreviewer,uploadImage } = useContext(AssetsContext)
 
   const classes = useStylesFiles()
 
@@ -33,22 +32,20 @@ const ImgUploader: React.FC<ImgProps> = ({ loading, setLoading }) => {
     }
   }, [files])
 
-  const uploadImage = (data: FileList) => {
+  const handleUploadImage = (data: FileList) => {
     const hasSelectedSomething = data && data.length !== 0
     if (hasSelectedSomething) {
-      const statusImage = Config.isImageValid(data[0])
-      if (statusImage.isValid) {
+      const statusImage = validateFile(data[0],{
+        maxLengthName:Config.MAX_LENGTH_NAME_SIZE,
+        maxSize:FilesConfiguration.images.maxSize / Constants.MB
+      })
+      if (!statusImage) {
         setFiles(data)
       } else {
-        if (statusImage.errors.weight) {
           sendAlert({
             type: TypesNotification.warning,
-            msg: `The maximum allowed file weight is: ${FilesConfiguration
-              .images.maxSize / Constants.MB}MBs, your file has: ${
-              statusImage.dataImage.sizeImage
-            } MBs`
+            msg: statusImage.message
           })
-        }
         setFiles([])
       }
     }
@@ -82,7 +79,12 @@ const ImgUploader: React.FC<ImgProps> = ({ loading, setLoading }) => {
     maxFiles: 1,
     maxSize: FilesConfiguration.images.maxSize,
     noClick: true,
-    validator: nameLengthValidator,
+    validator: (file:File)=>{
+      return validateFile(file,{
+        maxLengthName:Config.MAX_LENGTH_NAME_SIZE,
+        maxSize:FilesConfiguration.images.maxSize/ Constants.MB
+      })
+    },
     multiple: false,
     noKeyboard: true,
     disabled: loading
@@ -92,47 +94,33 @@ const ImgUploader: React.FC<ImgProps> = ({ loading, setLoading }) => {
     formDataImageRaw: FormData,
     selectedFile: File
   ) => {
+    
     const _CANVAS = document.querySelector(
       '#canvas-element'
     ) as HTMLCanvasElement
     _CANVAS.toBlob(async function (blob) {
       try {
+        
         setLoading(true)
-        const formData = new FormData()
-        formData.append(
+
+        const formDataThumnail = new FormData()
+        formDataThumnail.append(
           FilesConfiguration.nameToUpload,
           blob,
           selectedFile.name
         )
-        const { data: urlThumnail } = await clienteAxios.post(
-          URLS.urlUploadImage,
-          formData
-        )
 
-        const response = await clienteAxios.post(
-          URLS.urlUploadImage,
-          formDataImageRaw
-        )
-        const DTO:CreateNewAssetDTO = {
-          url: response.data,
-          thumbnail: urlThumnail,
-          typeAsset: FILES_TYPES.IMG,
-          nameAsset:selectedFile.name
-        }
+         await uploadImage({
+          formDataFile:formDataImageRaw,
+          formDataThumbnail:formDataThumnail,
+          file:selectedFile
+        }) 
+       
 
-        const responseUploadUser = await clienteAxios.post(
-          URLS.createAsset,
-          DTO
-        )
+
+        setFiles(null)
         setLoading(false)
-        if (responseUploadUser.data.status === 0) {
-          sendAlert({
-            type: TypesNotification.success,
-            msg: 'Your image has been uploaded successfully'
-          })
-          setFiles(null)
-          successCreate(responseUploadUser.data.asset)
-        }
+
       } catch (error) {
         setLoading(false)
         sendAlert({
@@ -146,8 +134,8 @@ const ImgUploader: React.FC<ImgProps> = ({ loading, setLoading }) => {
   const setImage = async () => {
     try {
       const selectedFile = files[0]
-      const formData = new FormData()
-      formData.append(FilesConfiguration.nameToUpload, selectedFile)
+      const formDataImage = new FormData()
+      formDataImage.append(FilesConfiguration.nameToUpload, selectedFile)
       const newImage = URL.createObjectURL(selectedFile)
 
       const image = new Image()
@@ -167,7 +155,7 @@ const ImgUploader: React.FC<ImgProps> = ({ loading, setLoading }) => {
           Config.WIDTH_THUMBNAIL,
           Config.HEIGTH_THUMBNAIL
         )
-        uploadThumbnail(formData, selectedFile)
+        uploadThumbnail(formDataImage, selectedFile)
       }
     } catch (error) {
       setLoading(false)
@@ -251,7 +239,7 @@ const ImgUploader: React.FC<ImgProps> = ({ loading, setLoading }) => {
             </Box>
             <input
               {...getInputProps()}
-              onChange={e => uploadImage(e.target.files)}
+              onChange={e => handleUploadImage(e.target.files)}
               multiple={false}
               accept={FilesConfiguration.images.filesAcepted}
               id='upload'

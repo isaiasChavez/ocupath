@@ -112,6 +112,8 @@ export const URLS = {
   deleteAsset: "/api/asset",
   assets: "api/asset/",
   
+  urlUploadThumbnailImages:'api/upload/1',
+  urlUploadThumbnailVideos:'api/upload/1',
   urlUploadImage:'api/upload/1',
   urlUploadImage360:'api/upload/2',
   urlUploadVideo:'api/upload/3',

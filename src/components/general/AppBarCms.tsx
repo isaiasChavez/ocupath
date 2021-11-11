@@ -14,29 +14,24 @@ export interface AppBarCmsProps {}
 const AppBarCms: React.FC<AppBarCmsProps> = () => {
   const { loading } = useContext(UserContext)
   const { loadingSesion } = useContext(SesionContext)
-
+  const classes =  useStyles()
+  const isLoading =  loading || loadingSesion
   return (
     <>
       <AppBar
-        style={{
-          backgroundColor: COLORS.blue_header,
-          zIndex: 0,
-        }}
+        className={classes.appbar}
       >
-        {(loading || loadingSesion) && <LinearProgress color="primary" />}
+        {isLoading && <LinearProgress color="primary" />}
         <Toolbar></Toolbar>
       </AppBar>
     </>
   )
 }
 const useStyles = makeStyles((theme) => ({
-  toolbar: {
-    paddingRight: 24, // keep right padding when drawer closed
-  },
-
-  title: {
-    flexGrow: 1,
-  },
+  appbar: {
+          backgroundColor: COLORS.blue_header,
+          zIndex: 0,
+        },
 }))
 
 export default AppBarCms

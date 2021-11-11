@@ -28,12 +28,9 @@ import Video360Uploader from './Video360Uploader'
 interface StyledTabProps {
   label: string
 }
-
 export const Constants = {
   MB: 1e6
 }
-
-
 export const FilesConfiguration = {
   images: {
     minSize: Constants.MB * 1,
@@ -42,12 +39,13 @@ export const FilesConfiguration = {
   },
   images360: {
     minSize: Constants.MB * 1,
-    maxSize: Constants.MB * 4.5,
+    //maxSize: Constants.MB * 4.5,
+    maxSize: Constants.MB * 1,
     filesAcepted: 'image/jpeg, image/png'
   },
   videos: {
     minSize: Constants.MB * 1,
-    maxSize: Constants.MB * 10,
+    maxSize: Constants.MB * 5,
     filesAcepted: 'video/mp4'
   },
   videos360: {

@@ -1,7 +1,7 @@
 import { AxiosResponse } from 'axios'
 import { tokenAuth } from './axios'
 import jwt from 'jsonwebtoken'
-import { Config } from '.'
+import { Config, StatusFile } from '.'
 export const verifyEmail = (email: string): boolean => {
   if (
     /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i.test(
@@ -44,7 +44,7 @@ export const decifreToken = (
   }
 }
 
-export const nameLengthValidator = file => {
+export const nameLengthValidator = (file: File) => {
   if (file.name.length > Config.MAX_LENGTH_NAME_SIZE) {
     return {
       code: 'name-too-large',
@@ -55,7 +55,6 @@ export const nameLengthValidator = file => {
 }
 
 export const verifyPassword = (pass: string) => {
-
   if (pass.length >= 8) {
     let mayuscula = false
     let minuscula = false
@@ -85,7 +84,7 @@ export const verifyPassword = (pass: string) => {
   return false
 }
 
-export const getStatus = (id: number): {name: string,color: string} => {
+export const getStatus = (id: number): { name: string; color: string } => {
   if (id === 0) {
     return {
       name: 'ACTIVE',
@@ -114,6 +113,45 @@ export const getStatus = (id: number): {name: string,color: string} => {
     name: 'NO VALID',
     color: 'primary'
   }
+}
+
+enum ErrorsFile {
+  nameTooLarge = 'name-too-large',
+  fileTooHeavy = 'file-too-heavy'
+}
+
+export const validateFile = (
+  file: File,
+  configuration: {
+    maxSize?: number,
+    maxLengthName?:number
+  }
+): StatusFile | null => {
+  const statusFile: StatusFile = {
+    code: null,
+    message: ''
+  }
+
+  const weight: number = Math.floor(file.size / Config.MB_IN_BITS)
+  console.log("CONFIGURACIN",{configuration,weight})
+
+  if (configuration.maxLengthName && file.name.length > configuration.maxLengthName) {
+    return {
+      code: ErrorsFile.nameTooLarge,
+      message: `Name is larger than ${Config.MAX_LENGTH_NAME_SIZE} characters`
+    }
+  }
+  if (configuration.maxSize && weight > configuration.maxSize) {
+    console.log("CONFIGURACIN")
+    return {
+      code: ErrorsFile.fileTooHeavy,
+      message: `The maximum allowed file weight is: ${configuration.maxSize}MB, your file has: ${weight}MB`
+    }
+  }
+  if (statusFile.code) {
+    return statusFile
+  }
+  return null
 }
 
 export const processError = (res: ErrorEvent): boolean => {

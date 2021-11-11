@@ -1,18 +1,20 @@
-import { useCallback, useContext, useEffect, useState } from "react"
-import { useDropzone } from "react-dropzone"
-import { Config } from "../../config"
-import { nameLengthValidator } from "../../config/utils"
-import AssetsContext, { Asset, CreateNewAssetDTO } from "../../context/assets/assets.context"
-import clienteAxios from '../../config/axios'
-import NotificationsContext from "../../context/notifications/notifications.context"
+import { useCallback, useContext, useEffect, useState } from 'react'
+import { useDropzone } from 'react-dropzone'
+import { Config } from '../../config'
+import { validateFile } from '../../config/utils'
+import AssetsContext, {
+  Asset
+} from '../../context/assets/assets.context'
+import NotificationsContext from '../../context/notifications/notifications.context'
+import { TypesNotification, FILES_TYPES, Images } from '../../types'
 import {
-  TypesNotification, URLS,
-  FILES_TYPES,
-  Images,
-} from '../../types'
-import { Constants, FilesConfiguration, ImageGrid, useStylesFiles } from "./TableFiles"
-import { Box, Button, Paper } from "@material-ui/core"
-import DropZone from "./DropZone"
+  Constants,
+  FilesConfiguration,
+  ImageGrid,
+  useStylesFiles
+} from './TableFiles'
+import { Box, Button, Paper } from '@material-ui/core'
+import DropZone from './DropZone'
 
 export interface Video360Props {
   loading: boolean
@@ -21,8 +23,8 @@ export interface Video360Props {
 
 const Video360Uploader: React.FC<Video360Props> = ({ loading, setLoading }) => {
   const classes = useStylesFiles()
-  const { assets, successCreate, openPreviewer } = useContext(AssetsContext)
-  const [files, setFiles] = useState<FileList>()
+  const { assets, openPreviewer, uploadVideo360 } = useContext(AssetsContext)
+  const [files, setFiles] = useState<FileList | []>()
   const { sendAlert } = useContext(NotificationsContext)
   const [urlVideo, setUrlVideo] = useState<string>('')
 
@@ -33,10 +35,24 @@ const Video360Uploader: React.FC<Video360Props> = ({ loading, setLoading }) => {
     _CANVAS.height = 10
   }, [])
 
-  const uploadVideo360 = (filesUploaded: FileList) => {
-    const url = URL.createObjectURL(filesUploaded[0])
-    setUrlVideo(url)
-    setFiles(filesUploaded)
+  const handleUploadVideo360 = (filesUploaded: FileList) => {
+    const statusVideo = validateFile(filesUploaded[0], {
+      maxLengthName: Config.MAX_LENGTH_NAME_SIZE,
+      maxSize: FilesConfiguration.videos360.maxSize / Constants.MB
+    })
+    console.log({statusVideo})
+
+    if (!statusVideo) {
+      const url = URL.createObjectURL(filesUploaded[0])
+      setUrlVideo(url)
+      setFiles(filesUploaded)
+    } else {
+      sendAlert({
+        type: TypesNotification.warning,
+        msg: statusVideo.message
+      })
+      setFiles([])
+    }
   }
 
   const onDrop = useCallback((acceptedFiles, errors) => {
@@ -44,7 +60,8 @@ const Video360Uploader: React.FC<Video360Props> = ({ loading, setLoading }) => {
       if (error.errors[0].code === 'file-too-large') {
         sendAlert({
           type: TypesNotification.warning,
-          msg: `File is larger than ${FilesConfiguration.videos360.maxSize/Constants.MB} mb`
+          msg: `File is larger than ${FilesConfiguration.videos360.maxSize /
+            Constants.MB} mb`
         })
       } else {
         sendAlert({
@@ -57,7 +74,7 @@ const Video360Uploader: React.FC<Video360Props> = ({ loading, setLoading }) => {
       return
     }
     setFiles(acceptedFiles)
-    uploadVideo360(acceptedFiles)
+    handleUploadVideo360(acceptedFiles)
   }, [])
   const uploadThumbnail = async () => {
     const _CANVAS = document.querySelector(
@@ -65,15 +82,14 @@ const Video360Uploader: React.FC<Video360Props> = ({ loading, setLoading }) => {
     ) as HTMLCanvasElement
     _CANVAS.toBlob(async function (blob) {
       try {
-        setLoading(true)
         const formData = new FormData()
         //Aquí se cambia para modificar el nombre con el que se sube el archivo, no lo pude modificar, pero debería ser el nombre original en lugar de filename
-        formData.append(FilesConfiguration.nameToUpload, blob, 'thumbnail360.png')
-        const { data: urlThumnail } = await clienteAxios.post(
-          URLS.urlUploadImage360,
-          formData
+        formData.append(
+          FilesConfiguration.nameToUpload,
+          blob,
+          'thumbnail360.png'
         )
-        setVideo360(urlThumnail)
+        setVideo360(formData)
       } catch (error) {
         setLoading(false)
       }
@@ -112,40 +128,38 @@ const Video360Uploader: React.FC<Video360Props> = ({ loading, setLoading }) => {
     maxFiles: 1,
     maxSize: FilesConfiguration.videos360.maxSize,
     noClick: true,
-    validator: nameLengthValidator,
+    validator: (file: File) => {
+      return validateFile(file, {
+        maxLengthName: Config.MAX_LENGTH_NAME_SIZE,
+        maxSize: FilesConfiguration.videos360.maxSize / Constants.MB
+      })
+    },
     multiple: false,
     noKeyboard: true,
     disabled: loading
   })
 
-  const setVideo360 = async (thumbnail: string) => {
+  const setVideo360 = async (formDataThumbnail: FormData) => {
     try {
-      const selectedFile = files[0]
-      const formData = new FormData()
-      formData.append(FilesConfiguration.nameToUpload, selectedFile)
-      const response = await clienteAxios.post(URLS.urlUploadVideo360, formData)
+      setLoading(true)
+      const file = files[0]
+      const formDataFile = new FormData()
+      formDataFile.append(FilesConfiguration.nameToUpload, file)
 
-      const DTO:CreateNewAssetDTO = {
-        url: response.data,
-        typeAsset: FILES_TYPES.VIDEO_360,
-        thumbnail,
-        nameAsset:selectedFile.name
-      }
-      const { data } = await clienteAxios.post(URLS.createAsset, DTO)
-      setLoading(false)
-
-      if (data.status === 0) {
-        setFiles(null)
+      const success = await uploadVideo360({
+        formDataFile,
+        formDataThumbnail,
+        file
+      })
+      if (success) {
         const _CANVAS = document.querySelector(
           '#canvas-element'
         ) as HTMLCanvasElement
         _CANVAS.height = 10
-        sendAlert({
-          type: TypesNotification.success,
-          msg: 'Your video has been uploaded successfully'
-        })
-        successCreate(data.asset)
       }
+
+      setLoading(false)
+      setFiles(null)
     } catch (error) {
       setLoading(false)
       sendAlert({
@@ -197,7 +211,8 @@ const Video360Uploader: React.FC<Video360Props> = ({ loading, setLoading }) => {
           <img className='mr-2' src={Images.iconoInfo} alt='icon info' />
 
           <Box color='white' fontFamily='font2'>
-            The files should not exceed a weight greater than {FilesConfiguration.videos360.maxSize/Constants.MB} MB
+            The files should not exceed a weight greater than{' '}
+            {FilesConfiguration.videos360.maxSize / Constants.MB} MB
           </Box>
         </Box>
         <Paper>
@@ -217,7 +232,7 @@ const Video360Uploader: React.FC<Video360Props> = ({ loading, setLoading }) => {
             </Box>
             <input
               {...getInputProps()}
-              onChange={e => uploadVideo360(e.target.files)}
+              onChange={e => handleUploadVideo360(e.target.files)}
               accept={FilesConfiguration.videos360.filesAcepted}
               id='upload'
               type='file'

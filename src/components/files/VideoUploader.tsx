@@ -1,32 +1,31 @@
-import { useCallback, useContext, useEffect, useState } from "react"
-import { useDropzone } from "react-dropzone"
-import { Config } from "../../config"
-import { nameLengthValidator } from "../../config/utils"
-import AssetsContext, { Asset, CreateNewAssetDTO } from "../../context/assets/assets.context"
-import clienteAxios from '../../config/axios'
-import NotificationsContext from "../../context/notifications/notifications.context"
+import { useCallback, useContext, useEffect, useState } from 'react'
+import { useDropzone } from 'react-dropzone'
+import { Config } from '../../config'
+import {  validateFile } from '../../config/utils'
+import AssetsContext, {
+  Asset
+} from '../../context/assets/assets.context'
+import NotificationsContext from '../../context/notifications/notifications.context'
+import { TypesNotification,  FILES_TYPES, Images } from '../../types'
 import {
-  TypesNotification, URLS,
-  FILES_TYPES,
-  Images,
-} from '../../types'
-import { Constants, FilesConfiguration, ImageGrid, useStylesFiles } from "./TableFiles"
-import { Box, Button, Paper } from "@material-ui/core"
-import DropZone from "./DropZone"
-
+  Constants,
+  FilesConfiguration,
+  ImageGrid,
+  useStylesFiles
+} from './TableFiles'
+import { Box, Button, Paper } from '@material-ui/core'
+import DropZone from './DropZone'
 
 export interface VideoProps {
   loading: boolean
   setLoading: Function
 }
 
-
-const VideoUploader : React.FC<VideoProps> = ({ loading, setLoading }) => {
-  const { assets, successCreate, openPreviewer } = useContext(AssetsContext)
-  const [files, setFiles] = useState<FileList>(null)
+const VideoUploader: React.FC<VideoProps> = ({ loading, setLoading }) => {
+  const { assets, openPreviewer, uploadVideo } = useContext(AssetsContext)
+  const [files, setFiles] = useState<FileList|[]>(null)
   const [urlVideo, setUrlVideo] = useState<string>('')
   const { sendAlert } = useContext(NotificationsContext)
-  
 
   useEffect(() => {
     const _CANVAS = document.querySelector(
@@ -34,13 +33,14 @@ const VideoUploader : React.FC<VideoProps> = ({ loading, setLoading }) => {
     ) as HTMLCanvasElement
     _CANVAS.height = 10
   }, [])
+  
   const onDrop = useCallback((acceptedFiles, errors) => {
     errors.map(error => {
       if (error.errors[0].code === 'file-too-large') {
         sendAlert({
           type: TypesNotification.warning,
           msg: `File is larger than ${FilesConfiguration.videos.maxSize /
-            Constants.MB} MB`,
+            Constants.MB} MB`
         })
       } else {
         sendAlert({
@@ -53,7 +53,7 @@ const VideoUploader : React.FC<VideoProps> = ({ loading, setLoading }) => {
       return
     }
     setFiles(acceptedFiles)
-    uploadVideo(acceptedFiles)
+    handleUploadVideo(acceptedFiles)
   }, [])
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -62,15 +62,34 @@ const VideoUploader : React.FC<VideoProps> = ({ loading, setLoading }) => {
     maxFiles: 1,
     maxSize: FilesConfiguration.videos.maxSize,
     noClick: true,
-    validator: nameLengthValidator,
+    validator: (file: File) => {
+      return validateFile(file, {
+        maxLengthName: Config.MAX_LENGTH_NAME_SIZE,
+        maxSize: FilesConfiguration.videos.maxSize / Constants.MB
+      })
+    },
     multiple: false,
     noKeyboard: true,
     disabled: loading
   })
-  const uploadVideo = (filesUploaded: FileList) => {
-    const url = URL.createObjectURL(filesUploaded[0])
-    setUrlVideo(url)
-    setFiles(filesUploaded)
+  const handleUploadVideo = (filesUploaded: FileList) => {
+
+    const statusVideo = validateFile(filesUploaded[0], {
+      maxLengthName: Config.MAX_LENGTH_NAME_SIZE,
+      maxSize: FilesConfiguration.videos.maxSize / Constants.MB
+    })
+    
+    if (!statusVideo) {
+      const url = URL.createObjectURL(filesUploaded[0])
+      setUrlVideo(url)
+      setFiles(filesUploaded)
+    } else {
+      sendAlert({
+        type: TypesNotification.warning,
+        msg: statusVideo.message
+      })
+      setFiles([])
+    }
   }
 
   const uploadThumbnail = async () => {
@@ -82,12 +101,7 @@ const VideoUploader : React.FC<VideoProps> = ({ loading, setLoading }) => {
         setLoading(true)
         const formData = new FormData()
         formData.append(FilesConfiguration.nameToUpload, blob, 'thumbnail.png')
-        const { data: urlThumnail } = await clienteAxios.post(
-          URLS.urlUploadImage,
-          formData
-        )
-        console.log({ urlThumnail })
-        setVideo(urlThumnail)
+        setVideo(formData)
       } catch (error) {
         setLoading(false)
         sendAlert({
@@ -123,36 +137,24 @@ const VideoUploader : React.FC<VideoProps> = ({ loading, setLoading }) => {
       await uploadThumbnail()
     }
   }
-  const setVideo = async (thumbnail: string) => {
+  const setVideo = async (formDataThumbnail: FormData) => {
     try {
-      const selectedFile = files[0]
-      const formData = new FormData()
-      formData.append(FilesConfiguration.nameToUpload, selectedFile)
-      setLoading(true)
-      const response = await clienteAxios.post(URLS.urlUploadVideo, formData)
-      setLoading(false)
-
-      const DTO:CreateNewAssetDTO = {
-        url: response.data,
-        typeAsset: FILES_TYPES.VIDEO,
-        thumbnail,
-        nameAsset:selectedFile.name
-      }
-      const { data } = await clienteAxios.post(URLS.createAsset, DTO)
-      setLoading(false)
-
-      if (data.status === 0) {
-        setFiles(null)
+      const file = files[0]
+      const formDataFile = new FormData()
+      formDataFile.append(FilesConfiguration.nameToUpload, file)
+      const success = await uploadVideo({
+        formDataFile,
+        formDataThumbnail,
+        file
+      })
+       if (success) {
         const _CANVAS = document.querySelector(
           '#canvas-element'
         ) as HTMLCanvasElement
         _CANVAS.height = 10
-        sendAlert({
-          type: TypesNotification.success,
-          msg: 'Your video has been uploaded successfully'
-        })
-        successCreate(data.asset)
       }
+      setFiles(null)
+      setLoading(false)
     } catch (error) {
       setLoading(false)
       sendAlert({
@@ -207,8 +209,8 @@ const VideoUploader : React.FC<VideoProps> = ({ loading, setLoading }) => {
             <img className='mr-2' src={Images.iconoInfo} alt='icon info' />
 
             <Box color='white' fontFamily='font2'>
-              The files should not exceed a weight greater than {FilesConfiguration.videos.maxSize /
-            Constants.MB} MB
+              The files should not exceed a weight greater than{' '}
+              {FilesConfiguration.videos.maxSize / Constants.MB} MB
             </Box>
           </Box>
           <Box
@@ -228,7 +230,7 @@ const VideoUploader : React.FC<VideoProps> = ({ loading, setLoading }) => {
             </Box>
             <input
               {...getInputProps()}
-              onChange={e => uploadVideo(e.target.files)}
+              onChange={e => handleUploadVideo(e.target.files)}
               accept={FilesConfiguration.videos.filesAcepted}
               id='video_uploader'
               type='file'
@@ -276,6 +278,5 @@ const VideoUploader : React.FC<VideoProps> = ({ loading, setLoading }) => {
     </>
   )
 }
-
 
 export default VideoUploader
