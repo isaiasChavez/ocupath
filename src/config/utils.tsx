@@ -29,7 +29,6 @@ export const verifyToken = (
     tokenAuth(token)
     return { status: true, jwtDecoded }
   } catch (error) {
-    alert('The token is no longer valid')
     return { status: false, jwtDecoded: null }
   }
 }
@@ -127,6 +126,7 @@ export const validateFile = (
     maxLengthName?:number
   }
 ): StatusFile | null => {
+
   const statusFile: StatusFile = {
     code: null,
     message: ''
@@ -136,9 +136,10 @@ export const validateFile = (
   console.log("CONFIGURACIN",{configuration,weight})
 
   if (configuration.maxLengthName && file.name.length > configuration.maxLengthName) {
+    
     return {
       code: ErrorsFile.nameTooLarge,
-      message: `Name is larger than ${Config.MAX_LENGTH_NAME_SIZE} characters`
+      message: `Name is larger than ${configuration.maxLengthName} characters`
     }
   }
   if (configuration.maxSize && weight > configuration.maxSize) {

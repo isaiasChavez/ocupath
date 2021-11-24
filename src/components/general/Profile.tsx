@@ -44,7 +44,10 @@ const AvatarSection = ({ toggleAvatarSection }) => {
     console.log("Se inició la función que levanta el modal",{event})
 
     console.log("event.origin:",event.origin,event.data)
-    if (iframeUrl.includes(event.origin)) {
+    const isStringUrl = typeof event.data === 'string'
+    console.log({isStringUrl})
+    console.log("Nueva")
+    if (iframeUrl.includes(event.origin) || isStringUrl) {
       console.log("Si entró donde no debería:",iframeUrl.includes(event.origin))
       setUrlAvatar(event.data)
       setIsModalVisible(true)
