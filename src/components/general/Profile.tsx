@@ -46,8 +46,9 @@ const AvatarSection = ({ toggleAvatarSection }) => {
     console.log("event.origin:",event.origin,event.data)
     const isStringUrl = typeof event.data === 'string'
     console.log({isStringUrl})
+    console.log("Podrías desplegar este si aparece un triangulo a la izquierda? isStringUrl?: ",{isStringUrl})
     console.log("Nueva")
-    if (iframeUrl.includes(event.origin) || isStringUrl) {
+    if (iframeUrl.includes(event.origin) && isStringUrl) {
       console.log("Si entró donde no debería:",iframeUrl.includes(event.origin))
       setUrlAvatar(event.data)
       setIsModalVisible(true)
