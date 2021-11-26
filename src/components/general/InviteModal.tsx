@@ -195,6 +195,7 @@ const InviteModal: React.FC<InviteModalProps> = ({
           startedAt,
           finishedAt
         }
+        inviteDTO.email = inviteDTO.email.trim().toLowerCase()
 
         if (isInviteGuest) {
           inviteDTO.invitations = 0

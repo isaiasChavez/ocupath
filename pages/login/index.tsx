@@ -168,7 +168,7 @@ const Login: React.FC<LoginProps> = () => {
     e.preventDefault()
     if (validateFields()) {
       let dto = new ReuestSesionDTO(
-        loginState.email.trim(),
+        loginState.email.trim().toLowerCase(),
         loginState.password
       )
       const data = await logUser(dto)
@@ -219,13 +219,7 @@ const Login: React.FC<LoginProps> = () => {
     return isValid
   }
 
-  const handleClickShowPassword = () => {
-    setloginState({ ...loginState, showPassword: !loginState.showPassword })
-  }
-
-  const handleMouseDownPassword = event => {
-    event.preventDefault()
-  }
+ 
 
   const classes = useStyles()
   return (
@@ -268,6 +262,7 @@ const Login: React.FC<LoginProps> = () => {
               margin='normal'
               fullWidth
               onChange={onChange}
+              inputProps={ { style: { textTransform: "lowercase" } } }
               id='email'
               label='Email Address'
               error={errors.email !== null}
