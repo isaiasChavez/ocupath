@@ -21,7 +21,7 @@ export interface NavigationProps {
 
 const Home= () => {
   const classes = useStyles()
-  const version = 'v1.2.0.2'
+  const version = 'v1.2.0.3'
     const router = useRouter();
 
     useEffect(() => {
