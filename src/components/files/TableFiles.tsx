@@ -34,23 +34,23 @@ export const Constants = {
 export const FilesConfiguration = {
   images: {
     minSize: Constants.MB * 1,
-    maxSize: Constants.MB * 2,
+    maxSize: Constants.MB * 10,
     filesAcepted: 'image/jpeg, image/png'
   },
   images360: {
     minSize: Constants.MB * 1,
     //maxSize: Constants.MB * 4.5,
-    maxSize: Constants.MB * 1,
+    maxSize: Constants.MB * 10,
     filesAcepted: 'image/jpeg, image/png'
   },
   videos: {
     minSize: Constants.MB * 1,
-    maxSize: Constants.MB * 5,
+    maxSize: Constants.MB * 25,
     filesAcepted: 'video/mp4'
   },
   videos360: {
     minSize: Constants.MB * 1,
-    maxSize: Constants.MB * 10,
+    maxSize: Constants.MB * 25,
     filesAcepted: 'video/mp4'
   },
   nameToUpload: 'upload'
