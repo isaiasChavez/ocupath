@@ -44,12 +44,12 @@ export const FilesConfiguration = {
     filesAcepted: 'image/jpeg, image/png'
   },
   videos: {
-    minSize: Constants.MB * 1,
+    minSize: Constants.MB * 100,
     maxSize: Constants.MB * 25,
     filesAcepted: 'video/mp4'
   },
   videos360: {
-    minSize: Constants.MB * 1,
+    minSize: Constants.MB * 100,
     maxSize: Constants.MB * 25,
     filesAcepted: 'video/mp4'
   },
